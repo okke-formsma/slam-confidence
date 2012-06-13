@@ -1,50 +1,58 @@
 #!/usr/bin/python
 import json
+from math import pi, sqrt, sin, cos
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from random import random
 
+
 def main(filename = '2012-05-31 IRO2012-Pre2/patches.json'):
     patches = load_patches(filename)
-    #plot_displacement_map(patches)
     plot_error(patches)
+    #plt.tight_layout()
     plt.show()
 
 def load_patches(filename):
     with open(filename) as f:
         """ My ugly json printer in VB outputs },\n instead of }] at the end of the file. """
         patches = json.loads('[' + f.read()[:-2] + ']')
+
+    i = 0
+    for p in patches:
+        p['num'] = i
+        i += 1
+
     return patches
 
 def plot_error(patches):
     diffs = []
     for p in patches:
-        diffs.append(((p['groundtruth']['x'] - p['slam']['x']) ** 2 +
-                      (p['groundtruth']['x'] - p['slam']['x']) ** 2) ** 0.5)
+        diffs.append(distance((p['groundtruth']['x'], p['groundtruth']['y']), (p['slam']['x'], p['slam']['y'])))
 
-    diff_rot = [abs(p['groundtruth']['rot'] - p['slam']['rot']) for p in patches]
+    diff_yaw = [abs(Angle.diff(p['groundtruth']['yaw'], p['slam']['yaw'])) for p in patches]
 
     covar = [float(p['avgcovariancedeterminant']) for p in patches]
+    num = [p['num'] for p in patches]
 
     fig = plt.figure()
-    gs = gridspec.GridSpec(3,2)
+    gs = gridspec.GridSpec(5,1)
     ax1 = fig.add_subplot(gs[0, 0])
     ax4 = fig.add_subplot(gs[1, 0])
     ax2 = fig.add_subplot(gs[2, 0])
-    ax3 = fig.add_subplot(gs[:, 1])
+    ax3 = fig.add_subplot(gs[3:5, 0])
 
-    ax1.plot(diffs)
+    ax1.plot(num, diffs)
     ax1.set_ylabel('location error')
 
-    ax4.plot(diff_rot)
+    ax4.plot(num, diff_yaw)
     ax4.set_ylabel('rotation error')
 
-    ax2.plot(covar)
+    ax2.plot(num, covar)
     ax2.set_ylabel('covariance determinant \nof correspondence matrix')
     ax2.set_xlabel('patch #')
 
     plot_displacement_map(patches, ax3)
-    gs.tight_layout(fig)
+    #gs.tight_layout(fig)
 
 
 def plot_displacement_map(patches, ax=None):
@@ -62,26 +70,51 @@ def plot_displacement_map(patches, ax=None):
     sw = [p['slam']['yaw'] for p in patches]
 
     ax.axis('equal')
-    displacement_segments_x = []
-    displacement_segments_y = []
-    angles_g = []
-    angles_s = []
-    for gx_, gy_, _gw, sx_, sy_, _sw in zip(gx, gy, gw, sx, sy, sw):
-        displacement_segments_x.extend([gx_ + random(), sx_ + random(), None])
-        displacement_segments_y.extend([gy_ + random(), sy_ + random(), None])
+    displacement_segments = dict(x=[], y=[]) # x = list of x1, x2, None, ... of list segments that go from x1 to x2
+    angles_g = dict(x=[], y=[])
+    angles_s = dict(x=[], y=[])
+    for gx_, gy_, gw_, sx_, sy_, sw_ in zip(gx, gy, gw, sx, sy, sw):
+        displacement_segments['x'].extend([gx_, sx_, None])
+        displacement_segments['y'].extend([gy_, sy_, None])
+        angles_g['x'].extend([gx_, gx_ + 200*cos(gw_), None])
+        angles_g['y'].extend([gy_, gy_ + 200*sin(gw_), None])
+        angles_s['x'].extend([sx_, sx_ + 200*cos(sw_), None])
+        angles_s['y'].extend([sy_, sy_ + 200*sin(sw_), None])
 
-    ax.plot(displacement_segments_x, displacement_segments_y, '-', color=(0.1, 0.9, 0.1, 0.3))
-    ax.plot(gx, gy, 'b+-')
-    ax.plot(sx, sy, 'r+-')
+    # all plotting with x- and y-values swapped
+    ax.plot(displacement_segments['y'], displacement_segments['x'], '-', color=(0.1, 0.9, 0.1, 0.3))
+    ax.plot(angles_g['y'], angles_g['x'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(angles_s['y'], angles_s['x'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(gy, gx, '+-', color=(0, 0, 1, 0.5))
+    ax.plot(sy, sx, '+-', color=(1, 0, 0, 0.8), linewidth=2)
 
-    for num in range(0, len(sx), 10):
-        ax.annotate(str(num), xy=(sx[num], sy[num]), xytext=(sx[num], sy[num]))
+    for p in patches:
+        if p['num'] % 10 == 0:
+            ax.annotate(str(p['num']), xy=(p['slam']['y'], p['slam']['x']), xytext=(p['slam']['y'], p['slam']['x']))
 
-    ax.set_ylim(ax.get_ylim()[::-1]) #inverse y axis
 
 #plt.savefig('displacement_map.png')
     #plt.savefig('displacement_map.pdf')
     #plt.show()
-    
+
+
+
+class Angle:
+    @classmethod
+    def normalize(cls, angle):
+        return angle % (pi * 2)
+
+    @classmethod
+    def diff(cls, first, second):
+        """ Returns normalized difference between self and other in (-pi, pi]"""
+        diff = first - second
+        while diff > pi:   diff -= 2 * pi
+        while diff <= -pi: diff += 2 * pi
+        return diff
+
+def distance((x1, y1), (x2, y2)):
+    """ Returns euclidian disntace between self and other """
+    return sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
 if __name__ == '__main__':
     main()
