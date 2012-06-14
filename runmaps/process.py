@@ -3,10 +3,13 @@ import json
 from math import pi, sqrt, sin, cos
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from random import random
 
+maps = [
+    '2012-05-31 IRO2012-Pre2/patches.json',
+    '2012-06-14 IRO2012-Pre2/patches.json',
+    ]
 
-def main(filename = '2012-05-31 IRO2012-Pre2/patches.json'):
+def main(filename = maps[1]):
     patches = load_patches(filename)
     plot_error(patches)
     #plt.tight_layout()
@@ -31,15 +34,19 @@ def plot_error(patches):
 
     diff_yaw = [abs(Angle.diff(p['groundtruth']['yaw'], p['slam']['yaw'])) for p in patches]
 
-    covar = [float(p['avgcovariancedeterminant']) for p in patches]
+    roll_ins = [float(p['ins']['roll']) for p in patches]
+    pitch_ins = [float(p['ins']['pitch']) for p in patches]
+    roll_g = [float(p['groundtruth']['roll']) for p in patches]
+    pitch_g = [float(p['groundtruth']['pitch']) for p in patches]
     num = [p['num'] for p in patches]
 
     fig = plt.figure()
-    gs = gridspec.GridSpec(5,1)
+    gs = gridspec.GridSpec(6,1)
     ax1 = fig.add_subplot(gs[0, 0])
     ax4 = fig.add_subplot(gs[1, 0])
     ax2 = fig.add_subplot(gs[2, 0])
-    ax3 = fig.add_subplot(gs[3:5, 0])
+    ax5 = fig.add_subplot(gs[3, 0])
+    ax3 = fig.add_subplot(gs[4:7, 0])
 
     ax1.plot(num, diffs)
     ax1.set_ylabel('location error')
@@ -47,9 +54,14 @@ def plot_error(patches):
     ax4.plot(num, diff_yaw)
     ax4.set_ylabel('rotation error')
 
-    ax2.plot(num, covar)
-    ax2.set_ylabel('covariance determinant \nof correspondence matrix')
-    ax2.set_xlabel('patch #')
+    ax2.plot(num, pitch_ins, color=(1, 0, 0, 0.8))
+    ax2.plot(num, pitch_g, color=(0, 0, 1, 0.8))
+    ax2.set_ylabel('pitch')
+
+    ax5.plot(num, roll_ins, color=(1, 0, 0, 0.8))
+    ax5.plot(num, roll_g, color=(0, 0, 1, 0.8))
+    ax5.set_ylabel('roll')
+    ax5.set_xlabel('patch #')
 
     plot_displacement_map(patches, ax3)
     #gs.tight_layout(fig)
@@ -91,13 +103,6 @@ def plot_displacement_map(patches, ax=None):
     for p in patches:
         if p['num'] % 10 == 0:
             ax.annotate(str(p['num']), xy=(p['slam']['y'], p['slam']['x']), xytext=(p['slam']['y'], p['slam']['x']))
-
-
-#plt.savefig('displacement_map.png')
-    #plt.savefig('displacement_map.pdf')
-    #plt.show()
-
-
 
 class Angle:
     @classmethod
