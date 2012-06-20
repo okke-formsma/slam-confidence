@@ -1,0 +1,35 @@
+%\usepackage[a4paper,twoside]{geometry}
+\documentclass[a4paper, 10pt]{report}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{verbatim} 
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{amsthm}
+
+
+\title{Classifying}
+\date{June 18, 2012}
+\author{Okke Formsma\\ University of Amsterdam}
+        
+\begin{document}
+\maketitle
+
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{\numberline{}Abstract}
+\input{chapters/abstract.tex}
+
+\chapter*{Acknowledgements}
+\input{chapters/acknowledgements.tex}
+
+\tableofcontents
+\pagenumbering{arabic}
+
+\chapter{Introduction}
+\label{chapter:introduction}
+\input{chapters/introduction.tex}
+
+
+\end{document}

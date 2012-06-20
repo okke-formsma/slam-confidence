@@ -25,3 +25,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+report/*.aux
+report/*.log
+.DS_Store
+report/*.toc
+report/*.synctex.gz

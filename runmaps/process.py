@@ -9,10 +9,10 @@ maps = [
     '2012-06-14 IRO2012-Pre2/patches.json',
     ]
 
-def main(filename = maps[1]):
+def main(filename = maps[0]):
     patches = Container(filename)
-    #plot_pitch_roll(patches)
-    plot_confidence(patches)
+    plot_pitch_roll(patches)
+    #plot_confidence(patches)
     plt.show()
 
 
@@ -21,13 +21,12 @@ def plot_confidence(patches):
     * Location error
     * Rotation error
     * confidence measure
-    *
     """
     diffs = []
     for x1, y1, x2, y2 in zip(patches['groundtruth.x'], patches['groundtruth.y'], patches['slam.x'], patches['slam.y']):
         diffs.append(distance((x1, y1), (x2, y2)))
 
-    diff_yaw = [abs(Angle.diff(yaw1, yaw2))
+    diff_yaw = [abs(normalize_angle(yaw1 - yaw2))
                 for yaw1, yaw2 in zip(patches['slam.yaw'], patches['groundtruth.yaw'])]
 
     fig = plt.figure()
@@ -62,34 +61,39 @@ def plot_pitch_roll(patches):
     for x1, y1, x2, y2 in zip(patches['groundtruth.x'], patches['groundtruth.y'], patches['slam.x'], patches['slam.y']):
         diffs.append(distance((x1, y1), (x2, y2)))
 
-    diff_yaw = [abs(Angle.diff(yaw1, yaw2))
+    diff_yaw = [abs(normalize_angle(yaw1 - yaw2))
                 for yaw1, yaw2 in zip(patches['slam.yaw'], patches['groundtruth.yaw'])]
 
     fig = plt.figure()
-    gs = gridspec.GridSpec(6,1)
-    ax1 = fig.add_subplot(gs[0, 0])
-    ax4 = fig.add_subplot(gs[1, 0])
-    ax2 = fig.add_subplot(gs[2, 0])
-    ax5 = fig.add_subplot(gs[3, 0])
-    ax3 = fig.add_subplot(gs[4:7, 0])
+    gs = gridspec.GridSpec(5,2)
+    loc_ax = fig.add_subplot(gs[0, 0])
+    yaw_ax = fig.add_subplot(gs[1, 0])
+    ins_ax = fig.add_subplot(gs[2, 0])
+    roll_ax = fig.add_subplot(gs[3, 0])
+    conf_ax = fig.add_subplot(gs[4, 0])
+    map_ax = fig.add_subplot(gs[:, 1])
 
     num = patches['num']
-    ax1.plot(num, diffs)
-    ax1.set_ylabel('location error')
+    loc_ax.plot(num, diffs)
+    loc_ax.set_ylabel('location error')
 
-    ax4.plot(num, diff_yaw)
-    ax4.set_ylabel('rotation error')
+    yaw_ax.plot(num, diff_yaw)
+    yaw_ax.set_ylabel('rotation error')
 
-    ax2.plot(num, patches['ins.pitch'], color=(1, 0, 0, 0.8))
-    ax2.plot(num, patches['groundtruth.pitch'], color=(0, 0, 1, 0.8))
-    ax2.set_ylabel('pitch')
+    ins_ax.plot(num, patches['ins.pitch'], color=(1, 0, 0, 0.8))
+    ins_ax.plot(num, patches['groundtruth.pitch'], color=(0, 0, 1, 0.8))
+    ins_ax.set_ylabel('pitch')
 
-    ax5.plot(num, patches['ins.roll'], color=(1, 0, 0, 0.8))
-    ax5.plot(num, patches['groundtruth.roll'], color=(0, 0, 1, 0.8))
-    ax5.set_ylabel('roll')
-    ax5.set_xlabel('patch #')
+    roll_ax.plot(num, patches['ins.roll'], color=(1, 0, 0, 0.8))
+    roll_ax.plot(num, patches['groundtruth.roll'], color=(0, 0, 1, 0.8))
+    roll_ax.set_ylabel('roll')
+    roll_ax.set_xlabel('patch #')
 
-    plot_displacement_map(patches, ax3)
+    conf_ax.plot(num, patches['avgcovariancedeterminant'], color=(1, 0, 0, 0.8))
+    conf_ax.set_ylabel('Confidence')
+    conf_ax.set_xlabel('patch #')
+
+    plot_displacement_map(patches, map_ax)
 
 
 def plot_displacement_map(patches, ax=None):
@@ -119,16 +123,17 @@ def plot_displacement_map(patches, ax=None):
         angles_s['y'].extend([sy_, sy_ + 200*sin(sw_), None])
 
     # all plotting with x- and y-values swapped
-    ax.plot(displacement_segments['y'], displacement_segments['x'], '-', color=(0.1, 0.9, 0.1, 0.3))
-    ax.plot(angles_g['y'], angles_g['x'], '-', color=(0, 0, 0, 0.8))
-    ax.plot(angles_s['y'], angles_s['x'], '-', color=(0, 0, 0, 0.8))
-    ax.plot(gy, gx, '+-', color=(0, 0, 1, 0.5))
-    ax.plot(sy, sx, '+-', color=(1, 0, 0, 0.8), linewidth=2)
+    ax.plot(displacement_segments['x'], displacement_segments['y'], '-', color=(0.1, 0.9, 0.1, 0.3))
+    ax.plot(angles_g['x'], angles_g['y'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(angles_s['x'], angles_s['y'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(gx, gy, '+-', color=(0, 0, 1, 0.5))
+    ax.plot(sx, sy, '+-', color=(1, 0, 0, 0.8), linewidth=2)
 
     for p in patches:
         if p['num'] % 10 == 0:
-            ax.annotate(str(p['num']), xy=(p['slam']['y'], p['slam']['x']), xytext=(p['slam']['y'], p['slam']['x']))
+            ax.annotate(str(p['num']), xy=(p['slam']['x'], p['slam']['y']), xytext=(p['slam']['x'], p['slam']['y']))
 
+    ax.set_ylim(ax.get_ylim()[::-1]) #inverse y axis
 
 if __name__ == '__main__':
     main()
