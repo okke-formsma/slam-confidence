@@ -1,0 +1,520 @@
+<html><head><title>Labbook Okke Formsma SLAM</title>
+</head>
+<body bgcolor="#DDFFDD">
+
+
+<h1>Labbook Okke Formsma SLAM</h1>
+<h2> The project</h2>
+<ul>
+	<li> Examine confidence of new patches in the map
+    <li> Compare with distance from groundtruth
+    <li> Influence of newly explored space on confidence?
+    <li> Compare results on 3 maps
+</ul>
+
+<h2> Thu June 21, 2012 </h2>
+<ul>
+    <li> On Wed Dec 22, 2010, I chose to measure the confidence as the determinant of the relation.covariance. However, I do not understand why I chose the <a href="http://en.wikipedia.org/wiki/Determinant">determinant</a> as metric: other than that it yields a single value from a matrix, there is no reason the determinant is a meaningful metric.
+
+<h2> Wed June 20, 2012 </h2>
+<ul>
+    <li> Set up latex for report
+    <li> The camera makes UsarCommander hang. I don't have a clue what to do about this. There are no patches processed in the meantime, and localizations errors result. Playback logs also miss this information (and seem to hang/wait?) <br />
+        <img src="2012-06-20/camera_hangs.png">
+</ul>
+
+<h2> Mon June 18, 2012 </h2>
+<ul>
+    <li> Figured out how to transform roll + tilt to a single angle from the 'normal':
+    <li> (vector omhoog in world-space) Z = (0,0,1) (vector omhoog)
+    <li> (vector omhoog in robot-space) z = roll_matrix * pitch_matrix * Z
+    <li> 'attack' (?) = atan(distance((z[0], z[1])) / z[2])
+</ul>
+
+<h2> Thu June 14, 2012 </h2>
+<ul>
+    <li> According to Arnoud, the confidence values that I observe in this dataset seem different from other runs. Creating a new run (without bumps) to verify.
+    <li> Run created in IRO2012-pre2: <br />
+        <img src="2012-06-14/map_wsm.png">
+        <img src="2012-06-14/pitch_roll_graph.png">
+    <li> Interesting is that the scanmatcher makes a mistake at patch 148, when it crosses the door for the second time. The map becomes rather messy afterwards.
+    <li> The pitch and roll data is useless (only noise) so I'll look at the confidence data again: <br />
+        <img src="2012-06-14/confidence_graph.png">
+    <li> I found where the errors suddenly come up! The SLAM-matcher sometimes stalls for a while, for exapmle between patches 147 and 148. Then, patch 148 is not aligned correctly. Why are the intermediate scans thrown away? 
+    <li> Whoops! While I though the pitch and roll were orroneous, this is not the case. 0 is perfectly flat, and tilting a very tiny amount backwards gives an INS of 2*pi-.00001 which is 6.someting. <br />
+        <img src="2012-06-14/pitch_roll_right.png">
+    <li> Now, it's clear to see what actually happened in this run: The robot fell over and righted itself afterwards.
+    <li> I am now searching in USARSim for the code which decides when to add a patch to the manifold. I need to extract the data from there.
+</ul>
+
+<h2> Wed June 13, 2012 </h2>
+<ul>
+    <li> Created better view to inspect which patches yield a high covariance error:<br />
+        <img src="./before20120614/inspect_errors.png"> (<a href="https://github.com/okke-formsma/slam-confidence/blob/master/runmaps/covariance.py">code</a>)
+    <li> The highest errors are found between patch #140-150. These occur in the top-left corner, at the point where the robot began it's exploration.
+    <li> Where do we find high covariance? 1) in newly explored areas (#0-50) and (#180-200), 2) in areas which were previously visited (#140-150) and (#200-250).
+    <li> Where do we find low covariance? 1) in newly explored areas (#50-100), 2) in areas which were previously visited (#150-180).
+    <li> The covariance matrix determinent seems useless. :(
+    <li>
+    <li> Patch 91 is the first which has a severe rotation error.
+    <li> Looking at pitch and roll values from ins-sensor: <br />
+        <img src="./before20120614/pitch_roll.png"><img src="./before20120614/pitch_roll_groundtruth_compare.png"> (red=ins, blue=groundtruth)
+    <li> The pitch and roll values do not seem to be very indicative either. Around 90, there is little to no pitch or roll according to the ins sensor, while the scanmatching has failed there greatly.
+    <li> The ins sensor for pitch and roll is useless: too low signal-to-noise ratio.
+</ul>
+
+<h2> Fri June 8, 2012 </h2>
+<ul>
+    <li> The angle-errors were sometimes almost 2*pi, I've normalized them into the (-pi, pi] domain.
+</ul>
+<h2> Thu June 7, 2012 </h2>
+<ul>
+    <li> Finally got groundtruth and SLAM positions exported, as well as confidence measure.
+    <li> Plotting those in python. <br />
+        <img src="./before20120614/errors.png">
+    <li> Blue line: groundtruth. Red line: SLAM result. Green lines: error (location error in above graph)
+        <br /><img src="./before20120614/displacement.png">
+</ul>
+
+<h2> Wed June 6, 2012 </h2>
+<ul>
+    <li> The scanmatcher gives weird results (WSM / ICP). It seems the rotation of the patches gets bad at some point. However, then it starts 'jumping' around which doesn't make sense.<br />
+        <img src="./before20120614/map_wsm.png"><img src="./before20120614/map_icp.png">
+    <li> Extending the UsarSIM code so I can extract for each patch: 
+        <ul>
+            <li> Groundtruth position
+            <li> Position according to SLAM
+            <li> covariance matrix (or confidence measure)
+        </ul>
+</ul>
+
+<h2> Thu May 31, 2012</h2>
+<ul>
+<li> I had problems getting the slam matcher to work. Recommended settings: ScanMatching + WSM + INS, then everything works. </li>
+<li> Created <a href="https://github.com/okke-formsma/UsarCommanderBugs">UsarCommanderBugs</a> on GitHub so all USAR Commander bugs are in 1 place.</li>
+<li> The default settings file in USARSim does not play well with the Kenaf. <a href="./before20120614/UDKUSAR.ini">Improved file from Arnoud</a>.
+<li> <s>The config file has weird settings for P3AT (too many SICKs) and Kenaf (no sensors in config): </s> This is fixed in the newest version.
+<li> Checking various maps to run analysis on, creating data dumps of a run around. <ul>
+    <li> DutchOpen2012-Final has an interesting stairs to drive on.
+    <li> IRO2012-Pre2 and DutchOpen2012-SemiFinal are nice clean maps (one floor to explore, no smoke)
+    </ul>
+<li> Ran a test on IRO2012-Pre2, it's on PC-UDK:D:/documents/okke/2012-05-31 IRO2012-Pre2
+</ul>
+
+<h2> Fri May 25, 2012</h2>
+<ul>
+    <li>I can't find the code for the plots of Jan 25, 2011.</li>
+    <li>Trying to run usercommander. My robots don't get their own views and don't seem to receive patches.</li>
+    <li>Is this right? <i>BaseStation received GeometryMessage for another robot with type P3AT</i></li>
+</ul>
+
+<h2> Thu May 24, 2012</h2>
+<ul>
+    <li> Talked with Arnoud about which direction I should take the project. This is outlined above in the section "the project".
+    <li> Installed VS11 on the new PC. Get one error when loading the old project file about the lightFX package. Choosing the default option solves this.
+    <li> Just noticed something on the plots below: the global error between ins and groundtruth is taken, instead of the local error. (Distance between center of patch and groundtruth map is taken instead of where the patch was expected <i>with respect to the last patch</i>).
+    <li> Installed UDK &amp; <a href="http://sourgeforge.net/apps/mediawiki/usarsim/index.php?title=Installation">Usarsim</a>
+    <li> Spawning a couple of robots works. However, I get a NullReferenceException from Agent.vb (SonarSensor seems to be Null)
+
+</ul>
+
+<h2> Wed Jan 25, 2011</h2>
+<ul>
+<li> Pitch plus roll seems to be a very good indicator for a bad match: <br />
+    <img src="./before20120614/pitch_plus_roll.png">    <img src="./before20120614/groundtruth.png">
+<li> I didn't realize that a good way to spot where the problems lie is to compare data with groundtruth. <br />
+<li> WSM + circle dataset suddenly works very well! How can this be? Im...impossible! Is there a random element? <br />
+    On the right, the error between the INS sensor and groundtruth. <br />
+    Left: new WSM matcher run. Middle: old WSM matcher run. Right: error between INS and groundtruth <br />
+    <img src="./before20120614/circle_wsm.png"> <img src="./before20120614/circleset2.png"> <img src="./before20120614/circle_wsm_error_groundtruth_ins.png">
+<li> The ins and scan results in (x,y) space seem to match quite closely. Next time: check wether this holds true for angles too.
+</ul>
+
+<h2> Tue Jan 24, 2011</h2>
+<ul>
+<li> The difference in what the ins sensor expects and what the scanmatcher finds does not look like a good measure for the quality of a match:
+<li> <img src="./before20120614/circleset2.png"> <img src="./before20120614/circle2diff.png">
+<li> The largest mistakes are made when driving straight through corridors. It is strange that s
+</ul>
+
+<h2> Wed Jan 19, 2011</h2>
+<ul>
+<li> Loading dataset 1 from bas terwijn. Using odometry + sonar files (renamed to OdometryAndSonar.txt so UsarSim picks it up.<br />
+<img src="./before20120614/bterwijndataset2.png" style="width: 15%" />
+<img src="./before20120614/bterwijdnataset3.png" style="width: 15%" />
+<li> Why is the WSM so slow? <a href="bterwijdnataset3.png">Pic 2</a> took 20 minutes of matching. <br />
+<li> After a few hours (1/4 of the dataset processed) the result was so bad I quit the program: <br />
+<img src="./before20120614/bterwijdnataset4.png" style="width: 25%" /><img src="./before20120614/bterwijdnataset5.png" style="width: 25%" />
+<li> The AverageDeterminantCovariance of the scanmatch is -1.#inf. (aka negative infinity). I'm filtering the values that lead to this out.
+<li> Finally, I've created <a href="./before20120614/circle.log">the circle dataset</a> in Indoor-2 2009 which shows some nice bad behavior of the scanmatcher. <br />
+The first image is with QuadWSM, the second with normal WSM matcher. QuadWSM seems to outperform Quad. Next time, check if the settings have been butched recently (Arnouds log).
+<img src="./before20120614/circleset.png"> <img src="./before20120614/circleset2.png">
+</ul>
+
+<h2> Wed Jan 12, 2011</h2>
+<ul>
+<li> Manifold.vb line 121 keeps hanging the UI thread (it tries to acquire a reader lock with infinite timeout. I haven't figured out which thread is actually hogging this resource <small> Solution: don't click it while the status is 'running': first go to reporting mode</small>
+<li> Graphs (the second is rotated 90*) <br/><img src="./before20120614/run5b.png"> <img src="./before20120614/run5graphb.png">
+<li> So, what is this avgcov? It's the AverageCovarianceDeterminant. Somehow, this number usually lies around 2**20, which is quite (absurdly?) high. Also, sometimes (once every few hundred measurements) it is a negative number. How can this be?
+</ul>
+
+
+<h2> Tue Jan 11, 2011</h2>
+<ul>
+<li> Plotted log of average covariance vs the location on the map:<br>
+    <img src="./before20120614/avgcov.png">
+</ul>
+
+<h2> Fri Jan 07, 2011</h2>
+<ul>
+<li> Ut2004 (RoboCup09 Indoor1 and 2) won't boot. I receive a message that my cd key is invalid. However, the DM-Mapping_250 map does work.
+<li> And now it's a general protection fault: <pre>General protection fault!
+History: UCanvas::execDrawPortal [...]
+</pre>
+<li> I'm able to plot the statistics. This is the yaw and roll data from the ins sensor:<br />
+    <img src="./before20120614/roll_pitch.png" width=30%><br />
+    Angles (rotation from groundtruth and pitch):<br />
+    <img src="./before20120614/angles.png" width=30%><br />
+    Average covariance determinant:<br />
+    <img src="./before20120614/covs.png" width=30%><br />
+<li> Next step: create a testrun <br/>
+    Path of new run (green: ins pose, blue: matched pose)<br />
+    <img src="./before20120614/route.png" width=30%><br/>
+    (It seems that the ins pose estimator does not add up it's error, which allows it to stay quite true to the real pose of the robot)
+    
+</ul>
+
+<h2> Wed Dec 22, 2010</h2>
+<ul>
+    <li><a href="http://www.science.uva.nl/research/ias/alumni/m.sc.theses/theses/SlametPfingsthorn.pdf">Bayu Slamet and Max Pfingsthorn: ManifoldSLAM: a Multi-Agent Simultaneous Localization and Mapping System for the RoboCup Rescue Virtual Robots Competition. Master’s thesis, Universiteit van Amsterdam (2006)</a> gives a good overview of the architecture of UvARescue. Is there a similar overview paper / documentation on the current implementation?<br>
+    More on the current implementation: <a href="http://www.science.uva.nl/~arnoud/publications/slam_method.pdf">Max Pfingsthorn, Bayu Slamet and Arnoud Visser, "A Scalable Hybrid Multi-Robot SLAM Method for Highly Detailed Maps", in "RoboCup 2007: Robot Soccer World Cup XI", (edited by U. Visser, F. Ribeiro, T. Ohashi, F. Dellaert), Lecture Notes on Artificial Intelligence series, volume 5001, p. 457-464, Springer, Berlin Heidelberg, July 2008.</a>
+    <li>Possible metrics to check whether the patch was correctly matched:
+    <ul>
+        <li>Relation.Covariance (size of covariance of scan matcher result shows uncertainty)
+        <ul>
+            <li>determinant
+            <li>trace
+        </ul>
+        <li>Relation.OdometryPose (Matched pose) != Seed (measured odometry/deadreckoning)
+        <ul>
+            <li>The odometry gives quite a different answer from the deadreckoning!
+        </ul>
+        <li>Inertia or groundtruth sensors
+        <ul>
+            <li>A common cause of errors is the robot being tilted - pitched or rolled.
+        </ul>
+    </ul>
+    <li>Can't start UT2k4 UsarSIM on windows7. I keep getting the following error:<br/>
+    Failed to enter DM-USAR_yellow_250?game=USARBot.USARDeathMatch?spectatoronly=1?TimeLimit=0?quickstart=true: Can't find file for package 'USAR'<br />
+    When I get home I'll download UT2k4 again and try to reinstall the whole of usarsim.<br/>
+    <b>Solution</b>: reinstall usarsim using the installer package (not the zip files).
+    <li> Current task: export/show the values of the above-mentioned parameters through usarcommander. Then I can start running the tests soon.
+    <li>Observationt to talk about with Arnoud:<ul>
+        <li>It seems that there is only ever one manifold created. there are no separate manifolds for each agent. Instead, a Manifold is concerned by which patches 'belong to' which agents. 
+        <li>Is there an inertia sensor that can detect if we're on an angle or not? Modern phones can do so.<b>Yes, it's in the inertia sensor</b>
+    </ul>
+    <li>A patch only keeps track of laser scanner data. Also, the inertia and odometry sensors might update at a different rate.
+    <li>Are the roll and pitch are relative to the previous pose? If they are, we need to keep a global estimate.
+</ul>
+
+<h2> Wed Dec 1, 2010</h2>
+<ul>
+<li> Ran through the map DM-RoboCup2009Indoor1.ut2, and created a logfile. Right after the beginning, an error occurs. The mapping is off. However, the robot returns to this position through another route. These need to be merged together to make a map that is rotated correctly and clean.
+<li><a href="./before20120614/2009indoorachilles.rar">The dataset</a>
+</ul>
+
+<h2> Tue Nov 23, 2010</h2>
+<ul>
+<li> The goal for today: Get a recording of DM-RC2006 to play around with
+<li> *sigh* running in all the setting-up issues again. Why is there no default settings for all AgentConfig files etc? Null errors galore...
+<li> FIRST team settings, THEN team member settings.
+<li>
+</ul>
+
+<h2> Thu Nov 11, 2010</h2>
+<ul>
+<li> The map DM-RC2006Day4bNoVict seems promising. There are a number of large loops that can be closed.
+<li> USAR Commander keeps hitting bugs and weird stuff. Kicked all LightFX stuff out (AGAIN) which solves the first few problems. However, that's not all. Will continue next time.
+</ul>
+
+<h2> Wed Nov 10, 2010</h2>
+<ul>
+<li> <a href="http://www.skynet.ie/~sos/masters.php">O' Sullivans master thesis on map building with mobile robots</a> uses a mapviewer/rating program which I might be able to use for my work. <small>Sadly, his treatise on A* is misguided, and his method of creating voroi diagrams of a gridworld is needlessly O(n^3)...</small>
+<li> Next steps:<ul>
+    <li> Find small dataset to test on. Preferably something with 1 loop closure like a hallway thing.
+    <li> Finalise algorithm so it can slam through a graph
+    <li> Find bigger dataset to test on
+    <li> Test wether this produces better results
+    </ul>
+</ul>
+
+<h2> Fri Oct 22, 2010</h2>
+<ul>
+<li> Dusting off the project and seeing what needs to be done.
+<li> Apparently, I was working on a PostProcessController. I have no clue what the goal of this was. Checked a fresh copy out from svn.
+</ul>
+
+<h2> Fri May 28, 2010</h2>
+<ul>
+<li> It is possible to add points to the waypoint navigation now: <br/ >
+<img src="./before20120614/waypoint_nav.png">
+<li> However, the robot thinks it reached each waypoint if you set it.
+<li> I adapted the 'followingbehavior' to follow the waypoints.
+<li> The code does not use the A* algorithm yet.
+<li> Also, there is no way to reset a waypoint or see where the current waypoints are.
+</ul>
+
+<h2> Wed May 26, 2010</h2>
+<ul>
+<li> In Oxford now!
+<li> Read in <a href="http://www.science.uva.nl/~arnoud/publications/Alnajar_CoordinatedAction.pdf">Hanne's paper</a> a nice part about re-localization using RFID tags. Maybe allowing robots to drop those things would be a good way to perform loop closure?
+<li> Windows 7 (and Vista) do not have telnet. <a href="http://www.leateds.com/2009/telnet-for-windows-vista-windows-7/">This site</a> provides a way to enable it.
+<li> I broke Hanne's code; a flying agent can not drop a rfid tag anymore.
+</ul>
+
+<h2> Sat May 22, 2010</h2>
+<ul>
+<li> Working on waypoint navigation.
+</ul>
+
+<h2> Tue May 11, 2010</h2>
+<ul>
+<li> From now on I'm going to focus on the upcoming RoboCup. We would like to tick off the folowing items this month (in order of importance):<ul>
+	<li> Get USARSim battle ready: mean, lean, optimized settings.
+	<li> Waypoint navigation
+	<li> Victim detection
+	<li> All autonomous & all tele buttons are not working
+	<li> Is the sonar working correctly?
+	<li> Commlink is slow
+	<li> Get rid of a lot of the cruft in 'Patch'.
+	</ul>
+<li> Trying to explore the IranOpen2010 map. Somehow, I can't control the robot? I'm not sure wether it spawns correctly. I do get an image from UPIS.
+<li> Jumping behavior comes from the inability of PC-UNREAL to render enough physics frames. Will bring my laptop next time.
+</ul>
+
+<h2> Mon May 03, 2010</h2>
+<ul>
+<li> Still refactoring the code (not done yet)
+</ul>
+
+<h2> Tue Apr 27, 2010</h2>
+<ul>
+<li> Installing UT3 on a computer to test some maps. This fails miserably, as I downloaded ut2k3 instead of ut3. Will download at home and try later.</li>
+<li> YES! I am able to save and reload a complete manifold now! *dance* Example:<br />
+<img src="./before20120614/reloaded_map.png" width=450 height=450>
+<li> Rearranging the code. It was too convoluted to continue working with.
+</ul>
+
+<h2> Mon Apr 26, 2010</h2>
+<ul>
+<li> An AgentConfig needs to be created with first argument agent name. However, a method on it's PARENT .Load also needs to be called, otherwise no config file is loaded. There are no checks to see if this has been done or not. 
+<li> The images I try to save of the manifold are 1 px by 1 px. They also do not show in the manifoldview.
+<li> It worked!<br/>
+	<img src="./before20120614/first_slam_result.bmp">
+<li> Stitching stuff using the scan matcher does not seem like a very good idea. The pose estimate has not yet been reset, so that might improve the results.<br />
+	<img src="./before20120614/firstTryBegin.png" width=600 height=450> <img src="./before20120614/firstTryResult.png" width=450 height=450><br/>
+	
+</ul>
+
+<h2> Tue Apr 20, 2010</h2>
+<ul>
+<li> It is hard to untangle the SLAM from agents, scanners and the linearity in time that is assumed. 
+<li> Redid ManifoldSlam.vb. Pulled a 250-line function apart into 4 functions of reasonable size. The readability and reusability of the code is greatly improved. It still compiles and runs!
+<li> I think it almost works. My dummy agent's config is not loading properly. See line 426 of savemapdialog.vb.
+</ul>
+
+<h2> Mon Apr 19, 2010</h2>
+<ul>
+<li> Branched the 2010 competition 
+<li> I need a simple dataset to test with, preferably just a corridor.
+<li> Working on code to add patches in any order I want.
+</ul>
+
+<h2> Tue Apr 13, 2010</h2>
+<ul>
+<li> The leftmost PC rebooted again without reason. It needs to be replaced.
+<li> Now I can add markers to patches, which show that they are roughly at the same spot. <br />
+<li> The "Done/Report" button in USARSim forces some threads to terminate within 10 seconds. This causes a delay of up to 10 seconds after clicking 'OK'. The cause is Driver.vb, which keeps going even after his threads' running property is set to false. Changing the timing in regularthread.vb to 1 (or even 0) in line 92 removes this delay.
+</ul>
+
+<h2> Mon Apr 12, 2010</h2>
+<ul>
+<li> Booked tickets to Oxford, May 26-28.
+<li> I think I need to give up on the serialization of the results and just perform the slam every time I need it.
+<li> <a href="http://www.comlab.ox.ac.uk/julian.dehoog/students/MagdaJankowska.pdf">Magda Jankowska's masters thesis</a>, section 5.3, shows something very similar to what I am doing. Her method is global, while I plan on matching locally.
+<li> Trying to build a map from the Iran Open data Arnoud sent. I'm unable to get the robots to run (it does work with a logfile I made previously).
+<li> Argh! Using USARCommander is like a game in which a large series of buttons needs to be pushed in order - on failure you lose and need to try again. I'm game-over.
+<li> To get it clear for myself what I'm doing, I created <a href="./before20120614/segments.ppt">a powerpoint with some pictures</a>.
+<li> While browsing the code I found something called a Memento (Patch.vb), which might be used to save patch data. I'll look into it later.
+<li> <a href="http://robotics.jacobs-university.de/publications/MapMerging-IEEEproceedings06.pdf">Map merging paper from Jacobs university, based on image stitching</a>
+<li> <a href="http://portal.acm.org/citation.cfm?id=1733559">Manifold merging based on local descriptors from stereo images</a>. I am not quite sure how they locate themselves.
+<li> Wrote code to create labels (to identify which parts in the segments are the same), but the labels do not show up yet.
+</ul>
+
+<h2> Tue Apr 06, 2010</h2>
+<ul>
+<li> Serializing the manifold is not easy. All 'relations' need to be serialized, as well as patches and the manifold itself.
+<li> Emailed Bas Terwijn if he knows an easy way to do this.
+<li> Bas doesn't know. Emailed with Julian, who told me he thinks saving the data could be done easier. Not sure how.
+</ul>
+
+
+<h2> Wed Mar 31, 2010</h2>
+<ul>
+<li> CommAgent.vb gives an error if the blue orb button (global settings) is not clicked after a robot has been added tot the group of robots. 
+</li> Things to program: 
+	<ul>
+	<li> save the relations between patches, so no new slamming needs to be performed when reloading data
+	<li> make relationships between segments explicit, so they can be stitched in a non-temporal order
+	</ul>
+</ul>
+
+<h2> Tue Mar 30, 2010</h2>
+<ul>
+<li> I recorded my first dataset on Julian de Hoog's DM-KenafTest map. The results by the default scan matcher are terrible as soon as uneven terrain is encountered: <br>
+<img src="./2010-03-30_DM-KenafTest/fullMap.png" width=800 height=600><br>
+When selecting few segments, the image is different. (Maybe the sparkline should be a log-graph? maxvalues miss too. Another metric might be preferable). <br>
+<img src="./2010-03-30_DM-KenafTest/partialmap.png" width=800 height=600><br>
+The different segments need to be stitched together.
+</ul>
+
+<h2> Mon Mar 29, 2010</h2>
+<ul>
+<li> Logging into the leftmost computer let it crash. Then the display didn't work. A hard reset solved the issue.
+<li> The leftmost computer has VS2k5. The middle computer runs UT2k4.
+<li> VS2k5 needs to be installed on the middle computer.
+<li> The Robolab computers C:\ has 80MB to spare. Deleted C:\temp. Moved C:\cygwin to D:\packages\cygwin. Moved C:\Qt to D:\packages\Qt
+<li> Recording a datafile in ut2k4:
+	<ul>
+	<li> Start a map with the corresponding bat file with upis (the image server) (See ut2004\tools\upis) <pre>upis.exe -l "C:\ut2004\System\ut2004.exe" " DM-KenafTest_250?spectatoronly=1?game=USARBot.USARDeathMatch?TimeLimit=0?quickstart=true -ini=usarsim.ini" 
+pause</pre>
+	<li> Run USARCommander
+	<li> Add two robots (base station and another)
+	<li> Choose P2AT as second robot, teleoperation behavior, spawn for commander checked. Make sure start location is filled out. (This can be acquired by running a telnet no port 3000 to the server and issuing command 'getstartposes')
+	<li> Check team configuration (server ip etc)
+	<li> Ground truth of the path: ut2k4 pc C:\ut2004\userlogs\<i>robotname</i>-positions.log
+	<li> Sensor data: <i>usarcommander directory</i>\bin\Debug\logs\<i>robotname</i>.log
+	</ul>
+<li> Analyse groundtruth data with ScoreTeleOp from tools directory from usarsim CVS (usarsim\tools\). Java raises a noClassDefFoundError. This is solved by using the right command line option: <pre> java -classpath gdal.jar:. ScoreTeleOp config_file</pre> Mind that the ; is not a : (as arnouds log incorrectly states)
+<li> this scoreteleop program only runs using the <a href="http://trac.osgeo.org/osgeo4w/">OSGeo4W</a> commandline. There seems to be a problem with the library. I'm not going to use scoreteleop, but just visually compare two maps: one made with deadreckoning on groundtruth data, one made with slam.
+<li> Future nice-to-do-work: To highlight the current segment, inherit from bufferedlayer.vb. Look at SafeSpaceLayer for examples.
+</ul>
+
+<h2> Wed Mar 24, 2010</h2>
+<ul>
+<li> Our paper on <a href="./before20120614/realisticsmoke.pdf">Realistic Simulation of Laser Range Finder Behavior in a Smoky Environment</a> got accepted for poster presentation by RoboCup2010!
+</ul>
+
+<h2> Tue Mar 23, 2010</h2>
+<ul>
+<li> Editing code while running usarcommander in debug mode sometimes yields a weird error about a length that is too small when continuing the program. The solution for this is to rebuild the whole project (this fails too!) and then running the project in debug mode again. This is a weird bug.
+<li> There are four worlds I can use for testing: <ul>
+	<li> 2k4 mapping world (yellow/orange). Used repeatedly in previous research. There's a good possibility for two-robot trajectory merge there. May need to remove the girder between yellow and orange.
+	<li> Julian's map with bumpy middle (see mon mar 22), with a single robot
+	<li> 2k9 mapping world
+	<li> Howard experiment data. 4 robots. Bayu has ran this through usarcommander before.
+	<li> 2k6 indoor world. See poster in lab. Looks like a good candidate.
+</ul>
+<li> It is now possible to select multiple segments of a map with the mouse. Left drag creates a segment, right click on a segment deletes it.<br>
+<img src="./before20120614/manyselections.png">
+<li> There is a race condition which throws " An item with the same key has already been added" exception. Locking SaveMapDialog._PatchesToBeRendered would solve this issue. This bug only shows up while 'monkey testing'; e.g. pushing as many buttons as I can. I do not think it will ever occur in practice.
+<li> Todo this week: <ul>
+	<li> Create testdata of at least two worlds, and load it in usar commander.
+	<li> Find a way to save the in-between results of the stitching in usarsim, so the loading step wont take as long.
+	<li> Add x- and y axis labels to the sparkline.
+</ul>
+</ul>
+
+<h2> Mon Mar 22, 2010</h2>
+<ul>
+<li> Dragging with the mouse now creates a segment. Right mouse click removes one.
+<li> Downloaded Julian's test map with the rocky floor and two good parts. (DM-KenafTest_250.ut2). It's for ut2k4 though.
+<li> I'm not quite sure what to do next. I'll see tomorrow afternoon what to do.
+</ul>
+
+<h2> Mon Mar 15, 2010</h2>
+<ul>
+<li> Adding a way to chooes multiple stretches of patches.
+<li> Trying out the process and save dialog: <ul>
+	<li> Start UsarCommander
+	<li> Click on the statue of Zeus button
+	<li> Click green plus button twice
+	<li> Click green ok button
+	<li> Click start button
+	<li> Click flash button next to Hercules
+	<li> Click Done/Report
+	<li> Click Process and Save
+	</ul>
+<li><img src="./before20120614/partialmap.png">
+<li> Under the segments the average covariance of all points in the sample is shown. Still needs labels, axis and a way to show which segments are used.
+<li> Creating mouse-interaction to enable better interaction
+</ul>
+
+<h2> Tue Mar 9, 2010 </h2>
+<ul>
+<li> Visual Studio is pretty nice to work with. I really miss code completion when working with Python and other dynamic languages. Oh well.
+<li> Now with buttons instead of a slider! I could not find a nice graphical multi-slider, so we'll have to do with textboxes for now.
+</ul>
+
+<h2> Mon Mar 8, 2010 </h2>
+<ul>
+<li> Compiling the whole UvARescue solution. Select UsarCommander as main program to run.
+<li> Want to process & save map? First have to click 'stop/done' button in top right corner.
+<li> Need to find a good way to allow selection of multiple series of pathces in the process & save map field. [[That'll probably be just text input fields, as sliders for ranges are unavailable.]] [[Code to ajust: agentpatchcontroller.vb]]
+<li> "On the bending problem for large scale mapping" by I. Estaban et al. (TNO) formalizes an idea i was walking around with for a while. The covariation between different (successive) scans is an indicator for the amount of bending that is allowed locally when performing loop closure.
+</ul> 
+
+<h2> Wed Mar 3, 2010 </h2>
+<ul>
+<li> Checked out /Roboresc/2009/ as basis for my code. Folder /competition/ seems most promising.
+<li> The current SLAM is, according to the 2009 team description paper, based on "Howard, A., Sukhatme, G.S., Matari´c, M.J.: Multi-robot mapping using manifold representations. Proceedings of the IEEE 94 (2006) 1360–1369". <ul>
+    <li> A patch is accepted and merged into the global map when it satisfies any of a number of conditions. Equation 15 in this paper states one condition, when a patch is "far from any of the existing patches in the local map". A difference in pose is meant.
+	<li> One could reject a patch if a scan is unexpected (low entropy).
+	</ul>
+<li> Trying to get a feel for the VB code of the SLAM algorithm. <ul>
+	<li> 'Bumbing' should be 'bumping'. If bumping is true, the robot does not stand still after spawning yet.
+	</ul>
+<li> 
+</ul>
+
+<h2> Mon Mar 1, 2010 </h2>
+<ul>
+<li> The book by Maja j Mataric is unsatisfying. It describes the SLAM problem clearly, but doesn't go into details of algorithms.
+<li> Roboresc/rescuecontrol in svn has a good SLAM implementation in C with loop closure.
+<li> Roboresc/2010 is a VB redo of the C code, without loop closure.
+<li> Stachniss' thesis contains a good introduction to particle filters
+<li> Stachniss keeps a pose uncertainty parameter. Why not turn this around, and use a map uncertainty? This way one would not close a loop if the robot's pose is uncertain, but if a piece in the map has bocome uncertain. Page 152 (7.2.3).
+<li> Tryay one would not close a loop if the robot's pose is uncertain, but if a piece in the map has bocome uncertain. Page 152 (7.2.3).
+<li> Trying to compile 'sm'. Installed the Qt SDK to use qmake.
+<li> 'qmake -win32 -o Makefile sm.pro' creates a makefile. 
+<li> Can't get it to compile, can't find a compiled version at pc-unreal. I'll just reference the code, not the program then.
+<li> <a "http://staff.science.uva.nl/~arnoud/education/ProbabilisticRobotics/">Arnoud's class</a> contains links to <a href="http://ais.informatik.uni-freiburg.de/teaching/ss07/robotics/recordings/robotics_bayes_2.lpd">Burgards lecture on Kalman filtering</a>, and <a href="http://msl.cs.uiuc.edu/~lavalle/iros09/slides4.pdf">some other slides</a>.
+</ul>
+
+<h2> Wed Feb 23, 2010</h2>
+<ul>
+<li> Struggling again with a fresh install of usarsim. I can't get it into another directory than the UT3_BASE/usarsim. Stopped struggling and copied everything to that directory, although it feels wrong.
+</ul>
+
+<h2>Mon Feb 22, 2010</h2>
+<ul>
+<li>Wrote personal budget proposal for RoboCup Singapore
+<li>Wrote cover letter for University Fund for RoboCup
+<li>Got recommendation letter from Arnoud for fund
+<li>Got assignment for new project from Arnoud
+<li>Reading:<ul>
+    <li>Probabilistic Robotics, Thrun, Burgard, Fox, book chapter 10
+    <li>Exploration and Mapping with Mobile Robots, paper, Stachniss
+    <li>Week 41 of <a href="http://staff.science.uva.nl/~aRNOUD/education/ProbabilisticRobotics/">Arnouds lecture series</a>
+</ul>
+
+
+<style type="text/css">
+img { 
+    width: 30%;
+}
+</style>
+
+</script>
+</body>
+</html>

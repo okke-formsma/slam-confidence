@@ -9,7 +9,7 @@
 \usepackage{amsthm}
 
 
-\title{Classifying}
+\title{Improving 2D SLAM results on uneven terrain by utilizing inertial sensor data}
 \date{June 18, 2012}
 \author{Okke Formsma\\ University of Amsterdam}
         
@@ -21,15 +21,35 @@
 \addcontentsline{toc}{chapter}{\numberline{}Abstract}
 \input{chapters/abstract.tex}
 
-\chapter*{Acknowledgements}
-\input{chapters/acknowledgements.tex}
+%\chapter*{Acknowledgements}
+%\input{chapters/acknowledgements.tex}
 
 \tableofcontents
 \pagenumbering{arabic}
 
 \chapter{Introduction}
 \label{chapter:introduction}
+Explains why this research is interesting.
+
 \input{chapters/introduction.tex}
+
+\chapter{Background}
+\section{USAR Sim}
+* The Urban search and rescue challenge
+
+\section{Slam}
+\input{chapters/slam.tex}
+
+\chapter{Method}
+\section{SLAM confidence measure}
+The confidence measure based on the determinant of the covariance matrix of the pose uncertainty. The hypothesis is that if this measure is larger, then the confidence is lower (the uncertainty is bigger).
+
+The determinant of the covariance matrix is used as metric:
+
+is the sample variance-covariance matrix for observations of a multivariate vector of p elements. The determinant of D, in this case, is sometimes called the generalized variance. (http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc532.htm)
+
+\section{Inertial sensor data}
+Gives the rotations on three axis, enables you to detect 
 
 
 \end{document}
