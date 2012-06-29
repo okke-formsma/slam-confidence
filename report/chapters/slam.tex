@@ -1,2 +1,51 @@
 %!TEX root = ../report.tex
-SLAMMERDELSAM
+
+One of the goals of the USAR challenge was to create a useable map of the environment. 
+
+The problem an agent faces when it needs to find it's way in an unknown environment is called SLAM, for Simulatenous Localization and Mapping. The agent has no map of the environment, and also no way of knowing it's exact location. It needs to infer the map and it's position on the map from the information it gathers from it's sensors throughout time.
+
+Thus, SLAM is a chicken-and-egg problem: without a map it is hard to estimate the agent's position, and without the agent's position it's hard to estimate the map!
+
+In this section we will first examine how the robot keeps track of the state of the world, and then how the SLAM problem can be solved with Extended Kalman Filters. 
+
+\subsection{State}
+The state of the world as it is known to the agent is denoted $x$. The value of this set of variables may change over time, as the agent collects sensor data from the environment. The state at time $t$ is denoted $x_{t}$. 
+
+Many variables may be included in the state variable $x$. For the purpose of this work, we will assume that it contains at least the agent's \em{pose} and a \em{map of the environment}. 
+
+In most SLAM approaches, two types of sensor data is collected: \em{environmental measurement data} and \em{control data}. Environmental measurement data collects information about the environment, while control data collects information about the robot within the environment. Environmental measurement data  is denoted $z$ (at a specific point in time $z_{t}$). Examples of environmental sensors available to an agent are laser scanners, sonars and video cameras. Control data and GPS signals. Control data sensors collect information intrinsic to the agent: it's velocity and position. Examples of control sensors are odometry sensors, inertia sensors and global positioning systems.
+
+For the purpose of this paper we are mainly interested in the online SLAM problem, in contrast to the full SLAM problem. Online SLAM seeks to estimate the current pose $x_{t}$ and map $m$:
+
+\begin{equation}
+p(x_{t}, m | z_{1:t}, u_{1:t})
+\end{equation}
+
+In contrast, the full SLAM problem estimates all poses $x$ and map $m$:
+
+\begin{equation}
+p(x_{1:t}, m | z_{1:t}, u_{1:t})
+\end{equation}
+
+In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. 
+
+
+
+\subsection{Gaussian filters}
+
+
+\subsection{Localization}
+
+
+\subsection{Extended Kalman Filters}
+
+\subsection{ManifoldSLAM}
+
+
+\subsection{2D slam in 3D environment}
+Only a slice of the world is returned - so we need to make sure we are horizontal. Otherwise, the scanner returns wrong readings.
+
+
+
+
+
