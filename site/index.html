@@ -6,10 +6,25 @@
 <h1>Labbook Okke Formsma SLAM</h1>
 <h2> The project</h2>
 <ul>
-	<li> Examine confidence of new patches in the map
-    <li> Compare with distance from groundtruth
-    <li> Influence of newly explored space on confidence?
+	<li> Find trigger for breaking the map up in submaps when a match is particularly poor
+    <li> Then stitch map based on Magda's work.
     <li> Compare results on 3 maps
+</ul>
+
+<h2> Mon July 2, 2012 </h2>
+<ul>
+    <li> Talked to arnoud to clarify my goals.
+    <li> Main goal is to find a map-break-up trigger, when matches are too poor to be used. This creates a new submap, which is input for Magda's work on global map stitching.
+    <li> The covariance determinant measure in the plots below seems to be an indicator for how well known an environment is (== loop closure). This is not the main thing we need to find.
+    <li> Todo: <ul>
+        <li> Plot covariance matrix from Relation objects (uncertainty between patches)
+        <li> Choose when the covariance is too terrible
+        <li> Break up the map into pieces
+        <li> Stitch through magda's method.
+    </ul>
+    <li> HELP! My logfile is not read in anymore. Solution: pick the right robot type. P3AT and kenaf are not compatible. Also, try rebooting.
+    <li> Re-run the map from 5-31 again with QuadWSM. The map is cleanest of all:
+        
 </ul>
 
 <h2> Fri June 29, 2012 </h2>
