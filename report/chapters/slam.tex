@@ -27,7 +27,9 @@ In contrast, the full SLAM problem estimates all poses $x$ and map $m$:
 p(x_{1:t}, m | z_{1:t}, u_{1:t})
 \end{equation}
 
-In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. 
+In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. The full SLAM problem is computationally much more expensive. Thus for time sensitive applications, such as real time robot control, usually only online SLAM is performed.
+
+
 
 
 
@@ -46,6 +48,15 @@ In practice, the difference is that the full SLAM problem reconsiders the locati
 Only a slice of the world is returned - so we need to make sure we are horizontal. Otherwise, the scanner returns wrong readings.
 
 
-
+UNCERTAINTY MEASURE BY ARNOUD:
+To see if the reduced correlation distance also improves the robustness of
+the scan matcher the uncertainty measures returned by the algorithms were
+analyzed. This uncertainty measure is the full 3-by-3 covariance matrix of the
+Gaussian distribution over the displacement estimate and does not lend itself well
+for charting in its original form. Therefore we took the on-diagonal elements that
+describe the independent uncertainty in x and y direction and combined these
+into a Euclidean distance measure. The trace of the covariance matrix acquired
+with Q-WSM is in most cases (94%) smaller than the trace of incremental version. The average uncertainty of the Q-WSM algorithm reduced to 36% of the
+average uncertainty of the incremental version.
 
 
