@@ -22,9 +22,9 @@
 <ul>
     <li> Size the trace of the covariances gives a good indication of where the error in the SLAM is.</li>
     <li> Found some prior work on uncertainty <a href="http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf">by Carlone et al</a>, however, it relies on a multi-hypothesis (particle-based) state representation.</li>
-    <li>I do not trust the USAR INS sensor. The following map is created through deadreckoning the INS sensor: <br />
+    <li>I do not trust the behavior of the USAR INS sensor. The following map is created through deadreckoning the INS sensor: <br />
         <img src="2012-07-02/map_deadreckoning_ins.png"><br />
-        The INS sensor shows a 15 degree yaw error. However, the location estimate is updated according to the original location. Would a real INS sensor not update the location as if the world-coordinates were rotated as well?
+        The INS sensor shows a 15 degree yaw error. However, the location estimate is updated according to the original location. Would a real INS sensor not update the location as if the world-coordinates were rotated as well? The location is frighteningly accurate.
     </li>
 </ul>
 
@@ -557,6 +557,9 @@ pause</pre>
 <style type="text/css">
 img { 
     width: 30%;
+}
+body {
+    max-width: 800px;
 }
 </style>
 
