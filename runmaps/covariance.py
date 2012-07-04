@@ -1,37 +1,27 @@
 #!/usr/bin/python
 import json
 from math import pi, sqrt, sin, cos
+import math
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from random import random
+from utils import Container
 
 
-def main(filename = '2012-05-31 IRO2012-Pre2/patches.json'):
-    patches = load_patches(filename)
+def main(filename = '2012-05-31 IRO2012-Pre2/patches_quadwsm.json'):
+    patches = Container(filename)
     plot_error(patches)
     #plt.tight_layout()
     plt.show()
 
-def load_patches(filename):
-    with open(filename) as f:
-        """ My ugly json printer in VB outputs },\n instead of }] at the end of the file. """
-        patches = json.loads('[' + f.read()[:-2] + ']')
-
-    i = 0
-    for p in patches:
-        p['num'] = i
-        i += 1
-
-    return patches
 
 def plot_error(patches):
-    diffs = []
-    for p in patches:
-        diffs.append(distance((p['groundtruth']['x'], p['groundtruth']['y']), (p['slam']['x'], p['slam']['y'])))
+    diffs = [distance((p['groundtruth']['x'], p['groundtruth']['y']), (p['slam']['x'], p['slam']['y'])) 
+             for p in patches]
 
     diff_yaw = [abs(Angle.diff(p['groundtruth']['yaw'], p['slam']['yaw'])) for p in patches]
 
-    covar = [float(p['avgcovariancedeterminant']) for p in patches]
+    trace = [cov[0]+cov[4]+cov[8] for cov in patches['covariance']]
     num = [p['num'] for p in patches]
 
     fig = plt.figure()
@@ -47,8 +37,8 @@ def plot_error(patches):
     ax4.plot(num, diff_yaw)
     ax4.set_ylabel('rotation error')
 
-    ax2.plot(num, covar)
-    ax2.set_ylabel('covariance determinant \nof correspondence matrix')
+    ax2.semilogy(num, trace)
+    ax2.set_ylabel('covariance trace')
     ax2.set_xlabel('patch #')
 
     plot_displacement_map(patches, ax3)
