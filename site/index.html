@@ -15,7 +15,6 @@
 <h2> Next steps:</h2>
 <ul>
     <li> Plot covariance ellipses
-    <li> Why is the covariance matrix 3D instead of 2D?
     <li> The trace of the covariance is already checked for size (cov(i,i) > SOME_CONSTANT...).
 </ul>
 
@@ -28,6 +27,8 @@
         The INS sensor shows a 15 degree yaw error. However, the location estimate is updated according to the original location. Would a real INS sensor not update the location as if the world-coordinates were rotated as well? The location is frighteningly accurate.
     </li>
     <li><a href="2012-07-02/Robot1.log">The logfile of the above map</a></li>
+    <li>Why are the covariance matrixes 3D? Well, it's an X, Y, yaw correlation matrix.</li>
+    <li>Created plotting function for error elipses in python.</li>
 </ul>
 
 <h2> Mon July 2, 2012 </h2>
