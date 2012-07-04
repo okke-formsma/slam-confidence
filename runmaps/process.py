@@ -5,10 +5,12 @@ import matplotlib.gridspec as gridspec
 
 maps = {
     'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
-    'wsm': '2012-05-31 IRO2012-Pre2/patches_wsm.json',
+    'wsm':  '2012-05-31 IRO2012-Pre2/patches_wsm.json',
 }
 
-def main(filename = maps['wsm']):
+def main(filename = None):
+    if filename is None:
+        filename = maps['wsm']
     patches = Container(filename)
     plot_pitch_roll(patches)
     #plot_confidence(patches)
@@ -54,7 +56,7 @@ def plot_pitch_roll(patches):
     attack_ins = [Orientation(**ins).attack() for ins in patches['ins']]
     attack_gt = [Orientation(**gt).attack() for gt in patches['groundtruth']]
 
-    trace = [cov[0,0] + cov[1,1] for cov in patches['cov']]
+    trace = [abs(cov[0,0]) + abs(cov[1,1]) for cov in patches['cov']]
 
     fig = plt.figure()
     gs = gridspec.GridSpec(5,2)
