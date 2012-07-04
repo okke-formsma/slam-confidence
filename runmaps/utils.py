@@ -131,6 +131,8 @@ def plot_error_ellipsis(patches, ax=None):
         width, height, rotation = error_ellipse(p['cov'])
         e = Ellipse(xy=(p['slam']['x'], p['slam']['y']), width=width, height=height, angle=math.degrees(rotation) * 360)
         ax.add_artist(e)
+        e.set_facecolor((1,1,1))
+        e.set_alpha(0.5)
 
 def plot_displacement_map(patches, ax=None):
     """ Plots a map showing the groundtruth (blue) and slam (red) trails of the robots,

@@ -9,7 +9,7 @@ maps = [
     '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
     ]
 
-def main(filename = maps[2]):
+def main(filename = maps[0]):
     patches = Container(filename)
     plot_pitch_roll(patches)
     #plot_confidence(patches)
