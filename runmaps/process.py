@@ -3,13 +3,12 @@ from utils import *
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-maps = [
-    '2012-05-31 IRO2012-Pre2/patches.json',
-    '2012-06-14 IRO2012-Pre2/patches.json',
-    '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
-    ]
+maps = {
+    'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
+    'wsm': '2012-05-31 IRO2012-Pre2/patches_wsm.json',
+}
 
-def main(filename = maps[0]):
+def main(filename = maps['wsm']):
     patches = Container(filename)
     plot_pitch_roll(patches)
     #plot_confidence(patches)
