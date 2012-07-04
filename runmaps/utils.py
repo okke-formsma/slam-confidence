@@ -1,5 +1,5 @@
 import json, math
-from math import sin, cos, atan
+from math import sin, cos, atan, pi
 import numpy as np
 
 class Container:
@@ -39,24 +39,16 @@ class Container:
         data = [b[keys[-1]] for b in base]
 
         if keys[-1] in ('roll', 'yaw', 'pitch'):
-            data = [normalize_angle(d) for d in data]
+            data = [Angle.normalize(d) for d in data]
 
         self.cache[key] = data
         return data
-
-def normalize_angle(angle):
-    """ Normalize an angle to be within (-pi, pi]
-    """
-    angle %= (pi * 2)
-    if angle >= pi: angle -= pi * 2
-    return angle
 
 def distance((x1, y1), (x2, y2)):
     """ Returns euclidian disntace between self and other """
     return math.hypot(x1 - x2, y1 - y2)
 
 class Orientation(object):
-
     def __init__(self, x=0, y=0, z=0, yaw=0, pitch=0, roll=0):
         self.pose = np.array([x, y, z], np.float)
         self.yaw = yaw
@@ -69,7 +61,7 @@ class Orientation(object):
         Z = np.array([0,0,1], np.float)
         full_rotation = self.roll_matrix().dot(self.pitch_matrix())
         z = full_rotation.dot(Z)
-        return atan(distance((z[0], z[1]), (Z[0], Z[1])) / z[2])
+        return abs(atan(distance((z[0], z[1]), (Z[0], Z[1])) / z[2])) #can be negative?
 
     def yaw_matrix(self):
         y = self.yaw
@@ -97,3 +89,56 @@ class Orientation(object):
                 [0, cos(r), -sin(r)],
                 [0, sin(r),  cos(r)],
             ], np.float)
+
+class Angle:
+    @classmethod
+    def normalize(cls, angle):
+        return angle % (pi * 2)
+
+    @classmethod
+    def diff(cls, first, second):
+        """ Returns normalized difference between self and other in (-pi, pi]"""
+        diff = first - second
+        while diff > pi:   diff -= 2 * pi
+        while diff <= -pi: diff += 2 * pi
+        return diff
+
+def plot_displacement_map(patches, ax=None):
+    """ Plots a map showing the groundtruth (blue) and slam (red) trails of the robots,
+    with the same patches connected by a green line. """
+
+    if ax is None:
+        ax = plt.figure()
+
+    gx = patches['groundtruth.x']
+    gy = patches['groundtruth.y']
+    gw = patches['groundtruth.yaw']
+    sx = patches['slam.x']
+    sy = patches['slam.y']
+    sw = patches['slam.yaw']
+
+    ax.axis('equal')
+    displacement_segments = dict(x=[], y=[]) # x = list of x1, x2, None, ... of list segments that go from x1 to x2
+    angles_g = dict(x=[], y=[])
+    angles_s = dict(x=[], y=[])
+
+    for gx_, gy_, gw_, sx_, sy_, sw_ in zip(gx, gy, gw, sx, sy, sw):
+        displacement_segments['x'].extend([gx_, sx_, None])
+        displacement_segments['y'].extend([gy_, sy_, None])
+        angles_g['x'].extend([gx_, gx_ + 200 * cos(gw_), None])
+        angles_g['y'].extend([gy_, gy_ + 200 * sin(gw_), None])
+        angles_s['x'].extend([sx_, sx_ + 200 * cos(sw_), None])
+        angles_s['y'].extend([sy_, sy_ + 200 * sin(sw_), None])
+
+    # all plotting with x- and y-values swapped
+    ax.plot(displacement_segments['x'], displacement_segments['y'], '-', color=(0.1, 0.9, 0.1, 0.3))
+    ax.plot(angles_g['x'], angles_g['y'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(angles_s['x'], angles_s['y'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(gx, gy, '+-', color=(0, 0, 1, 0.5))
+    ax.plot(sx, sy, '+-', color=(1, 0, 0, 0.8), linewidth=2)
+
+    for p in patches:
+        if p['num'] % 10 == 0:
+            ax.annotate(str(p['num']), xy=(p['slam']['x'], p['slam']['y']), xytext=(p['slam']['x'], p['slam']['y']))
+
+    ax.set_ylim(ax.get_ylim()[::-1]) #inverse y axis
