@@ -15,6 +15,7 @@
 <h2> Next steps:</h2>
 <ul>
     <li> When to break the map: When the covariance matrix is filled with NaN (no matching particles have been found).</li>
+    <li>(Try out: plot number of matching scans. Are the large covariances due to only 1 or 2 scans matching? Set a minimum number on scans matching)</li>
     <li> Export submaps from USAR Commander </li>
     <li> Stitch submaps using Magda's method </li>
 </ul>
@@ -29,7 +30,7 @@
     <li>Traced the origins of the NaN items. Visual Basic allows division by zero, but when you multiply the result with some other value you get NaN.</li>
     <li>Why do we find no matches? I think this is because the seed (INS) is too far from the pose estimated by the scanmatcher.</li>
     <li> Thus, at a place where there are no matches, the covariance is a NaN-filled matrix.</li>
-
+    <li> Arnoud, the confidence measure I shows comes from <a href="http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf">Carlone et al, Italy</a>
 </ul>
 
 <h2> Wed July 4, 2012 </h2>
