@@ -63,6 +63,7 @@ def plot_pitch_roll(patches):
     loc_ax = fig.add_subplot(gs[0, 0])
     yaw_ax = fig.add_subplot(gs[1, 0])
     ins_ax = fig.add_subplot(gs[2, 0])
+    log_conf_ax = fig.add_subplot(gs[3, 0])
     conf_ax = fig.add_subplot(gs[4, 0])
     map_ax = fig.add_subplot(gs[:, 1])
 
@@ -77,8 +78,8 @@ def plot_pitch_roll(patches):
     ins_ax.plot(num, attack_gt, 'b-')
     ins_ax.set_ylabel('attack')
 
-    #conf_ax.semilogy(num, trace)
     conf_ax.plot(num, trace)
+    log_conf_ax.semilogy(num, trace)
     conf_ax.set_ylabel('trace')
     conf_ax.set_xlabel('patch #')
 

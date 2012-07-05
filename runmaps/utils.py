@@ -115,9 +115,11 @@ def error_ellipse(patch):
     try:
         lengths = sorted(np.linalg.eigvals(cov), reverse=True)
     except LinAlgError:
+        print patch
         return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
                        width=500, height=500, angle=0,
                        color=(1,1,0))
+
     scalefactor = 2.4477 #95% interval
     dxy = cov[0, 1]
     dx = cov[0, 0]
@@ -132,7 +134,6 @@ def error_ellipse(patch):
     if dy > dx:
         width, height = height, width
 
-    print width, height, rotation
     return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
                 width=width, height=height, angle=math.degrees(rotation),
                 color=(1,0,1), alpha=0.3)

@@ -14,7 +14,9 @@
 
 <h2> Next steps:</h2>
 <ul>
-    <li> The trace of the covariance is already checked for size (cov(i,i) > SOME_CONSTANT...). What happens otherwise? </li>
+    <li> When to break the map: When the covariance matrix is filled with NaN (no matching particles have been found).</li>
+    <li> Export submaps from USAR Commander </li>
+    <li> Stitch submaps using Magda's method </li>
 </ul>
 
 <h2> Thu July 5, 2012 </h2>
@@ -24,6 +26,10 @@
     <li>Apparently what we're looking at is not a covariance, as the code suggests (parameter name mcov), but an information filter (the inverse of the covariance). Thrun et al page 71 explains information filters. Page 71 says "for Gaussians, (omega) must be positive semidefinite.</li>
     <li><img src="2012-07-05/error_ellipsis_inf_filter_matrix.png"></li>
     <li>The above image is the error ellipsis if the covariance matrix would actually be an information matrix. I don't think this is true, because the ellipsis seem weird.</li>
+    <li>Traced the origins of the NaN items. Visual Basic allows division by zero, but when you multiply the result with some other value you get NaN.</li>
+    <li>Why do we find no matches? I think this is because the seed (INS) is too far from the pose estimated by the scanmatcher.</li>
+    <li> Thus, at a place where there are no matches, the covariance is a NaN-filled matrix.</li>
+
 </ul>
 
 <h2> Wed July 4, 2012 </h2>
