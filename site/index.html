@@ -14,8 +14,14 @@
 
 <h2> Next steps:</h2>
 <ul>
-    <li> Plot covariance ellipses
-    <li> The trace of the covariance is already checked for size (cov(i,i) > SOME_CONSTANT...).
+    <li> The trace of the covariance is already checked for size (cov(i,i) > SOME_CONSTANT...). What happens otherwise? </li>
+</ul>
+
+<h2> Thu July 5, 2012 </h2>
+<ul>
+    <li>The WSM returns covariance matrixes with negative eigenvalues (this is forbidden; a covariance matrix should be positive semi-definite). As a 'solution', I'm taking the absolute value of the eigenvalues of the matrix.</li>
+    <li><img src="2012-07-05/error_ellipsis.png"></li>
+    <li>Apparently what we're looking at is not a covariance, as the code suggests (parameter name mcov), but an information filter (the inverse of the covariance). Thrun et al page 71 explains information filters. Page 71 says "for Gaussians, (omega) must be positive semidefinite.</li>
 </ul>
 
 <h2> Wed July 4, 2012 </h2>
@@ -31,7 +37,6 @@
     <li>Created plotting function for error elipses in python.
         <img src="2012-07-02/error_ellipsis.png" >
     </li>
-    <li>Why is the WSM returning NEGATIVE (!!!) values in the correlation matrix? :'(</li>
 </ul>
 
 <h2> Mon July 2, 2012 </h2>
