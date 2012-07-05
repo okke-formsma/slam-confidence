@@ -111,7 +111,7 @@ class Angle:
 def error_ellipse(patch):
     """ Calculates width, height and angle (radians) for error ellipse.
     """
-    cov = linalg.inv(patch['cov']) #meters to millimeters
+    cov = patch['cov'] * 1000 #meters to millimeters
     try:
         lengths = sorted(np.linalg.eigvals(cov), reverse=True)
     except LinAlgError:
@@ -134,7 +134,7 @@ def error_ellipse(patch):
 
     print width, height, rotation
     return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
-                width=width * 1000, height=height * 1000, angle=math.degrees(rotation),
+                width=width, height=height, angle=math.degrees(rotation),
                 color=(1,0,1), alpha=0.3)
 
 
