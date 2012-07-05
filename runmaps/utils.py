@@ -3,6 +3,7 @@ from math import sin, cos, atan, pi
 from matplotlib.patches import Ellipse
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.linalg import linalg
 from numpy.linalg.linalg import LinAlgError
 
 class Container:
@@ -110,7 +111,7 @@ class Angle:
 def error_ellipse(patch):
     """ Calculates width, height and angle (radians) for error ellipse.
     """
-    cov = patch['cov']*1000 #meters to millimeters
+    cov = linalg.inv(patch['cov']) #meters to millimeters
     try:
         lengths = sorted(np.linalg.eigvals(cov), reverse=True)
     except LinAlgError:
@@ -121,18 +122,20 @@ def error_ellipse(patch):
     dxy = cov[0, 1]
     dx = cov[0, 0]
     dy = cov[1, 1]
-    rotation = 0.5 * math.atan((2 * dxy) / (dx ** 2 - dy ** 2))
-    width = math.sqrt(lengths[0]) * scalefactor
-    if lengths[1] < 0:
-        height = 0
-    else:
-        height = math.sqrt(lengths[1]) * scalefactor
+    rotation = 0.5 * (math.atan((2 * dxy) / ((dx ** 2) - (dy ** 2))))
+    rotation += patch['slam']['yaw']
+
+    # sometimes we get negative eigenvalues (which shouldn't happen) so we abs them.
+    width = math.sqrt(abs(lengths[0])) * scalefactor
+    height = math.sqrt(abs(lengths[1])) * scalefactor
+
     if dy > dx:
         width, height = height, width
 
+    print width, height, rotation
     return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
-                width=width, height=height, angle=math.degrees(rotation),
-                color=(1,0,1), alpha=0.5)
+                width=width * 1000, height=height * 1000, angle=math.degrees(rotation),
+                color=(1,0,1), alpha=0.3)
 
 
 def plot_error_ellipsis(patches, ax=None):
