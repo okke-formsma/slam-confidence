@@ -22,6 +22,8 @@
     <li>The WSM returns covariance matrixes with negative eigenvalues (this is forbidden; a covariance matrix should be positive semi-definite). As a 'solution', I'm taking the absolute value of the eigenvalues of the matrix.</li>
     <li><img src="2012-07-05/error_ellipsis.png"></li>
     <li>Apparently what we're looking at is not a covariance, as the code suggests (parameter name mcov), but an information filter (the inverse of the covariance). Thrun et al page 71 explains information filters. Page 71 says "for Gaussians, (omega) must be positive semidefinite.</li>
+    <li><img src="2012/07-05/error_ellipsis_inf_filter_matrix.png"></li>
+    <li>The above image is the error ellipsis if the covariance matrix would actually be an information matrix. I don't think this is true, because the ellipsis seem weird.</li>
 </ul>
 
 <h2> Wed July 4, 2012 </h2>

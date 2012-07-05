@@ -77,7 +77,8 @@ def plot_pitch_roll(patches):
     ins_ax.plot(num, attack_gt, 'b-')
     ins_ax.set_ylabel('attack')
 
-    conf_ax.semilogy(num, trace)
+    #conf_ax.semilogy(num, trace)
+    conf_ax.plot(num, trace)
     conf_ax.set_ylabel('trace')
     conf_ax.set_xlabel('patch #')
 
