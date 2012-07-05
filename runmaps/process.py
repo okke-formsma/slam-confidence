@@ -56,7 +56,7 @@ def plot_pitch_roll(patches):
     attack_ins = [Orientation(**ins).attack() for ins in patches['ins']]
     attack_gt = [Orientation(**gt).attack() for gt in patches['groundtruth']]
 
-    trace = [abs(cov[0,0]) + abs(cov[1,1]) for cov in patches['cov']]
+    trace = [cov.trace() for cov in patches['cov']]
 
     fig = plt.figure()
     gs = gridspec.GridSpec(5,2)
