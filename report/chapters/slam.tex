@@ -1,5 +1,4 @@
 %!TEX root = ../report.tex
-
 One of the goals of the USAR challenge was to create a useable map of the environment. 
 
 The problem an agent faces when it needs to find it's way in an unknown environment is called SLAM, for Simulatenous Localization and Mapping. The agent has no map of the environment, and also no way of knowing it's exact location. It needs to infer the map and it's position on the map from the information it gathers from it's sensors throughout time.
@@ -29,17 +28,19 @@ p(x_{1:t}, m | z_{1:t}, u_{1:t})
 
 In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. The full SLAM problem is computationally much more expensive. Thus for time sensitive applications, such as real time robot control, usually only online SLAM is performed.
 
+\subsection{Gaussian state representation}
+It is often convenient to represent the belief of the current state as a multivariate Gaussian. A Gaussian is defined by its mean $\mu$ and covariance $\Sigma$:
 
+\begin{equation}
+p(x) = \det(2\pi\Sigma)^{-\frac{1}{2}}\exp{\{-\frac{1}{2}(x - \mu)^T\Sigma^{-1}(x - \mu)\}}
+\end{equation}
 
+Gaussian state representations have the advantage of being easily understood and straightforwardly manipulated. This comes with a cost: a Gaussian is unimodal -- there is only one maximum (the mean) possible. This makes Gaussian representations ill suited when there are many different hypothesis distributed across a map.
 
+In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \theta)$, and the acc
 
-\subsection{Gaussian filters}
+\subsection{Scanmatching}
 
-
-\subsection{Localization}
-
-
-\subsection{Extended Kalman Filters}
 
 \subsection{ManifoldSLAM}
 

@@ -12,12 +12,38 @@
     <li> Compare results on 3 maps
 </ul>
 
-<h2> Next steps:</h2>
+<h2> Deadlines: </h2>
 <ul>
-    <li> When to break the map: When the covariance matrix is filled with NaN (no matching particles have been found).</li>
-    <li>(Try out: plot number of matching scans. Are the large covariances due to only 1 or 2 scans matching? Set a minimum number on scans matching)</li>
-    <li> Export submaps from USAR Commander </li>
-    <li> Stitch submaps using Magda's method </li>
+    <li> Simplest: When to break the map: When the covariance matrix is filled with NaN (no matching particles have been found).</li>
+    <li> Export submaps from USAR Commander (juli 27) </li>
+    <li> Stitch submaps using Magda's method (aug 3) </li>
+    <li> Finish report (aug 17) </li>
+</ul>
+
+<h2>Wed July 25, 2012</h2>
+<ul>
+    <li>Working on report</li>
+</ul>
+
+<h2>Mon July 23, 2012</h2>
+<ul>
+    <li>Emailed Julian and Magda for a copy of the code belonging to Magda's thesis (Hough Transform based map stitching). Julian doesn't have the code. No reply from Magda yet. Wrote to Stefano Carpin for a copy of his code.</li>
+    
+    <li>Wednesday:<ul>
+        <li>Finish chapter on SLAM</li>
+        <li>Create plots of all three confidence measures for 1 map</li>
+        <li>Get code from carpin?</li>
+    </ul></li>
+
+</ul>
+
+<h2>Fri July 6, 2012</h2>
+<ul>
+    <li>As detailed to-do-list as I can create right now:</li>
+    <li>Export the number of scans in the patches variable, and plot it together with the covariance. I expect them to be highly correlated. Pick one or the other (or a third related measure) as a map-break-up variable.</li>
+    <li>Break the map up in pieces, and export plots of those maps.</li>
+    <li>Use Magda's Hough-transform based map stitching method to stitch the maps together.</li>
+    <li>(maybe: instead of magda's patching, use a backwards-patching algorithm from a known loop closure point, or a global slam-improvement algoirthm which minimizes error?)</li>
 </ul>
 
 <h2> Thu July 5, 2012 </h2>
@@ -251,7 +277,7 @@ History: UCanvas::execDrawPortal [...]
 
 <h2> Wed Dec 22, 2010</h2>
 <ul>
-    <li><a href="http://www.science.uva.nl/research/ias/alumni/m.sc.theses/theses/SlametPfingsthorn.pdf">Bayu Slamet and Max Pfingsthorn: ManifoldSLAM: a Multi-Agent Simultaneous Localization and Mapping System for the RoboCup Rescue Virtual Robots Competition. Master’s thesis, Universiteit van Amsterdam (2006)</a> gives a good overview of the architecture of UvARescue. Is there a similar overview paper / documentation on the current implementation?<br>
+    <li><a href="http://www.science.uva.nl/research/ias/alumni/m.sc.theses/theses/SlametPfingsthorn.pdf">Bayu Slamet and Max Pfingsthorn: ManifoldSLAM: a Multi-Agent Simultaneous Localization and Mapping System for the RoboCup Rescue Virtual Robots Competition. Masterâ€™s thesis, Universiteit van Amsterdam (2006)</a> gives a good overview of the architecture of UvARescue. Is there a similar overview paper / documentation on the current implementation?<br>
     More on the current implementation: <a href="http://www.science.uva.nl/~arnoud/publications/slam_method.pdf">Max Pfingsthorn, Bayu Slamet and Arnoud Visser, "A Scalable Hybrid Multi-Robot SLAM Method for Highly Detailed Maps", in "RoboCup 2007: Robot Soccer World Cup XI", (edited by U. Visser, F. Ribeiro, T. Ohashi, F. Dellaert), Lecture Notes on Artificial Intelligence series, volume 5001, p. 457-464, Springer, Berlin Heidelberg, July 2008.</a>
     <li>Possible metrics to check whether the patch was correctly matched:
     <ul>
@@ -532,7 +558,7 @@ pause</pre>
 <h2> Wed Mar 3, 2010 </h2>
 <ul>
 <li> Checked out /Roboresc/2009/ as basis for my code. Folder /competition/ seems most promising.
-<li> The current SLAM is, according to the 2009 team description paper, based on "Howard, A., Sukhatme, G.S., Matari´c, M.J.: Multi-robot mapping using manifold representations. Proceedings of the IEEE 94 (2006) 1360–1369". <ul>
+<li> The current SLAM is, according to the 2009 team description paper, based on "Howard, A., Sukhatme, G.S., MatariÂ´c, M.J.: Multi-robot mapping using manifold representations. Proceedings of the IEEE 94 (2006) 1360â€“1369". <ul>
     <li> A patch is accepted and merged into the global map when it satisfies any of a number of conditions. Equation 15 in this paper states one condition, when a patch is "far from any of the existing patches in the local map". A difference in pose is meant.
 	<li> One could reject a patch if a scan is unexpected (low entropy).
 	</ul>

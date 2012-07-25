@@ -1,3 +1,6 @@
-The Simulatenous Localization And Mapping (SLAM) method employed by the AJORF (Amsterdam-Oxford Joint Rescue Forces <<cite team description paper>> is not robust against severe tilting of the laser scanner. 
+%!TEX root = ../report.tex
+\chapter{Introduction}
+\label{chapter:introduction}
+The Simulatenous Localization And Mapping (SLAM) method employed by the AJORF (Amsterdam-Oxford Joint Rescue Forces team <<cite team description paper>> is not robust against sensor failures, which occur for example when the laser scanner is severly tilted. 
 
-In this report, an extension to the algorithm is proposed which prevents the addition of patches to the map when the laser scanner data is in a plane too far from the horizontal
+In this report, we propose a novel method which splits a map when the localization uncertainty exceeds a certain threshold. The different pieces of the map are then stitched together using a Hough transform based map stitching method.
