@@ -34,3 +34,12 @@ In this work we examine a few different confidence measures:
 1) attack angle
 2) determinant of match
 3) trace of match
+
+From SlametPfingstorn:
+
+To asses the quality of fit
+of a new range scan, the same notion of being well-fitted is used as during the construction
+of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
+matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
+information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
+and we compute the 95% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁
