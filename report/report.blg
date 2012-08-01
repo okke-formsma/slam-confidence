@@ -5,9 +5,17 @@ The style file: mystyle.bst
 Database file #1: biblio.bib
 Warning--I didn't find a database entry for "ethembabaoglu2007active"
 Warning--I didn't find a database entry for "pfister2002weighted"
+Warning--I didn't find a database entry for "slametpfingsthornthesis"
+Warning--I didn't find a database entry for "howard2006multirobot"
+Warning--I didn't find a database entry for "carpin2002merging"
+Warning--I didn't find a database entry for "censi2005scan"
+Warning--I didn't find a database entry for "hough1962method"
+Warning--I didn't find a database entry for "duda1972use"
+Warning--I didn't find a database entry for "ballard1981generalizing"
+Warning--I didn't find a database entry for "jankowska"
 You've used 0 entries,
             2661 wiz_defined-function locations,
-            577 strings with 4804 characters,
+            585 strings with 4935 characters,
 and the built_in function-call counts, 26 in all, are:
 = -- 0
 > -- 0
@@ -46,4 +54,4 @@ warning$ -- 0
 while$ -- 0
 width$ -- 0
 write$ -- 6
-(There were 2 warnings)
+(There were 10 warnings)

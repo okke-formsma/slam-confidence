@@ -1,0 +1,77 @@
+%!TEX root = ../report.tex
+
+\chapter{Map Stitching with the Hough Transform}
+Why hough based?
+Alternatives?
+
+[what is map stitching, why is it necessary again?]
+
+Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et al. introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et al. used the hough spectrum for a novel scan matcher. 
+
+Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et al. diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further.
+
+\section{Hough transform}
+The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962\cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart\cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes\cite{ballard1981generalizing}.
+
+The Hough transform detects lines in the following manner. A line in Cartesian $(x, y)$ space can be defined by it's angle ($\theta$) and distance from the origin $\rho$:
+
+\begin{equation}
+\label{eq:line}
+x\cos \theta + y\sin \theta = \rho
+\end{equation}
+
+<insert image wikipedia> 
+
+Every point in $(x,y)$ space lies on infinitely many lines satisfying equation~\ref{eq:line}. Every angle $\theta$ has a single accompanying distance from the origin $\rho$. Thus, a point in $(x,y)$ space can be represented in the \emph{Hough domain} $(\theta, \rho)$ as a curve. The locations where many curves intersect in the Hough domain correspond to the lines in the original image; remember that lines correspond to points in the Hough domain. 
+
+Finding the intersection of many curves in the continuous domain is computationally expensive. The discrete Hough transform mitigates this problem by discretizing the Hough domain into bins. Every point in the original image `votes' for each bin it belongs to in $(\theta, \rho)$ representation. The strongest lines stand out as bins with a high number of votes.
+
+There are $n_\theta$ angle-bins, and $n_\rho$ distance bins in discrete Hough transform $\mathcal{HT}$. 
+
+\section{Hough spectrum}
+The major contribution of Censi et al.\cite{censi2005scan} is the introduction of the Hough spectrum. The Hough spectrum ($\cal HS$) is a measure for the direction of lines in an image. The discrete Hough transform finds the specific lines in the image, while the Hough spectrum finds the most pronounced \emph{directions} of lines in the image:
+
+\begin{equation}
+\mathcal{HS}(k) = \sum_{i=1}^{n_\rho} \mathcal{HT} (i, k) ^ 2 \qquad \quad 1 \leq k \leq n_\theta
+\end{equation}
+
+Thus, the Hough spectrum yields the highest value in the direction in which the most pronounced lines run. In an indoor environment, there will usually be two peaks, separated by a $90\degree$ angle, corresponding to grid-like structure most buildings are created. Incidentally, in a bee-hive, with hexagonal chambers, we would expect 3 peaks each separated by $60\degree$  angles.
+
+\section{Finding rotation $\theta$}
+Now we can calculate the Hough spectra $\mathcal{HS}_{M_1}$ and $\mathcal{HS}_{M_2}$ for maps $M_1$ and $M_2$. 
+
+<insert image of two spectra>
+
+Notice that the spectra have a periodicity of $180\degree$, and have similar peaks. However, the peaks are at different angles. The cross-correlation of the two signals shows the similarity of the two spectra as one of them is shifted over the x-axis. The cross-correlation $\mathcal{CC}_{M_1,M_2}$ is calculated as follows:
+
+\begin{equation}
+\mathcal{CC}_{M_1,M_2}(k) = \sum_{i=1}^{n_\theta} \mathcal{HS}_{M_1}(i) \times \mathcal{HS}_{M_2}(i + k) \qquad 1 \leq k \leq n_\theta
+\end{equation}
+
+
+
+
+\subsection{Periodicity}
+Why are do the Hough spectra have a periodicity of $180\degree$? The answer lies in the following equations:
+
+\begin{eqnarray}
+x\cos \theta + y\sin \theta &=& \rho \\
+x\cos(\theta + \pi) + y\sin (\theta + \pi) &=& -\rho \\
+\end{eqnarray}
+
+Thus, the following equation holds: $\mathcal{HT}(\theta_\alpha, \rho_\alpha) = \mathcal{HT}(\theta_\alpha + \pi, -\rho_\alpha)$. In turn, the Hough spectrum of $\theta_\alpha$ and $\theta_\alpha + \pi$ are the same, because $\mathcal{HS}$ is summed over all $\rho$. 
+
+Thus, the domain of $\theta$ only needs to be $[0, \pi)$, whereafter it wraps back to itself. Prior work by Jankowska used the domain $[0, 2\pi\rangle$ \cite{jankowska}, which is thus superfluous.
+
+One must take care when using this representation to remember the possible alternative hypothesis for $\theta$. Every solution $\hat\theta$ found by the cross-correlation method has an additional solution $\hat\theta + \pi$!
+
+\section{Finding translation $t$}
+
+\section{Evaluating stitching results}
+
+\section{Variations on the Hough-transform based stitching}
+
+
+
+* Assumption: indoor environment
+* Can be used for re-initialization of the manifold method when position is lost! Awesome if a full scan matcher is used after the hough transform based method.

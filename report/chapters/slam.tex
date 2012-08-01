@@ -69,6 +69,7 @@ In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \t
 When the state is represented by a Gaussian, the formulas in the previous section (\ref{slam:state}) can be relatively easily calculated.
 
 \subsection{Scanmatching}
+\label{scanmatching}
 A robot has access to a variety of sensors, as discussed in section~\ref{slam:state}. Many sensors are not very accurate and reliable: odometry sensors yield erroneous values when the robot's wheels spin on a slippery slope, GPS sensors are unreliable indoors, and inertia sensors experience `drift' -- they need to be calibrated every once in a while. Laser range sensors provide an alternative. It measures with high precision the distance to the first object in a certain direction. 
 
 Laser range sensors are often put in a rotating device, which measures the distance to objects on a (often horizontal) plane. A field of view of 180\degree with a 1\degree resolution is common, which yields 181 distance scans. The 181 scans form a point cloud of 181 points. See image \ref{<<from buyu and pfingstorn p41>>}. 
@@ -94,7 +95,7 @@ The measurement error models the error in the measurement process itself. This c
 
 Finally, the bias incorporates the difference between measurement methods. For example, laser scanners and sonar have different performance characteristics. The bias term compensates for this.
 
-In general, the error between two scans $a_i$ and $b_i$ can be expressed as a rotation $R$ and translation $t$:
+In general, the error between two scans $a_i$ and $b_i$ can be expressed as a rotation matrix $R$ and translation $t$:
 
 \begin{equation}
 \label{eq:correspondence-error}
@@ -111,6 +112,7 @@ a_i = r_{a,i} + \delta r_{a, i} + d_{a, i}
 By substituting equation~\ref{eq:measurement} into equation~\ref{eq:correspondence-error}, the full error term is obtained:
 
 \begin{eqnarray}
+\label{eq:wsm}
 \epsilon &=& (r_{a,i} + \delta r_{a, i} + d_{a, i}) - R \cdot (r_{b,i} + \delta r_{b, i} + d_{b, i}) - t
 			 \nonumber \\
          &=& \underbrace{(r_{a, i} - R \cdot r_{b, i} - t)}_\text{correspondence error} + 
@@ -118,10 +120,19 @@ By substituting equation~\ref{eq:measurement} into equation~\ref{eq:corresponden
              \underbrace{(d_{a, i} - R \cdot d_{b, i})}_\text{bias}
 \end{eqnarray}
 
+In an application where only one range measurement system is employed (such as a specific type of laser range scanner), the bias error term can be dropped. (Remember, the bias only models differences between measurement methods). In addition, the measurement error with modern laser scanners is so small that the measurements can be taken as a good approximation of the real measurement (\cite{pfister2002weighted}: ``For practical computation, we can use [measurements] $\theta^i_k$ and $l^i_k$ as a good estimates for the quantities [actual values] $\Theta^i_k$ and $L^i_k$.''). Thus, when the sensor error is small enough, we can safely ignore this source of error as well. 
 
+This simplifies equation \ref{eq:wsm} further, so it contains only the correspondence error:
 
+\begin{equation}
+\epsilon = r_{a, i} - R \cdot r_{b, i} - t
+\end{equation}
+
+This error term $\epsilon$ is minimized through an iterative algorithm in which the rotation and translation are estimated in turn. When the algorithm is suitably converged, it terminates. The full covariance matrix for the scan match is computed from the individual correspondence errors. We will see how this covariance matrix comes in handy for the SLAM algorithm and error estimation procedures in later chapters.
 
 \subsection{ManifoldSLAM}
+ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slametpfingsthornthesis} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. The world/map representation is 
+
 Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AJORF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 
 
@@ -129,6 +140,7 @@ Many SLAM algorithms use a bayesian filter to refine the state by incorporate th
 Only a slice of the world is returned - so we need to make sure we are horizontal. Otherwise, the scanner returns wrong readings.
 
 
+\subsection{Uncertainty measure}
 UNCERTAINTY MEASURE BY ARNOUD:
 To see if the reduced correlation distance also improves the robustness of
 the scan matcher the uncertainty measures returned by the algorithms were
