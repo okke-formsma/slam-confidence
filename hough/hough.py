@@ -45,18 +45,21 @@ def plot_hough_spectrum(im):
 
     ax1 = fig.add_subplot(gs[0, 0])
     imgplt = ax1.imshow(ht.transpose(), origin='lower', cmap='hot', aspect='auto')
-    ax1.set_xlabel('theta / pi')
     ax1.set_ylabel('rho (normalized)')
-    #set proper theta labels
-    ax1.set_xticks(np.linspace(0, theta_resolution, 4, endpoint=False))
-    ax1.set_xticklabels(['%s pi' % n for n in np.linspace(0, 1, 4, endpoint=False)])
+    #no theta labels
+    ax1.set_xticks([])
     #set proper rho labels
     ax1.set_yticks(np.linspace(0, rho_resolution, 5))
     ax1.set_yticklabels(np.linspace(-1, 1, 5))
 
     ax2 = fig.add_subplot(gs[1, 0])
     ax2.plot(hs)
-
+    #set proper theta labels
+    ax2.set_xticks(np.linspace(0, theta_resolution, 4, endpoint=False))
+    ax2.set_xticklabels(['%s pi' % n for n in np.linspace(0, 1, 4, endpoint=False)])
+    ax2.set_xlim(0, len(hs)-1)
+    ax2.set_xlabel('theta / pi')
+    ax2.set_ylabel('hough spectrum')
 
     plt.show()
 
