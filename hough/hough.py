@@ -111,7 +111,33 @@ def plot_hough_rotate(im, im2):
 
     plt.show()
 
-plot_hough_rotate(imread('lines.png', flatten=True), np.rot90(imread('lines.png', flatten=True)))
+def x_y_spectrum(im):
+    return np.sum(im, 0), np.sum(im, 1)
+
+def plot_x_y_spectrum(im):
+    x, y = x_y_spectrum(im!=255)
+    fig = plt.figure()
+    gs = gridspec.GridSpec(2,2)
+    ax1 = fig.add_subplot(gs[0,0])
+    ax1.plot(y, range(len(y)))
+    ax1.set_ylim(0, len(y))
+    ax1.invert_yaxis()
+    ax1.set_title('Y-spectrum')
+    ax1.set_ylabel('y')
+    ax1.set_xlabel('occupied cells')
+    ax2 = fig.add_subplot(gs[1,1])
+    ax2.plot(x)
+    ax2.set_xlim(0, len(x))
+    ax2.set_title('X-spectrum')
+    ax2.set_ylabel('occupied cells')
+    ax2.set_xlabel('x')
+    ax3 = fig.add_subplot(gs[0,1])
+    ax3.imshow(im, cmap="gray", aspect="auto")
+    ax3.set_title('Map')
+    plt.show()
+
+#plot_hough_rotate(imread('lines.png', flatten=True), np.rot90(imread('lines.png', flatten=True)))
 #plot_hough_spectrum(imread('rooms.png', flatten=True))
+plot_x_y_spectrum(imread('rooms.png', flatten=True))
 #imsave('hough.png', -ht.rot90())
 #call(["open", "hough.png"])

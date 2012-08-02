@@ -4,48 +4,48 @@ The top-level auxiliary file: report.aux
 The style file: mystyle.bst
 Database file #1: biblio.bib
 Warning--I didn't find a database entry for "carpin2002merging"
-Warning--I didn't find a database entry for "censi2005scan"
 Warning--I didn't find a database entry for "jankowska"
+Warning--I didn't find a database entry for "sensi2005scan"
 Warning--empty journal in slametpfingsthornthesis
-You've used 9 entries,
+You've used 10 entries,
             2661 wiz_defined-function locations,
-            635 strings with 6318 characters,
-and the built_in function-call counts, 3458 in all, are:
-= -- 216
-> -- 72
-< -- 9
-+ -- 30
-- -- 21
-* -- 187
-:= -- 341
-add.period$ -- 9
-call.type$ -- 9
+            642 strings with 6521 characters,
+and the built_in function-call counts, 4022 in all, are:
+= -- 258
+> -- 82
+< -- 10
++ -- 34
+- -- 24
+* -- 216
+:= -- 396
+add.period$ -- 10
+call.type$ -- 10
 change.case$ -- 1
 chr.to.int$ -- 0
-cite$ -- 10
-duplicate$ -- 387
-empty$ -- 353
-format.name$ -- 25
-if$ -- 769
+cite$ -- 11
+duplicate$ -- 445
+empty$ -- 414
+format.name$ -- 29
+if$ -- 903
 int.to.chr$ -- 0
-int.to.str$ -- 9
-missing$ -- 99
-newline$ -- 34
-num.names$ -- 9
-pop$ -- 178
+int.to.str$ -- 10
+missing$ -- 112
+newline$ -- 37
+num.names$ -- 10
+pop$ -- 204
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 118
+skip$ -- 140
 stack$ -- 0
-substring$ -- 178
-swap$ -- 262
-text.length$ -- 9
+substring$ -- 218
+swap$ -- 299
+text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 24
-width$ -- 10
-write$ -- 87
+while$ -- 28
+width$ -- 12
+write$ -- 97
 (There were 4 warnings)

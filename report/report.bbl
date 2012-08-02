@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 \newcommand{\enquote}[1]{``#1''}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
@@ -25,6 +25,11 @@ B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
 A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
   localization and mapping using manifold representations}, \emph{Proceedings
   of the IEEE}, volume~94(7):pp. 1360--1369, 2006.
+
+\bibitem{censi2005scan}
+A.~Censi, L.~Iocchi and G.~Grisetti, \enquote{Scan matching in the Hough
+  domain}, in \enquote{Robotics and Automation, 2005. ICRA 2005. Proceedings of
+  the 2005 IEEE International Conference on}, pp. 2739--2744, Ieee, 2005.
 
 \bibitem{hough1962method}
 P.~Hough, \enquote{Method and means for recognizing complex patterns},
