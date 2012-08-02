@@ -34,6 +34,27 @@ def hough_spectrum(hough_data):
     spectrum = np.sum(hough_data ** 2, 1, dtype=float)
     return spectrum / np.max(spectrum)
 
+
+def plot_hough(im):
+    rho_resolution = 250
+    theta_resolution = 180
+    ht = hough_transform(im, theta_resolution, rho_resolution)
+
+    fig = plt.figure()
+    gs = gridspec.GridSpec(1, 1)
+
+    ax1 = fig.add_subplot(gs[0, 0])
+    imgplt = ax1.imshow(ht.transpose(), origin='lower', cmap='hot', aspect='auto')
+    ax1.set_ylabel('rho (normalized)')
+    #set proper rho labels
+    ax1.set_yticks(np.linspace(0, rho_resolution, 5))
+    ax1.set_yticklabels(np.linspace(-1, 1, 5))
+    ax1.set_xticks(np.linspace(0, theta_resolution, 4, endpoint=False))
+    ax1.set_xticklabels(['%s pi' % n for n in np.linspace(0, 1, 4, endpoint=False)])
+    ax1.set_xlabel('theta / pi')
+
+    plt.show()
+
 def plot_hough_spectrum(im):
     rho_resolution=250
     theta_resolution=180
@@ -90,7 +111,7 @@ def plot_hough_rotate(im, im2):
 
     plt.show()
 
-#plot_hough_rotate(imread('lines.png', flatten=True), imread('lines.png', flatten=True).rot90())
-plot_hough_spectrum(imread('lines.png', flatten=True))
+plot_hough_rotate(imread('lines.png', flatten=True), np.rot90(imread('lines.png', flatten=True)))
+#plot_hough_spectrum(imread('rooms.png', flatten=True))
 #imsave('hough.png', -ht.rot90())
 #call(["open", "hough.png"])

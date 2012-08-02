@@ -20,27 +20,77 @@ The Hough transform detects lines in the following manner. A line in Cartesian $
 x\cos \theta + y\sin \theta = \rho
 \end{equation}
 
-<insert image wikipedia> 
-
 Every point in $(x,y)$ space lies on infinitely many lines satisfying equation~\ref{eq:line}. Every angle $\theta$ has a single accompanying distance from the origin $\rho$. Thus, a point in $(x,y)$ space can be represented in the \emph{Hough domain} $(\theta, \rho)$ as a curve. The locations where many curves intersect in the Hough domain correspond to the lines in the original image; remember that lines correspond to points in the Hough domain. 
 
 Finding the intersection of many curves in the continuous domain is computationally expensive. The discrete Hough transform mitigates this problem by discretizing the Hough domain into bins. Every point in the original image `votes' for each bin it belongs to in $(\theta, \rho)$ representation. The strongest lines stand out as bins with a high number of votes.
 
 There are $n_\theta$ angle-bins, and $n_\rho$ distance bins in discrete Hough transform $\mathcal{HT}$. 
 
+\begin{figure}[ht]
+\centering
+\subfigure[Two lines]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/lines.png}
+	\label{fig:lines-original}
+}
+\subfigure[The Hough transform of \subref{fig:lines-original}]{
+	\includegraphics[width=0.55\textwidth]{images/stitching/lines-hough.pdf}
+	\label{fig:lines-hough}
+}
+\caption{Example of the discrete Hough transform. Notice the two maxima in (b) which correspond to the two lines in (a). There seem to be three maxima (one at $0$, one at $\frac{\pi}{4}$ and one at $\pi$). However, the maxima at $0$ and $\pi$ are the same maximum: see section~\ref{sub:periodicity}}
+\label{fig:beehive}
+\end{figure}
+
+
 \section{Hough spectrum}
 The major contribution of Censi et al.\cite{censi2005scan} is the introduction of the Hough spectrum. The Hough spectrum ($\cal HS$) is a measure for the direction of lines in an image. The discrete Hough transform finds the specific lines in the image, while the Hough spectrum finds the most pronounced \emph{directions} of lines in the image:
 
 \begin{equation}
-\mathcal{HS}(k) = \sum_{i=1}^{n_\rho} \mathcal{HT} (i, k) ^ 2 \qquad \quad 1 \leq k \leq n_\theta
+\mathcal{HS}(k) = \eta \sum_{i=1}^{n_\rho} \mathcal{HT} (i, k) ^ 2 \qquad \quad 1 \leq k \leq n_\theta
 \end{equation}
 
-Thus, the Hough spectrum yields the highest value in the direction in which the most pronounced lines run. In an indoor environment, there will usually be two peaks, separated by a $90\degree$ angle, corresponding to grid-like structure most buildings are created. Incidentally, in a bee-hive, with hexagonal chambers, we would expect 3 peaks each separated by $60\degree$  angles.
+$\eta$ is a normalization value to limit $\mathcal{HS}(k)$ to the domain $[0, 1]$.
+
+As we've seen in the previous section, each bin in the discrete Hough transform ($\mathcal{HT} (i, k)$) contains the number of pixels that lie on a line defined by $(\theta_i, \rho_k)$. The hough spectrum is a measure for how strong the lines are on a specific angle. 
+
+Thus, the Hough spectrum yields the highest value in the direction in which the most pronounced lines run. In an indoor environment, there will usually be two peaks, separated by a $90\degree$ angle, corresponding to grid-like structure most buildings are created (see figure~\ref{fig:rooms}). Incidentally, in a bee-hive, with hexagonal chambers, we would see 3 peaks each separated by $60\degree$  angles. See figure~\ref{fig:beehive}.
+
+\begin{figure}[ht]
+\centering
+\subfigure[A stylistic map of some rooms]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms.png}
+	\label{fig:rooms-original}
+}
+\subfigure[The Hough transform and Hough spectrum of \subref{fig:rooms-original}]{
+	\includegraphics[width=0.55\textwidth]{images/stitching/rooms-hough.pdf}
+	\label{fig:rooms-hough}
+}
+\caption{Example of a hough spectrum in a human-made environment.}
+\label{fig:rooms}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\subfigure[Hexagonal chambers]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/beehive.png}
+	\label{fig:beehive-original}
+}
+\subfigure[The Hough transform and Hough spectrum of \subref{fig:beehive-original}]{
+	\includegraphics[width=0.55\textwidth]{images/stitching/beehive-lines.pdf}
+	\label{fig:beehive-hough}
+}
+\caption{Example of the Hough spectrum in a hexagonal environment. Notice the three maxima in the Hough Spectrum.}
+\label{fig:beehive}
+\end{figure}
 
 \section{Finding rotation $\theta$}
 Now we can calculate the Hough spectra $\mathcal{HS}_{M_1}$ and $\mathcal{HS}_{M_2}$ for maps $M_1$ and $M_2$. 
 
-<insert image of two spectra>
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{images/stitching/lines-cross-correlation.pdf}
+	\label{fig:lines-cross-correlation}
+	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. For the second hough spectrum, it was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
+\end{figure}
 
 Notice that the spectra have a periodicity of $180\degree$, and have similar peaks. However, the peaks are at different angles. The cross-correlation of the two signals shows the similarity of the two spectra as one of them is shifted over the x-axis. The cross-correlation $\mathcal{CC}_{M_1,M_2}$ is calculated as follows:
 
@@ -48,15 +98,13 @@ Notice that the spectra have a periodicity of $180\degree$, and have similar pea
 \mathcal{CC}_{M_1,M_2}(k) = \sum_{i=1}^{n_\theta} \mathcal{HS}_{M_1}(i) \times \mathcal{HS}_{M_2}(i + k) \qquad 1 \leq k \leq n_\theta
 \end{equation}
 
-
-
-
 \subsection{Periodicity}
+\label{sub:periodicity}
 Why are do the Hough spectra have a periodicity of $180\degree$? The answer lies in the following equations:
 
 \begin{eqnarray}
 x\cos \theta + y\sin \theta &=& \rho \\
-x\cos(\theta + \pi) + y\sin (\theta + \pi) &=& -\rho \\
+x\cos(\theta + \pi) + y\sin (\theta + \pi) &=& -\rho
 \end{eqnarray}
 
 Thus, the following equation holds: $\mathcal{HT}(\theta_\alpha, \rho_\alpha) = \mathcal{HT}(\theta_\alpha + \pi, -\rho_\alpha)$. In turn, the Hough spectrum of $\theta_\alpha$ and $\theta_\alpha + \pi$ are the same, because $\mathcal{HS}$ is summed over all $\rho$. 
@@ -66,6 +114,8 @@ Thus, the domain of $\theta$ only needs to be $[0, \pi)$, whereafter it wraps ba
 One must take care when using this representation to remember the possible alternative hypothesis for $\theta$. Every solution $\hat\theta$ found by the cross-correlation method has an additional solution $\hat\theta + \pi$!
 
 \section{Finding translation $t$}
+The translation $t$ 
+
 
 \section{Evaluating stitching results}
 
