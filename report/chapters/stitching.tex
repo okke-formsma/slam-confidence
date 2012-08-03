@@ -170,22 +170,52 @@ The first step is to find candidate translations $\theta$. We do this by calcula
 	\label{fig:ex-rooms-theta}
 \end{figure}
 
-As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169 + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations.
+As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169 + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations. 
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated.pdf}
-	\caption{The images from \ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
-	\label{fig:ex-rooms-theta}
+	\caption{The images from figure~\ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
+	\label{fig:ex-rooms-rotated}
 \end{figure}
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated.pdf}
-	\caption{The images from \ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
-	\label{fig:ex-rooms-theta}
+	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-xy-corr.pdf}
+	\caption{The X- and Y-spectra and correlation of the images from figure~\ref{fig:ex-rooms-rotated}.}
+	\label{fig:ex-rooms-spectra}
 \end{figure}
 
+The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, -89)$. In figure~\ref{fig:ex-rooms-result} the result of the stitch is seen. The map is printed in blue, the cutout in pink. Astute readers will have noticed that the rotation estimate is $90\degree$ off, and the second hypothesis $\theta_{2}$ might yield a better result. They may be right. The results for all $\theta$ hypothesis are shown in figure~\ref{fig:ex-room-all-results}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1a.png}
+	\caption{The result of the map stitching according to hypothesis $\theta_{1a}$.}
+	\label{fig:ex-rooms-result}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\subfigure[$\theta_{1a}$]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1a.png}
+	\label{fig:ex-rooms-result-1a}
+}
+\subfigure[$\theta_{1b}$]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1b.png}
+	\label{fig:ex-room-result-1b}
+} \\
+\subfigure[$\theta_{2a}$]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-2a.png}
+	\label{fig:ex-rooms-result-1a}
+}
+\subfigure[$\theta_{2b}$]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-2b.png}
+	\label{fig:ex-room-result-1b}
+}
+\caption{The results of map stitching according to all four $\theta$ hypothesis.}
+\label{fig:ex-room-all-results}
+\end{figure}
 
 
 \section{Evaluating stitching results}

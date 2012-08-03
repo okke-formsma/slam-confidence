@@ -2,6 +2,7 @@ from math import hypot, pi, radians
 from matplotlib import gridspec
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.lib.index_tricks import s_
 from scipy.misc import imread, imsave, imresize
 from scipy.ndimage.interpolation import rotate
 from subprocess import call
@@ -36,7 +37,38 @@ def hough_spectrum(hough_data):
     return spectrum / np.max(spectrum)
 
 def x_y_spectrum(im):
-    return np.sum(im != 255, 0), np.sum(im != 255, 1)
+    occupancy = im != 255
+    x = np.sum(occupancy, 0, dtype=float)
+    y = np.sum(occupancy, 1, dtype=float)
+    return x / np.max(x), y / np.max(y)
+
+def x_y_correlation(spectrum1, spectrum2):
+    corr = np.correlate(spectrum1, spectrum2, mode='full')
+    corr /= np.max(corr) #normalize
+    corr_domain = np.arange(len(corr)) - (len(spectrum2) + 1)
+    return corr_domain, corr
+
+
+def rotate_images(im1, im2, phi, theta):
+    im1 = rotate(im1, angle=phi, mode='nearest')
+    im2 = rotate(im2, angle=phi + theta, mode='nearest')
+    return im1, im2
+
+def optimal_translation(im, im2, phi, theta):
+    im, im2 = rotate_images(im, im2, phi, theta)
+
+    x1, y1 = x_y_spectrum(im)
+    x2, y2 = x_y_spectrum(im2)
+
+    corr_x_domain, corr_x = x_y_correlation(x1, x2)
+    corr_y_domain, corr_y = x_y_correlation(y1, y2)
+
+    x = corr_x_domain[corr_x.argmax()]
+    y = corr_y_domain[corr_y.argmax()]
+    print corr_y_domain[0],
+    print corr_y_domain[-1]
+
+    return x, y
 
 def plot_hough(im):
     rho_resolution = 250
@@ -112,10 +144,8 @@ def plot_hough_rotate(im, im2):
     ax3.set_ylabel('cross-correlation')
     ax3.set_xlabel(r'theta')
 
-
-def plot_after_rotation(im, rotation, im2, rotation2):
-    im = rotate(im, angle=rotation, mode='nearest')
-    im2 = rotate(im2, angle=rotation2, mode='nearest')
+def plot_after_rotation(im, im2, phi, theta):
+    im, im2 = rotate_images(im, im2, phi, theta)
     fig = plt.figure()
     gs = gridspec.GridSpec(1, 2)
     ax1 = fig.add_subplot(gs[0, 0])
@@ -123,21 +153,55 @@ def plot_after_rotation(im, rotation, im2, rotation2):
     ax2 = fig.add_subplot(gs[0, 1])
     ax2.imshow(im2, cmap='gray')
 
+
+def plot_after_rotation_translation(im1, im2, phi, theta, (x, y)):
+    im1, im2 = rotate_images(im1, im2, phi, theta)
+
+    s1 = im1.shape
+    s2 = im2.shape
+
+    im = np.zeros(shape = (s1[0]+s2[0]*2, s1[1]+s2[1]*2, 3), dtype=int) + 255
+
+    im[s2[0]:s2[0]+s1[0], s2[1]:s2[1]+s1[1], 0] = im1
+    im[s2[0]+y:s2[0]*2+y, s2[1]+x:s2[1]*2+x, 1] = im2
+
+    imsave('result%s.png'%theta, im[s2[0]:s1[0] + s2[0], s2[1]:s1[1] + s2[1]])
+    call(["open", "result%s.png"%theta])
+    #plt.imshow(-im)
+    #plt.imshow(-im[s2[0]:s1[0]+s2[0], s2[1]:s1[1]+s2[1]])
+
 def plot_x_y_correlation(im, im2, phi, theta):
-    im = rotate(im, angle=phi, mode='nearest')
-    im2 = rotate(im2, angle=phi+theta, mode='nearest')
+    im, im2 = rotate_images(im, im2, phi, theta)
+
     x, y = x_y_spectrum(im)
     x2, y2 = x_y_spectrum(im2)
-    corr_x = np.correlate(x, x2)
+
+    corr_x_domain, corr_x = x_y_correlation(x, x2)
+    corr_y_domain, corr_y = x_y_correlation(y, y2)
 
     fig = plt.figure()
     gs = gridspec.GridSpec(3, 2)
+
     ax1 = fig.add_subplot(gs[0, 0])
     ax1.plot(x)
+    ax1.set_title('X-spectra')
+    ax1.set_ylabel('spectrum 1')
     ax2 = fig.add_subplot(gs[1, 0])
     ax2.plot(x2)
+    ax2.set_ylabel('spectrum 2')
     ax3 = fig.add_subplot(gs[2, 0])
-    ax3.plot()
+    ax3.plot(corr_x_domain, corr_x)
+    ax3.set_ylabel('correlation')
+    ax3.set_xlabel('x')
+
+    ax4 = fig.add_subplot(gs[0, 1])
+    ax4.plot(y)
+    ax4.set_title('Y-spectra')
+    ax5 = fig.add_subplot(gs[1, 1])
+    ax5.plot(y2)
+    ax6 = fig.add_subplot(gs[2, 1])
+    ax6.plot(corr_y_domain, corr_y)
+    ax6.set_xlabel('y')
 
 def plot_x_y_spectrum(im):
     x, y = x_y_spectrum(im)
@@ -163,10 +227,30 @@ def plot_x_y_spectrum(im):
 im1 = imread('rooms.png', flatten=True)
 im2 = imread('rooms-partial.png', flatten=True)
 
-#plot_after_rotation(imread('rooms.png', flatten=True), 90, imread('rooms-partial.png', flatten=True), 169+90)
-plot_x_y_correlation(im1, im2, 90, 169)
+
+#hypothesis 1a
+#plot_hough_spectrum(im1)
+#plot_x_y_correlation(im1, im2, 90, 169)
+
+#hypothesis 2a
+for i in range(4):
+    phi, theta = 90, 79 + i * 90
+    t = optimal_translation(im1, im2, phi, theta)
+#print t
+##t = t[0]+8, t[1]-3
+    plot_after_rotation_translation(im1, im2, phi, theta, t)
+#plot_after_rotation(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True), 90, 79)
+#plot_x_y_correlation(im1, im2, phi, theta)
 #plot_hough_rotate(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True))
 #plot_hough_spectrum(imread('rooms.png', flatten=True))
+#plot_x_y_spectrum(im1)
+
+#hypothesis 1a
+#plot_hough_spectrum(im1)
+#plot_x_y_correlation(im1, im2, 90, 169)
+#plot_after_rotation_translation(im1, im2, 90, 169, (526+1, 497))
+#plot_after_rotation(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True), 90, 169)
+#plot_hough_rotate(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True))
 #plot_x_y_spectrum(imread('rooms-rotated-full.png', flatten=True))
 #imsave('hough.png', -ht.rot90())
 #call(["open", "hough.png"])
