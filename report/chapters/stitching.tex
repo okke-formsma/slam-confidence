@@ -6,9 +6,9 @@ Alternatives?
 
 [what is map stitching, why is it necessary again?]
 
-Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et al. introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et al. used the hough spectrum for a novel scan matcher. 
+Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
 
-Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et al. diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further.
+Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further.
 
 \section{Hough transform}
 The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962\cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart\cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes\cite{ballard1981generalizing}.
@@ -42,7 +42,7 @@ There are $n_\theta$ angle-bins, and $n_\rho$ distance bins in discrete Hough tr
 
 
 \section{Hough spectrum}
-The major contribution of Censi et al.\cite{censi2005scan} is the introduction of the Hough spectrum. The Hough spectrum ($\cal HS$) is a measure for the direction of lines in an image. The discrete Hough transform finds the specific lines in the image, while the Hough spectrum finds the most pronounced \emph{directions} of lines in the image:
+The major contribution of Censi et~al.\ \cite{censi2005scan} is the introduction of the Hough spectrum. The Hough spectrum ($\cal HS$) is a measure for the direction of lines in an image. The discrete Hough transform finds the specific lines in the image, while the Hough spectrum finds the most pronounced \emph{directions} of lines in the image:
 
 \begin{equation}
 \mathcal{HS}(k) = \eta \sum_{i=1}^{n_\rho} \mathcal{HT} (i, k) ^ 2 \qquad \quad 1 \leq k \leq n_\theta
@@ -83,24 +83,24 @@ Thus, the Hough spectrum yields the highest value in the direction in which the 
 \end{figure}
 
 \section{Finding rotation $\theta$}
-Now we can calculate the Hough spectra $\mathcal{HS}_{M_1}$ and $\mathcal{HS}_{M_2}$ for maps $M_1$ and $M_2$. 
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\textwidth]{images/stitching/lines-cross-correlation.pdf}
-	\label{fig:lines-cross-correlation}
-	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. For the second hough spectrum, it was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
-\end{figure}
-
-Notice that the spectra have a periodicity of $180\degree$, and have similar peaks. However, the peaks are at different angles. The cross-correlation of the two signals shows the similarity of the two spectra as one of them is shifted over the x-axis. The cross-correlation $\mathcal{CC}_{M_1,M_2}$ is calculated as follows:
+In the previous section we've seen how to calculate the Hough spectra $\mathcal{HS}_{M_1}$ and $\mathcal{HS}_{M_2}$ for maps $M_1$ and $M_2$. We will calculate the best rotation by performing a cross-correlation over the spectra. The cross-correlation of the two signals shows the similarity of the two spectra as one of them is shifted over the x-axis. The cross-correlation $\mathcal{CC}_{M_1,M_2}$ is calculated as follows:
 
 \begin{equation}
 \mathcal{CC}_{M_1,M_2}(k) = \sum_{i=1}^{n_\theta} \mathcal{HS}_{M_1}(i) \times \mathcal{HS}_{M_2}(i + k) \qquad 1 \leq k \leq n_\theta
 \end{equation}
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{images/stitching/lines-cross-correlation.pdf}
+	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. The image for the second hough spectrum was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
+	\label{fig:lines-cross-correlation}
+\end{figure}
+
+Notice that the spectra have a periodicity of $180\degree$ ($\pi$), and have similar peaks. However, the peaks are at different angles. The cross-correlation finds the optimal rotation. See figure~\ref{fig:lines-cross-correlation}
+
 \subsection{Periodicity}
 \label{sub:periodicity}
-Why are do the Hough spectra have a periodicity of $180\degree$? The answer lies in the following equations:
+Why are do the Hough spectra have a periodicity of $\pi$? The answer lies in the following equations:
 
 \begin{eqnarray}
 x\cos \theta + y\sin \theta &=& \rho \\
@@ -114,30 +114,79 @@ Thus, the domain of $\theta$ only needs to be $[0, \pi)$, whereafter it wraps ba
 One must take care when using this representation to remember the possible alternative hypothesis for $\theta$. Every candidate solution $\hat\theta$ found by the cross-correlation method has an additional solution $\hat\theta + \pi$!
 
 \section{Finding translation $\hat t$}
-In the previous section we found rotation candidates which align the maps according to the major wall-directions. To find the best match between two maps, we also need to find the optimal translation between them. 
+In the previous section we found rotation candidates which align the maps according to the major wall-directions. To find the best match between two maps, we also need to find the optimal translation between them. Jankowska \cite{jankowska2009hough} takes the same approach as Carpin \cite{carpin2008merging}, which is a simplification of the method by Censi et~al.\ \cite{sensi2005scan}. We will discuss the more complex method later. 
 
-Jankowska (\cite{jankowska2009hough}) takes the same approach as Carpin (\cite{carpin2008merging}), which is a simplification of the method by Censi et al. (\cite{sensi2005scan}). The method is to calculate an X-spectrum and Y-spectrum from the maps and the optimal translation is found by cross-correlating the spectra. The X- and Y- spectra are calculated by summing the number of occupied pixels along each dimension. See figure~\ref{fig:x-y-spectra} for an example.
+The simplified method is to calculate an X-spectrum and Y-spectrum from the maps, and again perform cross-correlation on these. The X- and Y- spectra are calculated by summing the number of occupied pixels along one dimension; see equations~\ref{eq:x-spectrum} and \ref{eq:y-spectrum}. See figure~\ref{fig:x-y-spectra} for an example. The optimal translation is found by cross-correlating the x- and y-spectra from both maps.
+
+\begin{eqnarray}
+\label{eq:x-spectrum}
+\textrm{X-spectrum}(x) = \sum_{y \in Y} \textrm{occupancyMap}(x, y) \\
+\label{eq:y-spectrum}
+\textrm{Y-spectrum}(y) = \sum_{x \in X} \textrm{occupancyMap}(x, y) 
+\end{eqnarray}
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{images/stitching/x_y_spectra.pdf}
-	\label{fig:room-partial}
-	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. For the second hough spectrum, it was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
+	
+	\caption{The original map (top right) with the y-spectrum (top left) and x-spectrum (bottom right).}
+	\label{fig:x-y-spectra}
 \end{figure}
 
-The first step is to align both maps with the predominant direction. 
-
-\section{Example}
-Let's look at an example. We will examine more complicated cases in chapter~\ref{experiments} (Experiments). In figure~\ref{fig:room-partial} you see again the image of the artificial map and a small piece which we will try and map onto the other. 
+Before the x- and y-spectra are taken of the image, care must be taken to align the image to the predominant direction $\phi$. In this way, the angular features of the environment (walls) show up as spikes in the spectrum. If the image is not aligned to the predominant direction $\phi$ the spectrum yields mostly noise, as can be seen in figure~\ref{fig:x-y-spectra-noise}.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{images/stitching/lines-cross-correlation.pdf}
-	\label{fig:room-partial}
-	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. For the second hough spectrum, it was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
+	\includegraphics[width=\textwidth]{images/stitching/rooms-rotated-full-xy.pdf}
+	\caption{The X- and Y-spectra of a map that is not aligned to the predominant direction $\hat\theta$. Compare the spectra with those from figure \ref{fig:x-y-spectra}.}
+	\label{fig:x-y-spectra-noise}
 \end{figure}
 
-Censi et al. (\cite{censi2005scan}) propose a least-squares error optimization to find $\hat t$. Instead of taking an X-spectrum and Y-spectrum, the maps are rotated around many different angles and a least squares error solution is fit on the 
+Censi et~al.\ \cite{censi2005scan} propose a least-squares error optimization to find $\hat t$. Instead of taking a X-spectrum and Y-spectrum, the maps are rotated around many different angles and the spectra of those angles are cross-correlated. A least squares error solution is fit on the resulting optima. The X- and Y-spectrum method is a special case of this method; with only 2 constraint sets (one for the x-direction and one for y), the method yields an exact result for the two free parameters ($x, y$).
+
+\section{Example}
+Let's look at an example. We will examine more complicated cases in chapter~\ref{experiments}. In figure~\ref{fig:ex-rooms} you see again the image of the artificial map and a small piece which we will try and map onto the other. 
+
+\begin{figure}[h]
+\centering
+\subfigure[The full map]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-full.png}
+	\label{fig:ex-room-full}
+}
+\subfigure[Cutout]{
+	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-partial.png}
+	\label{fig:ex-room-cutout}
+}
+\caption{The map and a cutout that we want to match onto the map}
+\label{fig:ex-rooms}
+\end{figure}
+
+The first step is to find candidate translations $\theta$. We do this by calculating the hough spectra and performing cross-correlation on them. See figure~\ref{fig:ex-cross-correlation}. The highest peak in the cross-correlation lies at $\theta_{1a} = 169\degree$, the second highest at $\theta_{2a} = 79\degree$. Because of the periodicity of the Hough spectrum there are also two dual-hypothesis: $\theta_{1b} = 180\degree+169\degree = 349\degree$ and $\theta_{2b} = 180\degree+79\degree = 259\degree$, respectively. Note that the first hypothesis and the second hypothesis lie $90\degree$ apart, which corresponds to the two main wall-directions in the image.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-match-theta.pdf}
+	\caption{The Hough spectra of respectively figure~\ref{fig:ex-room-full} and \ref{fig:ex-room-cutout} and their cross-correlation.}
+	\label{fig:ex-rooms-theta}
+\end{figure}
+
+As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169 + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated.pdf}
+	\caption{The images from \ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
+	\label{fig:ex-rooms-theta}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated.pdf}
+	\caption{The images from \ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
+	\label{fig:ex-rooms-theta}
+\end{figure}
+
+
 
 \section{Evaluating stitching results}
 

@@ -1,8 +1,9 @@
-from math import hypot, pi
+from math import hypot, pi, radians
 from matplotlib import gridspec
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.misc import imread, imsave, imresize
+from scipy.ndimage.interpolation import rotate
 from subprocess import call
 import time
 
@@ -34,6 +35,8 @@ def hough_spectrum(hough_data):
     spectrum = np.sum(hough_data ** 2, 1, dtype=float)
     return spectrum / np.max(spectrum)
 
+def x_y_spectrum(im):
+    return np.sum(im != 255, 0), np.sum(im != 255, 1)
 
 def plot_hough(im):
     rho_resolution = 250
@@ -109,13 +112,35 @@ def plot_hough_rotate(im, im2):
     ax3.set_ylabel('cross-correlation')
     ax3.set_xlabel(r'theta')
 
-    plt.show()
 
-def x_y_spectrum(im):
-    return np.sum(im, 0), np.sum(im, 1)
+def plot_after_rotation(im, rotation, im2, rotation2):
+    im = rotate(im, angle=rotation, mode='nearest')
+    im2 = rotate(im2, angle=rotation2, mode='nearest')
+    fig = plt.figure()
+    gs = gridspec.GridSpec(1, 2)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.imshow(im, cmap='gray')
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax2.imshow(im2, cmap='gray')
+
+def plot_x_y_correlation(im, im2, phi, theta):
+    im = rotate(im, angle=phi, mode='nearest')
+    im2 = rotate(im2, angle=phi+theta, mode='nearest')
+    x, y = x_y_spectrum(im)
+    x2, y2 = x_y_spectrum(im2)
+    corr_x = np.correlate(x, x2)
+
+    fig = plt.figure()
+    gs = gridspec.GridSpec(3, 2)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.plot(x)
+    ax2 = fig.add_subplot(gs[1, 0])
+    ax2.plot(x2)
+    ax3 = fig.add_subplot(gs[2, 0])
+    ax3.plot()
 
 def plot_x_y_spectrum(im):
-    x, y = x_y_spectrum(im!=255)
+    x, y = x_y_spectrum(im)
     fig = plt.figure()
     gs = gridspec.GridSpec(2,2)
     ax1 = fig.add_subplot(gs[0,0])
@@ -134,10 +159,17 @@ def plot_x_y_spectrum(im):
     ax3 = fig.add_subplot(gs[0,1])
     ax3.imshow(im, cmap="gray", aspect="auto")
     ax3.set_title('Map')
-    plt.show()
 
-#plot_hough_rotate(imread('lines.png', flatten=True), np.rot90(imread('lines.png', flatten=True)))
+im1 = imread('rooms.png', flatten=True)
+im2 = imread('rooms-partial.png', flatten=True)
+
+#plot_after_rotation(imread('rooms.png', flatten=True), 90, imread('rooms-partial.png', flatten=True), 169+90)
+plot_x_y_correlation(im1, im2, 90, 169)
+#plot_hough_rotate(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True))
 #plot_hough_spectrum(imread('rooms.png', flatten=True))
-plot_x_y_spectrum(imread('rooms.png', flatten=True))
+#plot_x_y_spectrum(imread('rooms-rotated-full.png', flatten=True))
 #imsave('hough.png', -ht.rot90())
 #call(["open", "hough.png"])
+
+print 'done'
+plt.show()
