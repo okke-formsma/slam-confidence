@@ -1,6 +1,13 @@
 %!TEX root = ../report.tex
 
 \chapter{Map Stitching with the Hough Transform}
+
+\section{Variations on the Hough-transform based stitching}
+
+* Assumption: indoor environment
+* Can be used for re-initialization of the manifold method when position is lost! Awesome if a full scan matcher is used after the hough transform based method.
+
+
 Why hough based?
 Alternatives?
 
@@ -8,7 +15,7 @@ Alternatives?
 
 Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
 
-Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further.
+Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further. This chapter concludes with an elaborate example.
 
 \section{Hough transform}
 The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962\cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart\cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes\cite{ballard1981generalizing}.
@@ -98,7 +105,7 @@ In the previous section we've seen how to calculate the Hough spectra $\mathcal{
 
 Notice that the spectra have a periodicity of $180\degree$ ($\pi$), and have similar peaks. However, the peaks are at different angles. The cross-correlation finds the optimal rotation. See figure~\ref{fig:lines-cross-correlation}
 
-\subsection{Periodicity}
+\section{Periodicity of $\theta$}
 \label{sub:periodicity}
 Why are do the Hough spectra have a periodicity of $\pi$? The answer lies in the following equations:
 
@@ -138,7 +145,7 @@ Before the x- and y-spectra are taken of the image, care must be taken to align 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{images/stitching/rooms-rotated-full-xy.pdf}
-	\caption{The X- and Y-spectra of a map that is not aligned to the predominant direction $\hat\theta$. Compare the spectra with those from figure \ref{fig:x-y-spectra}.}
+	\caption{The X- and Y-spectra of a map that is not aligned to the predominant direction $\phi$. Compare the spectra with those from figure \ref{fig:x-y-spectra}.}
 	\label{fig:x-y-spectra-noise}
 \end{figure}
 
@@ -147,9 +154,9 @@ Censi et~al.\ \cite{censi2005scan} propose a least-squares error optimization to
 \section{Example}
 Let's look at an example. We will examine more complicated cases in chapter~\ref{experiments}. In figure~\ref{fig:ex-rooms} you see again the image of the artificial map and a small piece which we will try and map onto the other. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
-\subfigure[The full map]{
+\subfigure[Full map]{
 	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-full.png}
 	\label{fig:ex-room-full}
 }
@@ -170,11 +177,11 @@ The first step is to find candidate translations $\theta$. We do this by calcula
 	\label{fig:ex-rooms-theta}
 \end{figure}
 
-As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169 + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations. 
+As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169\degree + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations. 
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated.pdf}
+	\includegraphics[width=\textwidth]{images/stitching/rooms-ex-rotated-crop.pdf}
 	\caption{The images from figure~\ref{fig:ex-rooms} rotated along $\phi$ and $\phi + \theta_{1a}$, respectively}
 	\label{fig:ex-rooms-rotated}
 \end{figure}
@@ -186,41 +193,28 @@ As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligne
 	\label{fig:ex-rooms-spectra}
 \end{figure}
 
-The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, -89)$. In figure~\ref{fig:ex-rooms-result} the result of the stitch is seen. The map is printed in blue, the cutout in pink. Astute readers will have noticed that the rotation estimate is $90\degree$ off, and the second hypothesis $\theta_{2}$ might yield a better result. They may be right. The results for all $\theta$ hypothesis are shown in figure~\ref{fig:ex-room-all-results}.
+The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, -89)$. In figure~\ref{fig:ex-rooms-result-1a} the result of the stitch is seen. The map is printed in blue, the cutout in pink. Astute readers will have noticed that the rotation estimate is $90\degree$ off, and the second hypothesis $\theta_{2}$ might yield a better result. They are right, as can be seen in figure~\ref{fig:ex-room-all-results} where the results for all $\theta$ hypothesis are shown.
+
+
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1a.png}
-	\caption{The result of the map stitching according to hypothesis $\theta_{1a}$.}
-	\label{fig:ex-rooms-result}
-\end{figure}
-
-\begin{figure}[h]
 \centering
 \subfigure[$\theta_{1a}$]{
-	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1a.png}
+	\includegraphics[width=0.3\textwidth]{images/stitching/rooms-ex-result-1a.png}
 	\label{fig:ex-rooms-result-1a}
 }
 \subfigure[$\theta_{1b}$]{
-	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-1b.png}
+	\includegraphics[width=0.3\textwidth]{images/stitching/rooms-ex-result-1b.png}
 	\label{fig:ex-room-result-1b}
 } \\
 \subfigure[$\theta_{2a}$]{
-	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-2a.png}
-	\label{fig:ex-rooms-result-1a}
+	\includegraphics[width=0.3\textwidth]{images/stitching/rooms-ex-result-2a.png}
+	\label{fig:ex-rooms-result-2a}
 }
 \subfigure[$\theta_{2b}$]{
-	\includegraphics[width=0.4\textwidth]{images/stitching/rooms-ex-result-2b.png}
-	\label{fig:ex-room-result-1b}
+	\includegraphics[width=0.3\textwidth]{images/stitching/rooms-ex-result-2b.png}
+	\label{fig:ex-room-result-2b}
 }
 \caption{The results of map stitching according to all four $\theta$ hypothesis.}
 \label{fig:ex-room-all-results}
 \end{figure}
-
-
-\section{Evaluating stitching results}
-
-\section{Variations on the Hough-transform based stitching}
-
-* Assumption: indoor environment
-* Can be used for re-initialization of the manifold method when position is lost! Awesome if a full scan matcher is used after the hough transform based method.

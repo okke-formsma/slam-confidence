@@ -1,4 +1,5 @@
 %!TEX root = ../report.tex
+\chapter{ManifoldSLAM}
 One of the goals of the USAR challenge was to create a useable map of the environment. 
 
 The problem an agent faces when it needs to find it's way in an unknown environment is called SLAM, for Simulatenous Localization and Mapping. The agent has no map of the environment, and also no way of knowing it's exact location. It needs to infer the map and it's position on the map from the information it gathers from it's sensors throughout time.
@@ -7,7 +8,7 @@ Thus, SLAM is a chicken-and-egg problem: without a map it is hard to estimate th
 
 In this section we will first examine how the robot keeps track of the state of the world, and then how the SLAM problem can be solved with Extended Kalman Filters. 
 
-\subsection{State}
+\section{State}
 \label{slam:state}
 The state of the world as it is known to the agent is denoted $x$. The value of this set of variables may change over time, as the agent collects sensor data from the environment. The state at time $t$ is denoted $x_{t}$. 
 
@@ -55,7 +56,7 @@ bel(x_t) = \eta p(z_t|x_t)\overline{bel}(x_t)
 
 In the previous formula, $\eta$ is a normalization constant which ensures that $bel(x_t)$ is a proper probability.
 
-\subsection{Gaussian state representation}
+\section{Gaussian state representation}
 It is often convenient to represent the belief of the current state as a multivariate Gaussian. A Gaussian is defined by its mean $\mu$ and covariance $\Sigma$:
 
 \begin{equation}
@@ -68,7 +69,7 @@ In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \t
 
 When the state is represented by a Gaussian, the formulas in the previous section (\ref{slam:state}) can be relatively easily calculated.
 
-\subsection{Scanmatching}
+\section{Scanmatching with the Weighted Scan Matcher}
 \label{scanmatching}
 A robot has access to a variety of sensors, as discussed in section~\ref{slam:state}. Many sensors are not very accurate and reliable: odometry sensors yield erroneous values when the robot's wheels spin on a slippery slope, GPS sensors are unreliable indoors, and inertia sensors experience `drift' -- they need to be calibrated every once in a while. Laser range sensors provide an alternative. It measures with high precision the distance to the first object in a certain direction. 
 
@@ -76,10 +77,9 @@ Laser range sensors are often put in a rotating device, which measures the dista
 
 The `scans' that the laser range sensor returns are processed through a scanmatching algorithm. These algorithms compare two scans (or a scan and a map) to see how they relate to each other. The scanmatcher needs to find out the relative change in orientation and position between the two scans.
 
-In the context of this paper, we will focus on the Weighted Scan Matcher, but various other approaches exist. Slamet and Pfingsthorn\cite{ethembabaoglu2007active} provide an excellent overview of various scanmatching algorithms such as Normal Distribution Transform (NDT), Iterative Dual Correspondence (IDC), Metric-based Iterative Closest Point (MbICP) and ICP.
+In the context of this paper, we will focus on the Weighted Scan Matcher, but various other approaches exist. Slamet and Pfingsthorn \cite{ethembabaoglu2007active} provide an excellent overview of various scanmatching algorithms such as Normal Distribution Transform (NDT), Iterative Dual Correspondence (IDC), Metric-based Iterative Closest Point (MbICP) and ICP.
 
-\subsubsection{Weighted Scan Matcher}
-The Weighted Scan Matcher (WSM) was introduced by Pfister et al \cite{pfister2002weighted}. In contrast to other scan matchers, the influence of a correspondence between two measurements is weighted with the certainty of how well the two points match. When two point clouds align perfectly, the uncertainty of these matches is zero. This will not generally be the case. Points that have less associated uncertainty will weigh more in the final scan matching result. The Weighted Scan Matcher explicitly models three error sources: the correspondence error, measurement error, and bias. See figure~\ref{fig:pfister2002}. 
+The Weighted Scan Matcher (WSM) was introduced by Pfister et~al.\ \cite{pfister2002weighted}. In contrast to other scan matchers, the influence of a correspondence between two measurements is weighted with the certainty of how well the two points match. When two point clouds align perfectly, the uncertainty of these matches is zero. This will not generally be the case. Points that have less associated uncertainty will weigh more in the final scan matching result. The Weighted Scan Matcher explicitly models three error sources: the correspondence error, measurement error, and bias. See figure~\ref{fig:pfister2002}. 
 
 \begin{figure}[ht]
   \begin{center}
@@ -130,17 +130,17 @@ This simplifies equation \ref{eq:wsm} further, so it contains only the correspon
 
 This error term $\epsilon$ is minimized through an iterative algorithm in which the rotation and translation are estimated in turn. When the algorithm is suitably converged, it terminates. The full covariance matrix for the scan match is computed from the individual correspondence errors. We will see how this covariance matrix comes in handy for the SLAM algorithm and error estimation procedures in later chapters.
 
-\subsection{ManifoldSLAM}
+\section{ManifoldSLAM}
 ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slametpfingsthornthesis} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. The world/map representation is 
 
 Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AJORF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 
 
-\subsection{2D slam in 3D environment}
+\section{2D slam in 3D environment}
 Only a slice of the world is returned - so we need to make sure we are horizontal. Otherwise, the scanner returns wrong readings.
 
 
-\subsection{Uncertainty measure}
+\section{Uncertainty measure}
 UNCERTAINTY MEASURE BY ARNOUD:
 To see if the reduced correlation distance also improves the robustness of
 the scan matcher the uncertainty measures returned by the algorithms were

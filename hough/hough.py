@@ -7,6 +7,7 @@ from scipy.misc import imread, imsave, imresize
 from scipy.ndimage.interpolation import rotate
 from subprocess import call
 import time
+from scipy.ndimage.filters import gaussian_filter1d
 
 def hough_transform(original, theta_resolution=180, rho_resolution=250):
     """ Calculate Hough transform. """
@@ -46,6 +47,10 @@ def x_y_correlation(spectrum1, spectrum2):
     corr = np.correlate(spectrum1, spectrum2, mode='full')
     corr /= np.max(corr) #normalize
     corr_domain = np.arange(len(corr)) - (len(spectrum2) + 1)
+
+    #smooth array by averaging over 5 neighbors.
+    #corr = np.correlate(corr, [1,50,100,50,1], mode='same')
+    corr = gaussian_filter1d(corr, 10, mode="constant")
     return corr_domain, corr
 
 
@@ -65,8 +70,6 @@ def optimal_translation(im, im2, phi, theta):
 
     x = corr_x_domain[corr_x.argmax()]
     y = corr_y_domain[corr_y.argmax()]
-    print corr_y_domain[0],
-    print corr_y_domain[-1]
 
     return x, y
 
@@ -235,12 +238,11 @@ im2 = imread('rooms-partial.png', flatten=True)
 #hypothesis 2a
 for i in range(4):
     phi, theta = 90, 79 + i * 90
-    t = optimal_translation(im1, im2, phi, theta)
-#print t
-##t = t[0]+8, t[1]-3
-    plot_after_rotation_translation(im1, im2, phi, theta, t)
+    #t = optimal_translation(im1, im2, phi, theta)
+    #print t
+    #plot_after_rotation_translation(im1, im2, phi, theta, t)
 #plot_after_rotation(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True), 90, 79)
-#plot_x_y_correlation(im1, im2, phi, theta)
+    plot_x_y_correlation(im1, im2, phi, theta)
 #plot_hough_rotate(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True))
 #plot_hough_spectrum(imread('rooms.png', flatten=True))
 #plot_x_y_spectrum(im1)
