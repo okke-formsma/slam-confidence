@@ -1,14 +1,31 @@
 %!TEX root = ../report.tex
-\chapter{Experiment Setup}
-In this chapter the experimental setup is outlined. For the experiment, a number of simulation runs are performed in USAR Sim, which are recorded. We will encounter a number of cases where the ManifoldSLAM scan matcher fails. 
+\chapter{Method}
+\label{method}
 
 \section{Map Stitching}
 Map stitching prior work, magda etc
 
 \section{SLAM confidence measure}
+From Bayu et al: ``cite bayu and max:     Good examples of single confi- dence values that can be derived from a covariance matrix are the determinant det(Σ) or the trace trace(Σ). The relations lend themselves very well for use in path-planning and search algorithms. In addition, heuristic algorithms can take advantage of the uncertainty information stored on the links. (P61)''
+
+
+From SlametPfingstorn:
+
+To asses the quality of fit
+of a new range scan, the same notion of being well-fitted is used as during the construction
+of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
+matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
+information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
+and we compute the 95\% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁
+
+
 1) Determinant of covariance matrix
+
 2) Trace of covariance matrix
+
 3) Whether there are any matches at all
+
+4) Attack angle?
 
 
 
@@ -22,7 +39,7 @@ is the sample variance-covariance matrix for observations of a multivariate vect
 Gives the rotations on three axis, enables you to detect 
 
 \section{Confidence measures}
-cite bayu and max:     Good examples of single confi- dence values that can be derived from a covariance matrix are the determinant det(Σ) or the trace trace(Σ). The relations lend themselves very well for use in path-planning and search algorithms. In addition, heuristic algorithms can take advantage of the uncertainty information stored on the links. (P61)
+
 
 
 
@@ -39,17 +56,3 @@ Carlone et al. use a particle filter based representation of their belief.
   \caption{}
   \label{fig:carlone}
 \end{figure}
-
-In this work we examine a few different confidence measures:
-1) attack angle
-2) determinant of match
-3) trace of match
-
-From SlametPfingstorn:
-
-To asses the quality of fit
-of a new range scan, the same notion of being well-fitted is used as during the construction
-of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
-matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
-information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
-and we compute the 95% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁

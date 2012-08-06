@@ -5,6 +5,11 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+\bibitem{slametpfingsthornthesis}
+B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
+  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
+  and mapping system for the robocup rescue virtual robots competition}, 2006.
+
 \bibitem{ethembabaoglu2007active}
 A.~Ethembabaoglu, \emph{Active target tracking using a mobile robot in the
   USARSim}, Ph.D. thesis, Bachelor’s thesis, Universiteit van Amsterdam,
@@ -15,11 +20,6 @@ S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
   range sensor matching algorithms for mobile robot displacement estimation},
   in \enquote{Robotics and Automation, 2002. Proceedings. ICRA'02. IEEE
   International Conference on}, volume~2, pp. 1667--1674, IEEE, 2002.
-
-\bibitem{slametpfingsthornthesis}
-B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
-  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
-  and mapping system for the robocup rescue virtual robots competition}, 2006.
 
 \bibitem{howard2006multirobot}
 A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
@@ -52,5 +52,8 @@ M.~Jankowska, \emph{A hough transform based approach to map stitching}, Ph.D.
 S.~Carpin, \enquote{Merging maps via Hough transform}, in \enquote{Intelligent
   Robots and Systems, 2008. IROS 2008. IEEE/RSJ International Conference on},
   pp. 1878--1883, IEEE, 2008.
+
+\bibitem{iran2012}
+\enquote{Iran Open 2012 website: \url{http://2012.iranopen.ir/}}, 2012.
 
 \end{thebibliography}

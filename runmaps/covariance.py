@@ -1,10 +1,10 @@
 #!/usr/bin/python
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from utils import Container
+from utils import Container, distance
 
 
-def main(filename = '2012-05-31 IRO2012-Pre2/patches_quadwsm.json'):
+def main(filename = '2012-05-31 IRO2012-Pre2/patches_wsm.json'):
     patches = Container(filename)
     plot_error(patches)
     #plt.tight_layout()
