@@ -2,12 +2,6 @@
 
 \chapter{Map Stitching with the Hough Transform}
 
-\section{Variations on the Hough-transform based stitching}
-
-* Assumption: indoor environment
-* Can be used for re-initialization of the manifold method when position is lost! Awesome if a full scan matcher is used after the hough transform based method.
-
-
 Why hough based?
 Alternatives?
 
@@ -15,7 +9,11 @@ Alternatives?
 
 Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
 
-Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further. This chapter concludes with an elaborate example.
+Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. 
+
+The Hough-based map stitching works with the assumption of an indoor environment. It is a global method, and does not take into consideration any prior knowledge about the relative alignment of both pieces of the map.
+
+This chapter is setup as follows. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further. This chapter concludes with an elaborate example.
 
 \section{Hough transform}
 The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962\cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart\cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes\cite{ballard1981generalizing}.
@@ -215,6 +213,6 @@ The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, 
 	\includegraphics[width=0.3\textwidth]{images/stitching/rooms-ex-result-2b.png}
 	\label{fig:ex-room-result-2b}
 }
-\caption{The results of map stitching according to all four $\theta$ hypothesis.}
+\caption{The results of map stitching according to all four $\theta$ hypothesis. Hypothesis $\theta_{2a}$ yields the correct result.}
 \label{fig:ex-room-all-results}
 \end{figure}

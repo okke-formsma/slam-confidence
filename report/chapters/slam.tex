@@ -69,11 +69,25 @@ In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \t
 
 When the state is represented by a Gaussian, the formulas in the previous section (\ref{slam:state}) can be relatively easily calculated.
 
-\section{Scanmatching with the Weighted Scan Matcher}
+\section{Scan matching with the Weighted Scan Matcher}
 \label{scanmatching}
 A robot has access to a variety of sensors, as discussed in section~\ref{slam:state}. Many sensors are not very accurate and reliable: odometry sensors yield erroneous values when the robot's wheels spin on a slippery slope, GPS sensors are unreliable indoors, and inertia sensors experience `drift' -- they need to be calibrated every once in a while. Laser range sensors provide an alternative. It measures with high precision the distance to the first object in a certain direction. 
 
-Laser range sensors are often put in a rotating device, which measures the distance to objects on a (often horizontal) plane. A field of view of 180\degree with a 1\degree resolution is common, which yields 181 distance scans. The 181 scans form a point cloud of 181 points. See image \ref{<<from buyu and pfingstorn p41>>}. 
+Laser range sensors are often put in a rotating device, which measures the distance to objects on a (often horizontal) plane. A field of view of 180\degree with a 1\degree resolution is common, which yields 181 distance scans. The 181 scans form a point cloud of 181 points. See image~\ref{fig:slamet41}.
+
+\begin{figure}[ht]
+\centering
+\subfigure[]{
+	\includegraphics[width=0.4\textwidth]{images/slam/slamet41a.pdf}
+	\label{fig:scanmatch41a}
+}
+\subfigure[]{
+	\includegraphics[width=0.4\textwidth]{images/slam/slamet41b.pdf}
+	\label{fig:scanmatch41b}
+}
+\caption{Matching two point clouds. In \subref{fig:scanmatch41a}, the red and green point clouds are obviously not well aligned. In \subref{fig:scanmatch41b}, they are much better aligned. Images courtesy of \cite{slametpfingsthornthesis}.}
+\label{fig:screenshots}
+\end{figure} 
 
 The `scans' that the laser range sensor returns are processed through a scanmatching algorithm. These algorithms compare two scans (or a scan and a map) to see how they relate to each other. The scanmatcher needs to find out the relative change in orientation and position between the two scans.
 

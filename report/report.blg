@@ -3,49 +3,51 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: report.aux
 The style file: mystyle.bst
 Database file #1: biblio.bib
+Warning--string name "juli" is undefined
+--line 116 of file biblio.bib
 Warning--I didn't find a database entry for "carpin2002merging"
 Warning--I didn't find a database entry for "jankowska"
 Warning--I didn't find a database entry for "sensi2005scan"
 Warning--empty journal in slametpfingsthornthesis
-You've used 10 entries,
+You've used 11 entries,
             2661 wiz_defined-function locations,
-            642 strings with 6521 characters,
-and the built_in function-call counts, 4022 in all, are:
-= -- 258
-> -- 82
+            645 strings with 6587 characters,
+and the built_in function-call counts, 4174 in all, are:
+= -- 264
+> -- 83
 < -- 10
-+ -- 34
++ -- 35
 - -- 24
-* -- 216
-:= -- 396
-add.period$ -- 10
-call.type$ -- 10
+* -- 219
+:= -- 406
+add.period$ -- 11
+call.type$ -- 11
 change.case$ -- 1
 chr.to.int$ -- 0
-cite$ -- 11
-duplicate$ -- 445
-empty$ -- 414
+cite$ -- 12
+duplicate$ -- 469
+empty$ -- 433
 format.name$ -- 29
-if$ -- 903
+if$ -- 936
 int.to.chr$ -- 0
-int.to.str$ -- 10
-missing$ -- 112
-newline$ -- 37
+int.to.str$ -- 11
+missing$ -- 119
+newline$ -- 40
 num.names$ -- 10
-pop$ -- 204
+pop$ -- 221
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 140
+skip$ -- 145
 stack$ -- 0
 substring$ -- 218
-swap$ -- 299
+swap$ -- 311
 text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
 while$ -- 28
-width$ -- 12
-write$ -- 97
-(There were 4 warnings)
+width$ -- 13
+write$ -- 103
+(There were 5 warnings)
