@@ -3,13 +3,14 @@ from utils import *
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-maps = [
-    '2012-05-31 IRO2012-Pre2/patches.json',
-    '2012-06-14 IRO2012-Pre2/patches.json',
-    '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
-    ]
+maps = {
+    'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
+    'wsm':  '2012-05-31 IRO2012-Pre2/patches_wsm.json',
+}
 
-def main(filename = maps[2]):
+def main(filename = None):
+    if filename is None:
+        filename = maps['wsm']
     patches = Container(filename)
     plot_pitch_roll(patches)
     #plot_confidence(patches)
@@ -55,13 +56,14 @@ def plot_pitch_roll(patches):
     attack_ins = [Orientation(**ins).attack() for ins in patches['ins']]
     attack_gt = [Orientation(**gt).attack() for gt in patches['groundtruth']]
 
-    trace = [cov[0] + cov[4] + cov[8] for cov in patches['covariance']]
+    trace = [cov.trace() for cov in patches['cov']]
 
     fig = plt.figure()
     gs = gridspec.GridSpec(5,2)
     loc_ax = fig.add_subplot(gs[0, 0])
     yaw_ax = fig.add_subplot(gs[1, 0])
     ins_ax = fig.add_subplot(gs[2, 0])
+    log_conf_ax = fig.add_subplot(gs[3, 0])
     conf_ax = fig.add_subplot(gs[4, 0])
     map_ax = fig.add_subplot(gs[:, 1])
 
@@ -76,7 +78,8 @@ def plot_pitch_roll(patches):
     ins_ax.plot(num, attack_gt, 'b-')
     ins_ax.set_ylabel('attack')
 
-    conf_ax.semilogy(num, trace)
+    conf_ax.plot(num, trace)
+    log_conf_ax.semilogy(num, trace)
     conf_ax.set_ylabel('trace')
     conf_ax.set_xlabel('patch #')
 

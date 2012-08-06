@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2011)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: report.aux
+The style file: mystyle.bst
+Database file #1: biblio.bib
+Warning--I didn't find a database entry for "carpin2002merging"
+Warning--I didn't find a database entry for "jankowska"
+Warning--I didn't find a database entry for "sensi2005scan"
+Warning--empty journal in slametpfingsthornthesis
+You've used 10 entries,
+            2661 wiz_defined-function locations,
+            642 strings with 6521 characters,
+and the built_in function-call counts, 4022 in all, are:
+= -- 258
+> -- 82
+< -- 10
++ -- 34
+- -- 24
+* -- 216
+:= -- 396
+add.period$ -- 10
+call.type$ -- 10
+change.case$ -- 1
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 445
+empty$ -- 414
+format.name$ -- 29
+if$ -- 903
+int.to.chr$ -- 0
+int.to.str$ -- 10
+missing$ -- 112
+newline$ -- 37
+num.names$ -- 10
+pop$ -- 204
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 140
+stack$ -- 0
+substring$ -- 218
+swap$ -- 299
+text.length$ -- 10
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 28
+width$ -- 12
+write$ -- 97
+(There were 4 warnings)

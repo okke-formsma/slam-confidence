@@ -1,0 +1,56 @@
+\begin{thebibliography}{10}
+\newcommand{\enquote}[1]{``#1''}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem{ethembabaoglu2007active}
+A.~Ethembabaoglu, \emph{Active target tracking using a mobile robot in the
+  USARSim}, Ph.D. thesis, Bachelor’s thesis, Universiteit van Amsterdam,
+  2007.
+
+\bibitem{pfister2002weighted}
+S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
+  range sensor matching algorithms for mobile robot displacement estimation},
+  in \enquote{Robotics and Automation, 2002. Proceedings. ICRA'02. IEEE
+  International Conference on}, volume~2, pp. 1667--1674, IEEE, 2002.
+
+\bibitem{slametpfingsthornthesis}
+B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
+  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
+  and mapping system for the robocup rescue virtual robots competition}, 2006.
+
+\bibitem{howard2006multirobot}
+A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
+  localization and mapping using manifold representations}, \emph{Proceedings
+  of the IEEE}, volume~94(7):pp. 1360--1369, 2006.
+
+\bibitem{censi2005scan}
+A.~Censi, L.~Iocchi and G.~Grisetti, \enquote{Scan matching in the Hough
+  domain}, in \enquote{Robotics and Automation, 2005. ICRA 2005. Proceedings of
+  the 2005 IEEE International Conference on}, pp. 2739--2744, Ieee, 2005.
+
+\bibitem{hough1962method}
+P.~Hough, \enquote{Method and means for recognizing complex patterns},
+  December~18 1962, uS Patent 3,069,654.
+
+\bibitem{duda1972use}
+R.~Duda and P.~Hart, \enquote{Use of the Hough transformation to detect lines
+  and curves in pictures}, \emph{Communications of the ACM}, volume~15(1):pp.
+  11--15, 1972.
+
+\bibitem{ballard1981generalizing}
+D.~Ballard, \enquote{Generalizing the Hough transform to detect arbitrary
+  shapes}, \emph{Pattern recognition}, volume~13(2):pp. 111--122, 1981.
+
+\bibitem{jankowska2009hough}
+M.~Jankowska, \emph{A hough transform based approach to map stitching}, Ph.D.
+  thesis, University of Oxford, 2009.
+
+\bibitem{carpin2008merging}
+S.~Carpin, \enquote{Merging maps via Hough transform}, in \enquote{Intelligent
+  Robots and Systems, 2008. IROS 2008. IEEE/RSJ International Conference on},
+  pp. 1878--1883, IEEE, 2008.
+
+\end{thebibliography}

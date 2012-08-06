@@ -1,4 +1,5 @@
 <html><head><title>Labbook Okke Formsma SLAM</title>
+<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
 </head>
 <body bgcolor="#DDFFDD">
 
@@ -9,19 +10,89 @@
 	<li> Find trigger for breaking the map up in submaps when a match is particularly poor
     <li> Then stitch map based on Magda's work.
     <li> Compare results on 3 maps
+    <li> <a href="https://github.com/okke-formsma/slam-confidence/">All code at github</a></li>
 </ul>
 
-<h2> Next steps:</h2>
+<h2> Deadlines: </h2>
 <ul>
-    <li> Plot covariance ellipses
-    <li> Why is the covariance matrix 3D instead of 2D?
-    <li> The trace of the covariance is already checked for size (cov(i,i) > SOME_CONSTANT...).
+    <li> Simplest: When to break the map: When the covariance matrix is filled with NaN (no matching particles have been found).</li>
+    <li> Export submaps from USAR Commander (juli 27) </li>
+    <li> Stitch submaps using Magda's method (aug 3) </li>
+    <li> Finish report report (aug 17) (<a href="https://github.com/okke-formsma/slam-confidence/blob/master/report/report.pdf?raw=true">current version</a>)</li>
+</ul>
+
+<h2> Fri Aug 3, 2012</h2>
+<ul>
+    <li>Got the hough stitching working on an example map! The non-optimal result is due to the primitive way of finding optima.</li>
+    <li>
+        <img src="2012-08-02/rooms-ex-result-2a.png">
+    </li>
+</ul>
+<h2> Thu Aug 2, 2012</h2>
+<ul>
+    <li>Got the hough spectrum working:</li>
+    <li><img src="2012-08-02/hough-spectrum.png"></li>
+    <li>Got the cross correlation working. In the image, you see two hough spectra, and the cross correlation between them. The hough spectra are of the same image, rotated 90* (<a href="2012-08-02/lines.png">image</a>). The best correlation is found at 90*, exactly where we would expect it. </li>
+    <li><img src="2012-08-02/cross-correlation.png"></li>
+</ul>
+<h2>Wed Aug 1, 2012</h2>
+<ul>
+    <li>The report is going well, I've got together the chapters about SLAM and the Hough transform.</li>
+    <li>Because I can't find Magda's code, I'm re-implementing her work.</li>
+    <li>Got the Hough transform working, next step: hough spectrum.</li>
+</ul>
+<h2>Wed July 25, 2012</h2>
+<ul>
+    <li>Working on report</li>
+</ul>
+
+<h2>Mon July 23, 2012</h2>
+<ul>
+    <li>Emailed Julian and Magda for a copy of the code belonging to Magda's thesis (Hough Transform based map stitching). Julian doesn't have the code. No reply from Magda yet. Wrote to Stefano Carpin for a copy of his code.</li>
+    
+    <li>Wednesday:<ul>
+        <li>Finish chapter on SLAM</li>
+        <li>Create plots of all three confidence measures for 1 map</li>
+        <li>Get code from carpin?</li>
+    </ul></li>
+
+</ul>
+
+<h2>Fri July 6, 2012</h2>
+<ul>
+    <li>As detailed to-do-list as I can create right now:</li>
+    <li>Export the number of scans in the patches variable, and plot it together with the covariance. I expect them to be highly correlated. Pick one or the other (or a third related measure) as a map-break-up variable.</li>
+    <li>Break the map up in pieces, and export plots of those maps.</li>
+    <li>Use Magda's Hough-transform based map stitching method to stitch the maps together.</li>
+    <li>(maybe: instead of magda's patching, use a backwards-patching algorithm from a known loop closure point, or a global slam-improvement algoirthm which minimizes error?)</li>
+</ul>
+
+<h2> Thu July 5, 2012 </h2>
+<ul>
+    <li>The WSM returns covariance matrixes with negative eigenvalues (this is forbidden; a covariance matrix should be positive semi-definite). As a 'solution', I'm taking the absolute value of the eigenvalues of the matrix.</li>
+    <li><img src="2012-07-05/error_ellipsis.png"></li>
+    <li>Apparently what we're looking at is not a covariance, as the code suggests (parameter name mcov), but an information filter (the inverse of the covariance). Thrun et al page 71 explains information filters. Page 71 says "for Gaussians, (omega) must be positive semidefinite.</li>
+    <li><img src="2012-07-05/error_ellipsis_inf_filter_matrix.png"></li>
+    <li>The above image is the error ellipsis if the covariance matrix would actually be an information matrix. I don't think this is true, because the ellipsis seem weird.</li>
+    <li>Traced the origins of the NaN items. Visual Basic allows division by zero, but when you multiply the result with some other value you get NaN.</li>
+    <li>Why do we find no matches? I think this is because the seed (INS) is too far from the pose estimated by the scanmatcher.</li>
+    <li> Thus, at a place where there are no matches, the covariance is a NaN-filled matrix.</li>
+    <li> Arnoud, the confidence measure I shows comes from <a href="http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf">Carlone et al, Italy</a>
 </ul>
 
 <h2> Wed July 4, 2012 </h2>
 <ul>
     <li> Size the trace of the covariances gives a good indication of where the error in the SLAM is.</li>
     <li> Found some prior work on uncertainty <a href="http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf">by Carlone et al</a>, however, it relies on a multi-hypothesis (particle-based) state representation.</li>
+    <li>I do not trust the behavior of the USAR INS sensor. The following map is created through deadreckoning the INS sensor: <br />
+        <img src="2012-07-02/map_deadreckoning_ins.png"><br />
+        The INS sensor shows a 15 degree yaw error. However, the location estimate is updated according to the original location. Would a real INS sensor not update the location as if the world-coordinates were rotated as well? The location is frighteningly accurate.
+    </li>
+    <li><a href="2012-07-02/Robot1.log">The logfile of the above map</a></li>
+    <li>Why are the covariance matrixes 3D? Well, it's an X, Y, yaw correlation matrix.</li>
+    <li>Created plotting function for error elipses in python.
+        <img src="2012-07-02/error_ellipsis.png" >
+    </li>
 </ul>
 
 <h2> Mon July 2, 2012 </h2>
@@ -227,7 +298,7 @@ History: UCanvas::execDrawPortal [...]
 
 <h2> Wed Dec 22, 2010</h2>
 <ul>
-    <li><a href="http://www.science.uva.nl/research/ias/alumni/m.sc.theses/theses/SlametPfingsthorn.pdf">Bayu Slamet and Max Pfingsthorn: ManifoldSLAM: a Multi-Agent Simultaneous Localization and Mapping System for the RoboCup Rescue Virtual Robots Competition. Master’s thesis, Universiteit van Amsterdam (2006)</a> gives a good overview of the architecture of UvARescue. Is there a similar overview paper / documentation on the current implementation?<br>
+    <li><a href="http://www.science.uva.nl/research/ias/alumni/m.sc.theses/theses/SlametPfingsthorn.pdf">Bayu Slamet and Max Pfingsthorn: ManifoldSLAM: a Multi-Agent Simultaneous Localization and Mapping System for the RoboCup Rescue Virtual Robots Competition. Masterâ€™s thesis, Universiteit van Amsterdam (2006)</a> gives a good overview of the architecture of UvARescue. Is there a similar overview paper / documentation on the current implementation?<br>
     More on the current implementation: <a href="http://www.science.uva.nl/~arnoud/publications/slam_method.pdf">Max Pfingsthorn, Bayu Slamet and Arnoud Visser, "A Scalable Hybrid Multi-Robot SLAM Method for Highly Detailed Maps", in "RoboCup 2007: Robot Soccer World Cup XI", (edited by U. Visser, F. Ribeiro, T. Ohashi, F. Dellaert), Lecture Notes on Artificial Intelligence series, volume 5001, p. 457-464, Springer, Berlin Heidelberg, July 2008.</a>
     <li>Possible metrics to check whether the patch was correctly matched:
     <ul>
@@ -508,7 +579,7 @@ pause</pre>
 <h2> Wed Mar 3, 2010 </h2>
 <ul>
 <li> Checked out /Roboresc/2009/ as basis for my code. Folder /competition/ seems most promising.
-<li> The current SLAM is, according to the 2009 team description paper, based on "Howard, A., Sukhatme, G.S., Matari´c, M.J.: Multi-robot mapping using manifold representations. Proceedings of the IEEE 94 (2006) 1360–1369". <ul>
+<li> The current SLAM is, according to the 2009 team description paper, based on "Howard, A., Sukhatme, G.S., MatariÂ´c, M.J.: Multi-robot mapping using manifold representations. Proceedings of the IEEE 94 (2006) 1360â€“1369". <ul>
     <li> A patch is accepted and merged into the global map when it satisfies any of a number of conditions. Equation 15 in this paper states one condition, when a patch is "far from any of the existing patches in the local map". A difference in pose is meant.
 	<li> One could reject a patch if a scan is unexpected (low entropy).
 	</ul>
@@ -552,7 +623,12 @@ pause</pre>
 
 <style type="text/css">
 img { 
-    width: 30%;
+    max-width: 30%;
+}
+body {
+    background-color: #DDFFDD;
+    max-width: 800px;
+    margin-left: 100px;
 }
 </style>
 

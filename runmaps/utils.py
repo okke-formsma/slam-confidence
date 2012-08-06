@@ -1,6 +1,10 @@
 import json, math
 from math import sin, cos, atan, pi
+from matplotlib.patches import Ellipse
 import numpy as np
+import matplotlib.pyplot as plt
+from numpy.linalg import linalg
+from numpy.linalg.linalg import LinAlgError
 
 class Container:
     """ Contains the patches data with some slice-and-dice functions.
@@ -9,9 +13,10 @@ class Container:
         self.cache = {}
         with open(filename) as f:
             """ My ugly json printer in VB outputs },\n instead of }] at the end of the file. """
-            self.patches = json.loads('[' + f.read()[:-2] + ']')
+            self.patches = json.loads('[' + f.read()[:-3] + ']')
             for i, p in enumerate(self.patches):
                 p['num'] = i
+                p['cov'] = np.reshape(p['covariance'], (3,3))[:2,:2] #from 3D to 2D
 
     def __iter__(self):
         """ Returns an iterator over all patches
@@ -103,6 +108,45 @@ class Angle:
         while diff <= -pi: diff += 2 * pi
         return diff
 
+def error_ellipse(patch):
+    """ Calculates width, height and angle (radians) for error ellipse.
+    """
+    cov = patch['cov'] * 1000 #meters to millimeters
+    try:
+        lengths = sorted(np.linalg.eigvals(cov), reverse=True)
+    except LinAlgError:
+        print patch
+        return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
+                       width=500, height=500, angle=0,
+                       color=(1,1,0))
+
+    scalefactor = 2.4477 #95% interval
+    dxy = cov[0, 1]
+    dx = cov[0, 0]
+    dy = cov[1, 1]
+    rotation = 0.5 * (math.atan((2 * dxy) / ((dx ** 2) - (dy ** 2))))
+    rotation += patch['slam']['yaw']
+
+    # sometimes we get negative eigenvalues (which shouldn't happen) so we abs them.
+    width = math.sqrt(abs(lengths[0])) * scalefactor
+    height = math.sqrt(abs(lengths[1])) * scalefactor
+
+    if dy > dx:
+        width, height = height, width
+
+    return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
+                width=width, height=height, angle=math.degrees(rotation),
+                color=(1,0,1), alpha=0.3)
+
+
+def plot_error_ellipsis(patches, ax=None):
+    """ Plots error ellipses from patches on axis ax. """
+    if ax is None:
+        ax = plt.figure()
+
+    for p in patches:
+        ax.add_artist(error_ellipse(p))
+
 def plot_displacement_map(patches, ax=None):
     """ Plots a map showing the groundtruth (blue) and slam (red) trails of the robots,
     with the same patches connected by a green line. """
@@ -142,3 +186,5 @@ def plot_displacement_map(patches, ax=None):
             ax.annotate(str(p['num']), xy=(p['slam']['x'], p['slam']['y']), xytext=(p['slam']['x'], p['slam']['y']))
 
     ax.set_ylim(ax.get_ylim()[::-1]) #inverse y axis
+
+    plot_error_ellipsis(patches, ax)
