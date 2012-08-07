@@ -5,25 +5,67 @@ import matplotlib.gridspec as gridspec
 
 maps = {
     'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
-    'wsm':  '2012-05-31 IRO2012-Pre2/patches_wsm.json',
+    'wsm':  '2012-05-31 IRO2012-Pre2/patches.json',
 }
 
 def main(filename = None):
     if filename is None:
         filename = maps['wsm']
-    patches = Container(filename)
-    plot_pitch_roll(patches)
+    patches = Container(filename, start=303, end=325)
+    #plot_pitch_roll(patches)
     #plot_confidence(patches)
+    #plot_slam_covariance(patches)
+    plot_paths(patches)
     plt.show()
 
 
+def plot_slam_covariance(patches):
+    """ Plots the slam path and associated covariance ellipsis.
+    """
+    fig = plt.figure(figsize=(6, 12))
+    gs = gridspec.GridSpec(1, 1)
+    ax1 = fig.add_subplot(gs[0, 0])
+    plot_path(patches, source='slam', ax=ax1, plot_numbers=True)
+    plot_error_ellipsis(patches, ax1)
+    ax1.set_ylim(ax1.get_ylim()[::-1]) #inverse y axis
+    plt.tight_layout()
+    plt.savefig('slam_covariance.pdf')
+
+def plot_error_metrics(patches):
+    """ Plots the three error metrics
+    """
+    fig = plt.figure(figsize=(6, 10))
+    gs = gridspec.GridSpec(1, 3)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
+
+
+    
+    plt.tight_layout()
+    plt.savefig('slam_covariance.pdf')
+
+def plot_paths(patches):
+    """ Plots the groundtruth, ins and slam paths in an image and saves it
+    """
+    fig = plt.figure(figsize=(3,5))
+    gs = gridspec.GridSpec(1, 1)
+    ax1 = fig.add_subplot(gs[0,0])
+    plot_path(patches, source='groundtruth', ax=ax1, plot_numbers=True)
+    plot_path(patches, source='ins', ax=ax1)
+    plot_path(patches, source='slam', ax=ax1)
+    ax1.set_ylim(ax1.get_ylim()[::-1]) #inverse y axis
+    ax1.legend(loc=2)
+    plt.tight_layout()
+    plt.savefig('paths.pdf')
+
 def plot_confidence(patches):
     diffs = []
-    for x1, y1, x2, y2 in zip(patches['groundtruth.x'], patches['groundtruth.y'], patches['slam.x'], patches['slam.y']):
+    for x1, y1, x2, y2 in zip(patches['groundtruth.x'], patches['groundtruth.y'], patches['ins.x'], patches['ins.y']):
         diffs.append(distance((x1, y1), (x2, y2)))
 
     diff_yaw = [Angle.diff(yaw1, yaw2)
-                for yaw1, yaw2 in zip(patches['slam.yaw'], patches['groundtruth.yaw'])]
+                for yaw1, yaw2 in zip(patches['ins.yaw'], patches['groundtruth.yaw'])]
 
     fig = plt.figure()
     gs = gridspec.GridSpec(4, 1)
@@ -80,6 +122,7 @@ def plot_pitch_roll(patches):
 
     conf_ax.plot(num, trace)
     log_conf_ax.semilogy(num, trace)
+    log_conf_ax.set_ylabel('trace log')
     conf_ax.set_ylabel('trace')
     conf_ax.set_xlabel('patch #')
 

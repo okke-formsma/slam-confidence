@@ -1,10 +1,18 @@
 #!/usr/bin/python
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from utils import Container, distance
+from numpy.lib.index_tricks import s_
+from utils import Container, distance, Angle, plot_displacement_map
 
+"""
+Plots
+location error
+rotation error
+covariance trace
+map
+"""
 
-def main(filename = '2012-05-31 IRO2012-Pre2/patches_wsm.json'):
+def main(filename = '2012-05-31 IRO2012-Pre2/patches.json'):
     patches = Container(filename)
     plot_error(patches)
     #plt.tight_layout()
