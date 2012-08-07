@@ -11,11 +11,12 @@ maps = {
 def main(filename = None):
     if filename is None:
         filename = maps['wsm']
-    patches = Container(filename, start=303, end=325)
+    patches = Container(filename)
     #plot_pitch_roll(patches)
     #plot_confidence(patches)
     #plot_slam_covariance(patches)
-    plot_paths(patches)
+    #plot_paths(patches)
+    plot_error_metrics(patches)
     plt.show()
 
 
@@ -34,16 +35,26 @@ def plot_slam_covariance(patches):
 def plot_error_metrics(patches):
     """ Plots the three error metrics
     """
-    fig = plt.figure(figsize=(6, 10))
-    gs = gridspec.GridSpec(1, 3)
+    fig = plt.figure(figsize=(8, 3))
+    gs = gridspec.GridSpec(1, 1)
     ax1 = fig.add_subplot(gs[0, 0])
-    ax2 = fig.add_subplot(gs[0, 1])
-    ax3 = fig.add_subplot(gs[0, 2])
 
+    det = np.abs(np.array([np.linalg.det(cov) for cov in patches['cov']]))
+    trace = np.abs(np.array([np.trace(cov) for cov in patches['cov']]))
+    missing = -np.isfinite(det) * 1
+    #print missing, np.sum(missing)
+    ax1.semilogy(det, label="Determinant")
+    ax1.semilogy(trace, 'g', label="Trace")
+    ax1.semilogy(missing, 'r.', label="NaN")
 
+    ax1.set_ylim(bottom=1, top=10**9.9)
+    ax1.set_ylabel('Absolute value')
+    ax1.set_xlabel('patch #')
+
+    ax1.legend(loc=2)
     
     plt.tight_layout()
-    plt.savefig('slam_covariance.pdf')
+    plt.savefig('error_metrics.pdf')
 
 def plot_paths(patches):
     """ Plots the groundtruth, ins and slam paths in an image and saves it
