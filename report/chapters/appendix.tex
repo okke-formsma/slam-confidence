@@ -1,0 +1,23 @@
+%!TEX root = ../report.tex
+
+\chapter{Appendix: images}
+
+\begin{figure}[ht]
+\centering
+\subfigure[The path of the robot according to the groundtruth, inertia sensor and SLAM]{
+	\includegraphics[width=0.45\textwidth]{images/experiment/map1/trace.pdf}
+	\label{fig:apx:map1-paths}
+}
+\subfigure[The path of the robot according to SLAM, with associated uncertainty ellipsis. The error is plotted with yellow circles if there was infinite error (no matches at all).]{
+	\includegraphics[width=0.45\textwidth]{images/experiment/map1/slam_covariance.pdf}
+	\label{fig:apx:map1-trace}
+}
+\caption{Map 1}
+\label{fig:apx:map1}
+\end{figure}
+
+
+% \subfigure[SLAM result]{
+% 	\includegraphics[width=0.45\textwidth]{images/experiment/map1/slam.png}
+% 	\label{fig:apx:map1-trace}
+% }

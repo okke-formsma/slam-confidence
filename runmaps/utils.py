@@ -3,18 +3,22 @@ from math import sin, cos, atan, pi
 from matplotlib.patches import Ellipse
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.lib.index_tricks import s_
 from numpy.linalg import linalg
 from numpy.linalg.linalg import LinAlgError
 
 class Container:
     """ Contains the patches data with some slice-and-dice functions.
     """
-    def __init__(self, filename):
+    def __init__(self, filename, start=0, end=None):
+        """ Start and end are to slice the patches
+        """
+        slice = s_[start:end]
         self.cache = {}
         with open(filename) as f:
             """ My ugly json printer in VB outputs },\n instead of }] at the end of the file. """
-            self.patches = json.loads('[' + f.read()[:-3] + ']')
-            for i, p in enumerate(self.patches):
+            self.patches = json.loads('[' + f.read().rstrip()[:-1] + ']')[slice]
+            for i, p in enumerate(self.patches, start=start):
                 p['num'] = i
                 p['cov'] = np.reshape(p['covariance'], (3,3))[:2,:2] #from 3D to 2D
 
@@ -115,7 +119,7 @@ def error_ellipse(patch):
     try:
         lengths = sorted(np.linalg.eigvals(cov), reverse=True)
     except LinAlgError:
-        print patch
+        #print patch
         return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
                        width=500, height=500, angle=0,
                        color=(1,1,0))
@@ -131,8 +135,8 @@ def error_ellipse(patch):
     width = math.sqrt(abs(lengths[0])) * scalefactor
     height = math.sqrt(abs(lengths[1])) * scalefactor
 
-    if dy > dx:
-        width, height = height, width
+    #if dy > dx:
+    #    width, height = height, width
 
     return Ellipse(xy=(patch['slam']['x'], patch['slam']['y']),
                 width=width, height=height, angle=math.degrees(rotation),
@@ -146,6 +150,46 @@ def plot_error_ellipsis(patches, ax=None):
 
     for p in patches:
         ax.add_artist(error_ellipse(p))
+
+
+def plot_path(patches, source='slam', ax=None, color=None, plot_numbers=False):
+    """ Plots a map showing the source trails of the robots. Source can be 'slam', 'groundtruth', or 'ins'.
+     They are by default plotted in resp. red, blue, and yellow. Other sources are plotted black."""
+
+    if ax is None:
+        ax = plt.figure()
+
+    if color is None:
+        colors = {
+            'slam': (1, 0, 0, 0.8),
+            'groundtruth': (0, 0, 1, 0.8),
+            'ins': (1, 1, 0, 0.8),
+        }
+        if source in colors:
+            color = colors[source]
+        else:
+            color = (0, 0, 0, 0.8) #black
+
+    x = patches['%s.x' % (source, )]
+    y = patches['%s.y' % (source, )]
+    w = patches['%s.yaw' % (source, )]
+
+    ax.axis('equal')
+    angles = dict(x=[], y=[])
+
+    for x_, y_, w_ in zip(x, y, w):
+        angles['x'].extend([x_, x_ + 200 * cos(w_), None])
+        angles['y'].extend([y_, y_ + 200 * sin(w_), None])
+
+    # all plotting with x- and y-values swapped
+    ax.plot(angles['x'], angles['y'], '-', color=(0, 0, 0, 0.8))
+    ax.plot(x, y, '+-', color=color, linewidth=2, label=source)
+
+    if plot_numbers:
+        for p in patches:
+            if p['num'] % 10 == 0:
+                ax.annotate(str(p['num']), xy=(p[source]['x'], p[source]['y']), xytext=(p[source]['x'], p[source]['y']))
+
 
 def plot_displacement_map(patches, ax=None):
     """ Plots a map showing the groundtruth (blue) and slam (red) trails of the robots,
@@ -175,10 +219,10 @@ def plot_displacement_map(patches, ax=None):
         angles_s['y'].extend([sy_, sy_ + 200 * sin(sw_), None])
 
     # all plotting with x- and y-values swapped
-    ax.plot(displacement_segments['x'], displacement_segments['y'], '-', color=(0.1, 0.9, 0.1, 0.3))
-    ax.plot(angles_g['x'], angles_g['y'], '-', color=(0, 0, 0, 0.8))
+    #ax.plot(displacement_segments['x'], displacement_segments['y'], '-', color=(0.1, 0.9, 0.1, 0.3))
+    #ax.plot(angles_g['x'], angles_g['y'], '-', color=(0, 0, 0, 0.8))
     ax.plot(angles_s['x'], angles_s['y'], '-', color=(0, 0, 0, 0.8))
-    ax.plot(gx, gy, '+-', color=(0, 0, 1, 0.5))
+    #ax.plot(gx, gy, '+-', color=(0, 0, 1, 0.5))
     ax.plot(sx, sy, '+-', color=(1, 0, 0, 0.8), linewidth=2)
 
     for p in patches:

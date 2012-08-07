@@ -6,12 +6,10 @@ Database file #1: biblio.bib
 Warning--string name "juli" is undefined
 --line 116 of file biblio.bib
 Warning--I didn't find a database entry for "carpin2002merging"
-Warning--I didn't find a database entry for "jankowska"
-Warning--I didn't find a database entry for "sensi2005scan"
 Warning--empty journal in slametpfingsthornthesis
 You've used 11 entries,
             2661 wiz_defined-function locations,
-            645 strings with 6587 characters,
+            643 strings with 6565 characters,
 and the built_in function-call counts, 4174 in all, are:
 = -- 264
 > -- 83
@@ -50,4 +48,4 @@ warning$ -- 1
 while$ -- 28
 width$ -- 13
 write$ -- 103
-(There were 5 warnings)
+(There were 3 warnings)
