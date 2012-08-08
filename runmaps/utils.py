@@ -17,7 +17,12 @@ class Container:
         self.cache = {}
         with open(filename) as f:
             """ My ugly json printer in VB outputs },\n instead of }] at the end of the file. """
-            self.patches = json.loads('[' + f.read().rstrip()[:-1] + ']')[slice]
+            patches = json.loads('[' + f.read().rstrip()[:-1] + ']')[slice]
+            self.patches = []
+            for p in patches:
+                if p['extend']:
+                    self.patches.append(p)
+
             for i, p in enumerate(self.patches, start=start):
                 p['num'] = i
                 p['cov'] = np.reshape(p['covariance'], (3,3))[:2,:2] #from 3D to 2D

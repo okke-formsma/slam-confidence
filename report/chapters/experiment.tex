@@ -36,17 +36,28 @@ Gotta make a second run.
 \subsection{Map 3}
 Gotta make a third run.
 
-\section{Confidence measures}
-The confidence measures of the first map are shown in figure~\ref{fig:map1-confidence-measures}.
+\section{Segmenting the map}
+The confidence measures of the first map are shown in figure~\ref{fig:map1-confidence-measures-vs-time}. It is immediately apparent that the extreme values of the three metrics coincide. When the scan matcher matches few scanlines, the determinant and trace values are at their maximum. When the scan matcher matches no scanlines, the determinant and trace of the covariance matrix are undefined. These show up as red dots on the x-axis. When the scan matcher matches many scanlines, its increased confidence in a correct match is reflected in a covariance matrix with small determinant and trace.
+
+In figure~\ref{fig:map1-confidence-measures-scatter} the values of the three confidence measures are plotted against each other to emphasize their correlation. The (Spearman) rank correlation gives an indication how well the relationship between the two variables can be described by a monotonic function. The spearman rank correlation coefficients between the confidence measures is as follows. Between trace and determinant $0.85$, between number of matches and determinant $-0.50$, and between number of matches and trace $-0.48$, all with a p-value $\ll 10^{-10}$. This means that all three confidence measures are strongly correlated.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{images/experiment/map1/error-measures.pdf}
+  \subfigure[Confidence measures through time]{
+    \includegraphics[width=\textwidth]{images/experiment/map1/error-measures.pdf}
+    \label{fig:map1-confidence-measures-vs-time}
+  }
+  \subfigure[Scatter plot between the three confidence measures.]{
+    \includegraphics[width=\textwidth]{images/experiment/map1/error-measures-scatter.pdf}
+    \label{fig:map1-confidence-measures-scatter}
+  }
   \caption{Confidence measures for map 1.}
-  \label{fig:map1-ins-problem}
+  \label{fig:map1-confidence-measures}
 \end{figure}
 
-\section{Map segments}
+When there are no matches at all, the scanmatcher has failed most spectacularly. In that case, the covariance matrix can not even be computed. In extention, the determinant or trace of the covariance matrix can not be computed either. This occurs at the following timesteps: 66  67  68  96 103 113 159 164 168 175. The greatest rift lies at $66 \le t \le68$, where there were 3 consecutive timesteps that could not be matched. 
+
+
 
 \section{Stitching}
 
