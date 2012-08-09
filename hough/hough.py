@@ -1,5 +1,6 @@
 from math import hypot, pi, radians
 from matplotlib import gridspec
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.lib.index_tricks import s_
@@ -48,15 +49,15 @@ def x_y_correlation(spectrum1, spectrum2):
     corr /= np.max(corr) #normalize
     corr_domain = np.arange(len(corr)) - (len(spectrum2) + 1)
 
-    #smooth array by averaging over 5 neighbors.
-    #corr = np.correlate(corr, [1,50,100,50,1], mode='same')
-    corr = gaussian_filter1d(corr, 10, mode="constant")
+    #Gaussian filter?
+    #corr = gaussian_filter1d(corr, 10, mode="constant")
+
     return corr_domain, corr
 
 
 def rotate_images(im1, im2, phi, theta):
-    im1 = rotate(im1, angle=phi, mode='nearest')
-    im2 = rotate(im2, angle=phi + theta, mode='nearest')
+    im1 = rotate(im1, angle=phi, mode='nearest', output=np.uint8)
+    im2 = rotate(im2, angle=phi + theta, mode='nearest', output=np.uint8)
     return im1, im2
 
 def optimal_translation(im, im2, phi, theta):
@@ -117,7 +118,7 @@ def plot_hough_spectrum(im):
     ax2.set_xticks(np.linspace(0, theta_resolution, 4, endpoint=False))
     ax2.set_xticklabels(['%s pi' % n for n in np.linspace(0, 1, 4, endpoint=False)])
     ax2.set_xlim(0, len(hs)-1)
-    ax2.set_xlabel('theta / pi')
+    ax2.set_xlabel('theta')
     ax2.set_ylabel('hough spectrum')
 
     plt.show()
@@ -163,12 +164,15 @@ def plot_after_rotation_translation(im1, im2, phi, theta, (x, y)):
     s1 = im1.shape
     s2 = im2.shape
 
-    im = np.zeros(shape = (s1[0]+s2[0]*2, s1[1]+s2[1]*2, 3), dtype=int) + 255
+    im = np.zeros(shape = (s1[0]+s2[0]*2, s1[1]+s2[1]*2, 3), dtype=np.uint8) + 255
 
     im[s2[0]:s2[0]+s1[0], s2[1]:s2[1]+s1[1], 0] = im1
     im[s2[0]+y:s2[0]*2+y, s2[1]+x:s2[1]*2+x, 1] = im2
 
-    imsave('result%s.png'%theta, im[s2[0]:s1[0] + s2[0], s2[1]:s1[1] + s2[1]])
+    yxtr = min(s2[0], s2[0] + y), max(s2[0] + s1[0], s2[0] * 2 + y)
+    xxtr = min(s2[1], s2[1] + x), max(s2[1] + s1[1], s2[1] * 2 + x)
+
+    imsave('result%s.png'%theta, im[yxtr[0]:yxtr[1], xxtr[0]:xxtr[1]])
     call(["open", "result%s.png"%theta])
     #plt.imshow(-im)
     #plt.imshow(-im[s2[0]:s1[0]+s2[0], s2[1]:s1[1]+s2[1]])
@@ -227,25 +231,39 @@ def plot_x_y_spectrum(im):
     ax3.imshow(im, cmap="gray", aspect="auto")
     ax3.set_title('Map')
 
-im1 = imread('rooms.png', flatten=True)
-im2 = imread('rooms-partial.png', flatten=True)
+
+def main():
+    file_filter = r"../runmaps/2012-05-31 IRO2012-Pre2/maps/*1.png"
+    f = glob.glob(file_filter)
+    for i, f_ in enumerate(f):
+        print i, f_
+
+    i1 = int(raw_input("Which files do you want to merge? (first): "))
+    i2 = int(raw_input("Which files do you want to merge? (second): "))
+
+    im1 = imread(f[i1], flatten=True)
+    im2 = imread(f[i2], flatten=True)
+
+    #find hypothesis theta and phi
+    plot_hough_rotate(im1, im2)
+    print "Look up phi and theta, close  pylab window"
+    plt.show()
+
+    phi = int(raw_input("Please input phi (base rotation): "))
+    theta = int(raw_input("Please input theta (relative rotation): "))
+
+    #find hypothesis for x and y (for all 4 solutions for theta)
+    for theta_i in theta, theta+90, theta+180, theta+270:
+        plot_x_y_correlation(im1, im2, phi, theta_i)
+        t = optimal_translation(im1, im2, phi, theta_i)
+        plot_after_rotation_translation(im1, im2, phi, theta_i, t)
 
 
-#hypothesis 1a
-#plot_hough_spectrum(im1)
-#plot_x_y_correlation(im1, im2, 90, 169)
+    print 'done'
+    plt.show()
 
-#hypothesis 2a
-for i in range(4):
-    phi, theta = 90, 79 + i * 90
-    #t = optimal_translation(im1, im2, phi, theta)
-    #print t
-    #plot_after_rotation_translation(im1, im2, phi, theta, t)
-#plot_after_rotation(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True), 90, 79)
-    plot_x_y_correlation(im1, im2, phi, theta)
-#plot_hough_rotate(imread('rooms.png', flatten=True), imread('rooms-partial.png', flatten=True))
-#plot_hough_spectrum(imread('rooms.png', flatten=True))
-#plot_x_y_spectrum(im1)
+if __name__ == "__main__":
+    main()
 
 #hypothesis 1a
 #plot_hough_spectrum(im1)
@@ -256,6 +274,3 @@ for i in range(4):
 #plot_x_y_spectrum(imread('rooms-rotated-full.png', flatten=True))
 #imsave('hough.png', -ht.rot90())
 #call(["open", "hough.png"])
-
-print 'done'
-plt.show()

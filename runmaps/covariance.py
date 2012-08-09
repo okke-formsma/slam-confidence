@@ -18,7 +18,6 @@ def main(filename = '2012-05-31 IRO2012-Pre2/patches.json'):
     #plt.tight_layout()
     plt.show()
 
-
 def plot_error(patches):
     diffs = [distance((p['groundtruth']['x'], p['groundtruth']['y']), (p['slam']['x'], p['slam']['y'])) 
              for p in patches]

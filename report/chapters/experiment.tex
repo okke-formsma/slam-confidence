@@ -57,6 +57,17 @@ In figure~\ref{fig:map1-confidence-measures-scatter} the values of the three con
 
 When there are no matches at all, the scanmatcher has failed most spectacularly. In that case, the covariance matrix can not even be computed. In extention, the determinant or trace of the covariance matrix can not be computed either. This occurs at the following timesteps: 66  67  68  96 103 113 159 164 168 175. The greatest rift lies at $66 \le t \le68$, where there were 3 consecutive timesteps that could not be matched. 
 
+The submaps that are procured can be found in the appendix, figure~\ref{fig:apx:map1-pieces}. The Hough map stitching procedure as outlined in chapter~\ref{chapter:hough} between the first two sub-maps results in an optimal rotation $\theta_1$ of $7\degree$, with a much less pronounced secondary hypothesis $\theta_2$ of $97\degree$, as can be seen in figure~\ref{fig:exp:1:theta}
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/experiment/map1/stitch1-theta-correlation-result.pdf}
+  
+  \caption{Finding optimal rotation $\theta$ through correlating Hough spectra.}
+  \label{fig:exp:1:theta}
+\end{figure}
+
 
 
 \section{Stitching}
