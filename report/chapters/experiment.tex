@@ -3,8 +3,7 @@
 \label{experiments}
 In this chapter the experimental results are outlined. The experimental method is outlined in chapter~\ref{method}. For the experiment, a number of simulation runs are recorded in USAR Sim. The map is then 
 
-\section{Experimental Runs}
-\subsection{Map 1: IranOpen 2012 - Pre 2}
+\section{Map 1: IranOpen 2012 - Pre 2}
 This map was used in the Iran Open 2012 competition \cite{iran2012}. The map features a grey hospital-like environment with grey tiled floors and walls. In figure~\ref{fig:map1} a screenshot of the environment is shown along with the map after the Weighted Scan Matcher was run on the simulation data. 
 
 \begin{figure}[ht]
@@ -30,13 +29,8 @@ The map shows a lot of noise and errors. As can be seen in figure~\ref{fig:apx:m
   \label{fig:map1-ins-problem}
 \end{figure}
 
-\subsection{Map 2}
-Gotta make a second run.
 
-\subsection{Map 3}
-Gotta make a third run.
-
-\section{Segmenting the map}
+\subsection{Segmenting the map}
 The confidence measures of the first map are shown in figure~\ref{fig:map1-confidence-measures-vs-time}. It is immediately apparent that the extreme values of the three metrics coincide. When the scan matcher matches few scanlines, the determinant and trace values are at their maximum. When the scan matcher matches no scanlines, the determinant and trace of the covariance matrix are undefined. These show up as red dots on the x-axis. When the scan matcher matches many scanlines, its increased confidence in a correct match is reflected in a covariance matrix with small determinant and trace.
 
 In figure~\ref{fig:map1-confidence-measures-scatter} the values of the three confidence measures are plotted against each other to emphasize their correlation. The (Spearman) rank correlation gives an indication how well the relationship between the two variables can be described by a monotonic function. The spearman rank correlation coefficients between the confidence measures is as follows. Between trace and determinant $0.85$, between number of matches and determinant $-0.50$, and between number of matches and trace $-0.48$, all with a p-value $\ll 10^{-10}$. This means that all three confidence measures are strongly correlated.
@@ -55,21 +49,41 @@ In figure~\ref{fig:map1-confidence-measures-scatter} the values of the three con
   \label{fig:map1-confidence-measures}
 \end{figure}
 
-When there are no matches at all, the scanmatcher has failed most spectacularly. In that case, the covariance matrix can not even be computed. In extention, the determinant or trace of the covariance matrix can not be computed either. This occurs at the following timesteps: 66  67  68  96 103 113 159 164 168 175. The greatest rift lies at $66 \le t \le68$, where there were 3 consecutive timesteps that could not be matched. 
+When there are no matches at all, the scanmatcher has failed most spectacularly. In that case, the covariance matrix can not even be computed. In extention, the determinant or trace of the covariance matrix can not be computed either. This occurs at the following timesteps: 66  67  68  96 103 113 159 164 168 175. The greatest rift lies at $66 \le t \le68$, where there were 3 consecutive timesteps that could not be matched. The submaps that are procured can be found in the appendix, figure~\ref{fig:apx:map1-pieces}. 
 
-The submaps that are procured can be found in the appendix, figure~\ref{fig:apx:map1-pieces}. The Hough map stitching procedure as outlined in chapter~\ref{chapter:hough} between the first two sub-maps results in an optimal rotation $\theta_1$ of $7\degree$, with a much less pronounced secondary hypothesis $\theta_2$ of $97\degree$, as can be seen in figure~\ref{fig:exp:1:theta}
-
+\subsection{Stitching}
+The Hough map stitching procedure as outlined in chapter~\ref{chapter:hough} between the first two sub-maps results in an optimal rotation $\theta_1$ of $13\degree$, with a much less pronounced secondary hypothesis $\theta_2$ of $103\degree$, as can be seen in figure~\ref{fig:exp:1:theta}. The X- and Y-spectra for $\theta_{1a}$ are shown in figure~\ref{fig:exp:1:xy}. The resulting map is shown in figure~\ref{fig:exp:1:result1}.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\textwidth]{images/experiment/map1/stitch1-theta-correlation-result.pdf}
-  
   \caption{Finding optimal rotation $\theta$ through correlating Hough spectra.}
   \label{fig:exp:1:theta}
 \end{figure}
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/experiment/map1/stitch1-1a-xy-correlation.pdf}
+  \caption{Finding optimal translation $t$ through correlating Hough spectra.}
+  \label{fig:exp:1:xy}
+\end{figure}
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/experiment/map1/stitch1-1a-result.png}
+  \caption{The best stitch according to $\theta_{1a}$ and optimal $t$.}
+  \label{fig:exp:1:result1}
+\end{figure}
 
-\section{Stitching}
+The result of this stitch is far from optimal. While the rotation angle $\theta_{1a}$ is optimal and the images are rotated correctly, the translation estimate $t$ is very much off. The Hough-transform based map stitching method requires a large overlapping area between the two submaps. Because the submaps overlap very little, the stitching method fails.
 
-\section{Results}
+In the next figure, \ref{fig:exp:1:result8}, the result of stitching all submaps in figure~\ref{fig:apx:map1-pieces} is shown. The result is terrible
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/experiment/map1/result/step8.png}
+  \caption{The result of stitching all partial maps (see figure~\ref{fig:apx:map1-pieces}) according to the Hough stitching method. Compare to the original SLAM result, figure~\ref{fig:map1-map}.}
+  \label{fig:exp:1:result8}
+\end{figure}
+
+\section{Discussion of results}

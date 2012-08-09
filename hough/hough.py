@@ -56,8 +56,8 @@ def x_y_correlation(spectrum1, spectrum2):
 
 
 def rotate_images(im1, im2, phi, theta):
-    im1 = rotate(im1, angle=phi, mode='nearest', output=np.uint8)
-    im2 = rotate(im2, angle=phi + theta, mode='nearest', output=np.uint8)
+    im1 = rotate(im1, angle=phi, mode='constant', cval=255, output=np.uint8)
+    im2 = rotate(im2, angle=phi + theta, mode='constant', cval=255, output=np.uint8)
     return im1, im2
 
 def optimal_translation(im, im2, phi, theta):
@@ -171,9 +171,13 @@ def plot_after_rotation_translation(im1, im2, phi, theta, (x, y)):
 
     yxtr = min(s2[0], s2[0] + y), max(s2[0] + s1[0], s2[0] * 2 + y)
     xxtr = min(s2[1], s2[1] + x), max(s2[1] + s1[1], s2[1] * 2 + x)
+    cropped = im[yxtr[0]:yxtr[1], xxtr[0]:xxtr[1]]
 
-    imsave('result%s.png'%theta, im[yxtr[0]:yxtr[1], xxtr[0]:xxtr[1]])
-    call(["open", "result%s.png"%theta])
+    greyscale = np.minimum(cropped[..., 0], cropped[..., 1])
+    imsave('result_color_%s.png'%theta, cropped)
+    imsave('result_bw_%s.png'%theta, greyscale)
+    return greyscale
+    #call(["open", "result%s.png"%theta])
     #plt.imshow(-im)
     #plt.imshow(-im[s2[0]:s1[0]+s2[0], s2[1]:s1[1]+s2[1]])
 
@@ -233,8 +237,9 @@ def plot_x_y_spectrum(im):
 
 
 def main():
-    file_filter = r"../runmaps/2012-05-31 IRO2012-Pre2/maps/*1.png"
-    f = glob.glob(file_filter)
+    f = glob.glob(r"../runmaps/2012-05-31 IRO2012-Pre2/maps/*1.png")
+    f += glob.glob(r"./result_bw_*.png")
+
     for i, f_ in enumerate(f):
         print i, f_
 
@@ -257,10 +262,6 @@ def main():
         plot_x_y_correlation(im1, im2, phi, theta_i)
         t = optimal_translation(im1, im2, phi, theta_i)
         plot_after_rotation_translation(im1, im2, phi, theta_i, t)
-
-
-    print 'done'
-    plt.show()
 
 if __name__ == "__main__":
     main()
