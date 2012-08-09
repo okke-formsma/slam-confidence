@@ -2,6 +2,7 @@
 from utils import *
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import scipy.stats
 
 maps = {
     'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
@@ -16,8 +17,22 @@ def main(filename = None):
     #plot_confidence(patches)
     #plot_slam_covariance(patches)
     #plot_paths(patches)
-    plot_error_metrics(patches)
-    plt.show()
+    #plot_error_metrics(patches)
+    get_piece_ranges(patches)
+
+    #plot_error_metrics_scatter(patches)
+    #plt.show()
+
+def get_piece_ranges(patches):
+    matches = np.array(patches['matches'])
+
+    last_break = 0
+    print np.where(matches == 0)[0]
+    for b in np.where(matches == 0)[0]:
+        if last_break != b-1: #no consecutive runs
+            print last_break+1, b-1
+        last_break = b
+    print last_break+1, len(matches)
 
 
 def plot_slam_covariance(patches):
@@ -33,11 +48,12 @@ def plot_slam_covariance(patches):
     plt.savefig('slam_covariance.pdf')
 
 def plot_error_metrics(patches):
-    """ Plots the three error metrics
+    """ Plots the three error metrics on a time axis
     """
-    fig = plt.figure(figsize=(8, 3))
-    gs = gridspec.GridSpec(1, 1)
+    fig = plt.figure(figsize=(10, 6))
+    gs = gridspec.GridSpec(2, 1)
     ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[1, 0])
 
     det = np.abs(np.array([np.linalg.det(cov) for cov in patches['cov']]))
     trace = np.abs(np.array([np.trace(cov) for cov in patches['cov']]))
@@ -48,13 +64,75 @@ def plot_error_metrics(patches):
     ax1.semilogy(missing, 'r.', label="NaN")
 
     ax1.set_ylim(bottom=1, top=10**9.9)
-    ax1.set_ylabel('Absolute value')
-    ax1.set_xlabel('patch #')
-
+    ax1.set_xlim(right=len(det))
+    #ax1.set_ylabel('')
     ax1.legend(loc=2)
-    
+
+    ax2.plot(patches['matches'], label='matches')
+    ax2.legend(loc=2)
+    ax2.set_xlabel('t')
+    ax2.set_xlim(right=len(det))
+
+    #plt.tight_layout()
+    plt.savefig('error-metrics.pdf')
+
+
+def plot_error_metrics_scatter(patches):
+    """ Plots the three error metrics in relation to each other
+    """
+    fig = plt.figure(figsize=(12, 4))
+    gs = gridspec.GridSpec(1, 3)
+    ax1 = fig.add_subplot(gs[0, 2])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 0])
+
+    det = np.abs(np.array([np.trace(cov) for cov in patches['cov']]))
+    trace = np.abs(np.array([np.linalg.det(cov) for cov in patches['cov']]))
+    matches = np.array(patches['matches'])
+    missing = -np.isfinite(det) * 1
+
+    ax1.semilogy(matches, trace, 'bo')
+    ax1.semilogy(matches, missing, 'ro')
+    ax1.set_xlabel('matches')
+    ax1.set_ylabel('trace')
+    ax1.set_ylim(bottom=1, top=10 ** 8)
+
+    ax2.semilogy(matches, det, 'bo')
+    ax2.semilogy(matches, missing, 'ro')
+    ax2.set_xlabel('matches')
+    ax2.set_ylabel('determinant')
+    ax2.set_ylim(bottom=1)
+
+    ax3.loglog(trace, det, 'bo')
+    ax3.loglog(missing, missing, 'ro')
+    ax3.set_xlabel('trace')
+    ax3.set_ylabel('determinant')
+    ax3.set_ylim(bottom=1)
+
+    detn, tracen, matchesn = np.nan_to_num(det), np.nan_to_num(trace), np.nan_to_num(matches)
+
+    print 'trace det', scipy.stats.spearmanr(tracen, detn)
+    print 'matches det', scipy.stats.spearmanr(matchesn, detn)
+    print 'matches trace', scipy.stats.spearmanr(matchesn, tracen)
+
+    mask = np.where(matches != 0)
+    print matches[mask]
+    num = 10
+    trace_max = set(np.argsort(trace[mask])[:num])
+    det_max = set(np.argsort(det[mask])[:num])
+    matches_min = set(np.argsort(matches[mask])[-num:])
+
+    print "trace", trace_max
+    print "det", det_max
+    print "matches", matches_min
+    print 'trace det', len(trace_max & det_max)
+    print 'matches det', len(matches_min & det_max)
+    print 'matches trace', len(matches_min & trace_max)
+
+
     plt.tight_layout()
-    plt.savefig('error_metrics.pdf')
+    plt.savefig('error-measures-scatter.pdf')
+    plt.show()
 
 def plot_paths(patches):
     """ Plots the groundtruth, ins and slam paths in an image and saves it
