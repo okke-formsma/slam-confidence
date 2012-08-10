@@ -3,7 +3,7 @@ import numpy as np
 import glob
 
 def main():
-    file_filter = r"./2012-05-31 IRO2012-Pre2/maps/*jury*.png"
+    file_filter = r"./2012-08-07 nl pre1/maps/*jury*.png"
     for path in glob.glob(file_filter):
         im = imread(path)
         #Only keep blue channel - red and green are 0 in the 'unknown' parts.

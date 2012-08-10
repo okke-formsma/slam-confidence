@@ -1,5 +1,28 @@
 %!TEX root = ../report.tex
 
-\chapter{Future work}
+\chapter{Discussion}
 
-Use the quad-tree based scanmatcher with a guessed initial position over the entire map.
+** This is only a list of points that need to be discussed, need to be fleshed out **
+
+It is easy to break the map where the scanmatcher fails - it fails most significantly when it can not find a single matching scan. See also part about ins sensor.
+
+Scanmatcher works too well already - the hough stitching is an inferior solution.
+
+Locating multiple robots might be a better use of the scanmatcher than stiching the map of one robot.
+
+The rotation estimate works very well in an indoor environment, this could be used as input for the scanmatcher.
+
+----
+
+Ins sensor: should take it's rotation drift into consideration when assessing the next XY coordinates. Otherwise, update the location and rotation by the change in the sensor instead of the full values.
+
+\section{Future work}
+
+** This is only a list of points that need to be discussed, need to be fleshed out **
+
+Find a better X- Y- matching algorithm for the Hough stitching method
+
+Use the quad-tree based scanmatcher, and maybe use this mechanism to stitch maps from multiple robots. Or at least to align them.
+
+Fix the INS sensor, because it is not internally coherent. (Or: don't trust the rotation by the INS sensor)
+

@@ -12,7 +12,7 @@ This map was used in the Iran Open 2012 competition \cite{iran2012}. The map fea
 	\includegraphics[width=0.5\textwidth]{images/experiment/map1/screenshot.png}
 	\label{fig:map1-screenshot}
 }
-\subfigure[Map created with the WSM]{
+\subfigure[Map created with the Weighted Scan Matcher]{
 	\includegraphics[width=0.3\textwidth]{images/experiment/map1/slam.png}
 	\label{fig:map1-map}
 }
@@ -77,7 +77,7 @@ The Hough map stitching procedure as outlined in chapter~\ref{chapter:hough} bet
 
 The result of this stitch is far from optimal. While the rotation angle $\theta_{1a}$ is optimal and the images are rotated correctly, the translation estimate $t$ is very much off. The Hough-transform based map stitching method requires a large overlapping area between the two submaps. Because the submaps overlap very little, the stitching method fails.
 
-In the next figure, \ref{fig:exp:1:result8}, the result of stitching all submaps in figure~\ref{fig:apx:map1-pieces} is shown. The result is terrible
+In the next figure, \ref{fig:exp:1:result8}, the final result of stitching all submaps in figure~\ref{fig:apx:map1-pieces} is shown. Each of the steps is separately shown in the appendix (\ref{})
 
 \begin{figure}[ht]
   \centering
@@ -86,4 +86,70 @@ In the next figure, \ref{fig:exp:1:result8}, the result of stitching all submaps
   \label{fig:exp:1:result8}
 \end{figure}
 
+\section{Map 2}
+The second map is from the Dutch Open 2012, preliminary round 1. It features a large outdoor environment. This is extra challenging for the Hough transform based map stitching method, as this method requires straight lines which are not often present in outdoor environments.
+
+** Something went wrong with the map pieces, they're from Map 3. I have to re-export them in the lab, monday :( **
+
+%Places to break:
+%[ 19  23  24  32  33  34  35  36  37  38 105 111 113 114 115 116 117 118
+% 119 120 135 146 149 151 163 168 169 170 171 184 186 188 190 191 192 193
+% 194 195 196 197 198 199 200 210 211 212 213 214 215 216]
+
+
+% Decide to break only on one place, where a number of consecutive items do not match, and large enough patches result.
+
+%show traces of the map
+
+\section{Map 3}
+The third map is again a map from the IranOpen 2012 championship. The map was used for the semi-final. It is rather large, and consists of many corridors and rooms filled with desks, chairs and computers. Some of the hallways are obstructed, and there is smoke everywhere. See figure~\ref{fig:map3-screenshot}.
+
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=0.5\textwidth]{images/experiment/map3/map3.png}
+  \caption{A screenshot of map 3.}
+  \label{fig:map3-screenshot}
+\end{figure}
+
+TODO: add the full SLAM result as well.
+
+The agent was driven in a large circular path ($50m$ diameter) through the building, as can be seen in figure~\ref{fig:map3-trace}. Again, the path given by the inertia sensor seems to lie closer to the groundtruth than the SLAM path. The SLAM path strays on many places from the path by the inertia sensor and SLAM, and is `pulled back' to the location given by the inertia sensor when the difference becomes too large.
+
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=\textwidth]{images/experiment/map3/trace2.pdf}
+  \caption{The Ground Truth data, inertia sensor data and WSM slam result for map 3.}
+  \label{fig:map3-trace}
+\end{figure}
+
+The error measures extracted from the Weighted Scan Matcher are shown in figure~\ref{fig:map3-confidence}. Just as in the previous experiments, there are a number of time steps where no matching scan lines were found. At these timesteps, the covariance matrix around the location estimate could not be computed, and are respresented by a red circle at the x-axis. Instead of segmenting the map at every timestep where the number of matches was zero, a different approach is tried for this experiment. The map is segmented on at those timesteps where there are 2 or more consecutive timesteps in which there were no matching scanlines. The resulting 3 submaps are shown in the appendix, figure~\ref{fig:apx:map3-pieces}.
+
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=\textwidth]{images/experiment/map3/error-measures.pdf}
+  \caption{Confidence measures for map 3.}
+  \label{fig:map3-confidence}
+\end{figure}
+
+The result of stitching the submaps with the Hough transform based stitching method can be inspected in figure~\ref{fig:map3-result}. As can be easily visually inspected, this result is much worse than the result by the manifold SLAM.
+
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=\textwidth]{images/experiment/map3/result/step2.png}
+  \caption{The resulting map after stitching all segments extracted from map 3.}
+  \label{fig:map3-result}
+\end{figure}
+
+
 \section{Discussion of results}
+** This is only a list of points that need to be discussed, need to be fleshed out **
+
+The results show that the rotation can be guessed very nicely within a human-made environment by the Hough-transform. The translation estimate is not good.
+
+The translation estimate might be done with a scanmatcher, when the rotation estimate is guessed by hough.
+
+The overlap between patches needs to be large.
+
+A smoother fitness landscape could improve alignment somewhat. This can be done by running a Gaussian filter.
+
+The quality of the submaps should be very high before a good stitching can be done with the Hough transform. The results obtained through the Weighted Scan Matcher are 

@@ -237,7 +237,10 @@ def plot_x_y_spectrum(im):
 
 
 def main():
-    f = glob.glob(r"../runmaps/2012-05-31 IRO2012-Pre2/maps/*1.png")
+    #f = glob.glob(r"../runmaps/2012-05-31 IRO2012-Pre2/maps/*1.png")
+    #f = glob.glob(r"../runmaps/2012-08-07 nl pre1/maps/*1.png")
+    f = glob.glob(r"../runmaps/2012-08-09 IranOpen2012-SemiFinal-withSmoke/maps/*1.png")
+
     f += glob.glob(r"./result_bw_*.png")
 
     for i, f_ in enumerate(f):

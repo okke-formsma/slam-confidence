@@ -5,23 +5,27 @@ import matplotlib.gridspec as gridspec
 import scipy.stats
 
 maps = {
-    'quad': '2012-05-31 IRO2012-Pre2/patches_quadwsm.json',
-    'wsm':  '2012-05-31 IRO2012-Pre2/patches.json',
+    'iro': '2012-05-31 IRO2012-Pre2/patches.json',
+    'ned': '2012-08-07 nl pre1/patches.json',
+    'smoke': '2012-08-09 IranOpen2012-SemiFinal-withSmoke/patches.json'
 }
 
 def main(filename = None):
     if filename is None:
-        filename = maps['wsm']
+        filename = maps['smoke']
     patches = Container(filename)
+
     #plot_pitch_roll(patches)
     #plot_confidence(patches)
-    #plot_slam_covariance(patches)
-    #plot_paths(patches)
-    #plot_error_metrics(patches)
+    plot_slam_covariance(patches)
+    plot_paths(patches)
+    plot_error_metrics(patches)
     get_piece_ranges(patches)
 
     #plot_error_metrics_scatter(patches)
-    #plt.show()
+    plt.tight_layout()
+
+    plt.show()
 
 def get_piece_ranges(patches):
     matches = np.array(patches['matches'])
