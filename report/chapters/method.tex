@@ -2,48 +2,30 @@
 \chapter{Method}
 \label{method}
 
-\section{SLAM confidence measure}
-TODO: This section requires major work and is not finished at all.
+In this chapter the design of the experiment is outlined. The experiment consists of three phases: dataset collection, map generation, map segmentation and map stitching. Each of the phases is described in detail below.
 
+\section{Dataset collection}
+The dataset for the experiments consists of sensor data acquired by a robot in the USARSim (Urban Search And Rescue Simulation) environment \cite{balaguer2008usarsim, usarsimsite}. USARSim is a high fidelity simulation environment in which reconnaissance and rescue missions can be imitated. These environments can both be indoors and outdoors, and are typically not larger than a housing block. A team of robots is deployed in this environment with the task of localizing (human) victims. One of the goals of the USARSim project is to improve autonomous behavior, allowing one human operator to control a team of up to 16 robots simultaneously.
 
-1) Determinant of covariance matrix
+Much work has been done to increase the realism of the simulation. A selection of recent work: an assessment for use of USARSim in Human Robot Interaction \cite{wang2005validating}, for use with walking robots \cite{van2012validation}, adding realistic laser sensor behavior in environments with smoke \cite{formsma2011realistic} and creating a omnidirectional camera sensor \cite{schmits2009omnidirectional}.
 
-2) Trace of covariance matrix
+Teams from all over the world compete in the annual RoboCup Rescue Simulation competition \cite{robocupsite}. The universities of Oxford and Amsterdam participated until 2011 with a cooperative team: the Amsterdam Oxford Joint Rescue Forces \cite{aojrf2011, visser2012uva}. The robot control software used by this team is UsarCommander (available on the AOJRF site \cite{jrfsite}). UsarCommander (see figure \ref{fig:usarcommander}) contains a number of SLAM implementations, including ManifoldSLAM.
 
-3) Whether there are any matches at all
+Three datasets were collected on three recent USARSim maps. The maps in which the data was gathered were selected to be diverse: an indoor map, an outdoor map, and a map with smoke (which impairs sensor readings). The robot was driven around the map. Care was taken to ensure that the robot visited the same locations a number of times to make the map-stitching method feasible.
 
+Each dataset was recorded. The datasets are available within the code repository \cite{github}.
 
-From Bayu et al: ``cite bayu and max:     Good examples of single confi- dence values that can be derived from a covariance matrix are the determinant det(Σ) or the trace trace(Σ). The relations lend themselves very well for use in path-planning and search algorithms. In addition, heuristic algorithms can take advantage of the uncertainty information stored on the links. (P61)''
+\section{Map segmentation}
+The datasets thus recorded are processed through the UsarCommander ManifoldSlam implementation. At every timestep the scan matcher runs and saves current position and rotation according to the groundtruth, the inertia sensor and the SLAM algorithm, as well as the correspondence error matrix as discussed in section~\ref{scanmatching}.
 
+After creating the map, three uncertainty metrics are evaluated to decide where the map should be segmented. The three metrics are the determinant of the correspondence error, the trace of the correspondence error and the number of matching scans, as discussed in section~\ref{uncertainty}.
 
-From SlametPfingstorn:
+The three metrics are manually examined for each map, as we found no prior research in a good metric for map segmentation. Obvious candidates are the maxima in the determinant and trace measures and minima for the number of matching scans. These values are expected to be highly correlated. The dataset is segmented at the thus acquired uncertainty threshold into consecutive parts. For example, if the map consisted of $100$ timesteps ($0 \ldots 99$) and the uncertainty metrics indicate that the highest uncertainty was at timesteps 11, 25 and 70, the dataset is divided into four segments: $0 \ldots 10$, $11 \ldots 24$, $26 \ldots 69$, and $71 \ldots 99$. A submap is generated for each segment.
 
-To asses the quality of fit
-of a new range scan, the same notion of being well-fitted is used as during the construction
-of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
-matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
-information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
-and we compute the 95\% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁
+\section{Map stitching}
+The segments are matched according to the Hough-transform based map stitching method as outlined in chapter~\ref{chapter:hough}. In that chapter it is explained that there may be a number of rotation estimates $\hat \theta$. We will assume in the experiment that the smallest absolute rotation candidate $|\hat \theta|$ will be the most probable. This is based on the observation that the scanmatcher usually does not yield very large rotation errors.
 
+The relative X- and Y-positions of the maps are estimated exactly as explained in the map stitching chapter.
 
-
-The confidence measure based on the determinant of the covariance matrix of the pose uncertainty. The hypothesis is that if this measure is larger, then the confidence is lower (the uncertainty is bigger).
-
-The determinant of the covariance matrix is used as metric:
-
-is the sample variance-covariance matrix for observations of a multivariate vector of p elements. The determinant of D, in this case, is sometimes called the generalized variance. (http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc532.htm)
-
-\section{Confidence measures}
-
-%http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf
-(paper not found): L. Carlone, M. Kaouk Ng, J. Du, B. Bona, and M. Indri, “Reverse KLD-Sampling for measuring uncertainty in Rao-Blackwellized Particle Filters SLAM”, in Proc. of the 2009 IEEE/RSJ Int. Conf. on Intelligent RObots and Systems, Workshop on Performance Evaluation and Benchmarking for Next Intelligent Robots and Systems, 2009.
-
-Carlone et al. use a particle filter based representation of their belief. 
-
-% \begin{figure}[ht]
-%   \begin{center}
-%     \includegraphics[scale=2]{images/poster_SIDRA2009_result.pdf}
-%   \end{center}
-%   \caption{}
-%   \label{fig:carlone}
-% \end{figure}
+\section{Evaluation}
+In line with the exploratory nature of this work the maps will not be evaluated using a groundtruth-metric. Instead, manual assessment of the results will yield a qualitative judgment about the quality of the resulting map. The main concern is whether the resulting map is an improvement upon the map provided by the ManifoldSLAM algorithm.

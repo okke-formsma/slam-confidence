@@ -145,16 +145,20 @@ This simplifies equation \ref{eq:wsm} further, so it contains only the correspon
 This error term $\epsilon$ is minimized through an iterative algorithm in which the rotation and translation are estimated in turn. When the algorithm is suitably converged, it terminates. The full covariance matrix for the scan match is computed from the individual correspondence errors. We will see how this covariance matrix comes in handy for the SLAM algorithm and error estimation procedures in later chapters.
 
 \section{ManifoldSLAM}
-ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slametpfingsthornthesis} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. The world/map representation is 
+ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slametpfingsthornthesis} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. 
 
-Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AJORF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
-
-
-\section{2D slam in 3D environment}
-Only a slice of the world is returned - so we need to make sure we are horizontal. Otherwise, the scanner returns wrong readings.
-
+Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AOJRF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 
 \section{Uncertainty measure}
+\label{uncertainty}
+The correspondence error, in this case modeled by a Gaussian variable, is by definition a good measure to estimate the confidence of the scanmatcher with. The weighted scan matcher explicitly discounts other error sources. When the correspondence error is high, the uncertainty of the scanmatcher about the current robot pose is also high.
+
+Prior work by Visser et~al.\ \cite{visser2009robust} 
+
+
+
+
+\cite{visser2009robust}
 UNCERTAINTY MEASURE BY ARNOUD:
 To see if the reduced correlation distance also improves the robustness of
 the scan matcher the uncertainty measures returned by the algorithms were
@@ -167,3 +171,43 @@ with Q-WSM is in most cases (94%) smaller than the trace of incremental version.
 average uncertainty of the incremental version.
 
 
+
+1) Determinant of covariance matrix
+2) Trace of covariance matrix
+3) Whether there are any matches at all
+
+
+From Bayu et al: ``cite bayu and max:     Good examples of single confi- dence values that can be derived from a covariance matrix are the determinant det(Σ) or the trace trace(Σ). The relations lend themselves very well for use in path-planning and search algorithms. In addition, heuristic algorithms can take advantage of the uncertainty information stored on the links. (P61)''
+
+
+From SlametPfingstorn:
+
+To asses the quality of fit
+of a new range scan, the same notion of being well-fitted is used as during the construction
+of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
+matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
+information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
+and we compute the 95\% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁
+
+
+
+The confidence measure based on the determinant of the covariance matrix of the pose uncertainty. The hypothesis is that if this measure is larger, then the confidence is lower (the uncertainty is bigger).
+
+The determinant of the covariance matrix is used as metric:
+
+is the sample variance-covariance matrix for observations of a multivariate vector of p elements. The determinant of D, in this case, is sometimes called the generalized variance. (http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc532.htm)
+
+\section{Confidence measures}
+
+%http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf
+(paper not found): L. Carlone, M. Kaouk Ng, J. Du, B. Bona, and M. Indri, “Reverse KLD-Sampling for measuring uncertainty in Rao-Blackwellized Particle Filters SLAM”, in Proc. of the 2009 IEEE/RSJ Int. Conf. on Intelligent RObots and Systems, Workshop on Performance Evaluation and Benchmarking for Next Intelligent Robots and Systems, 2009.
+
+Carlone et al. use a particle filter based representation of their belief. 
+
+% \begin{figure}[ht]
+%   \begin{center}
+%     \includegraphics[scale=2]{images/poster_SIDRA2009_result.pdf}
+%   \end{center}
+%   \caption{}
+%   \label{fig:carlone}
+% \end{figure}

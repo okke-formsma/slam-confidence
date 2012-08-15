@@ -2,10 +2,7 @@
 
 \chapter{Map Stitching with the Hough Transform}
 \label{chapter:hough}
-Why hough based?
-Alternatives?
-
-[what is map stitching, why is it necessary again?]
+ManifoldSLAM only matches a recent part of the map to the current laser scan to estimate the current position of the robot. The robot is not aware of areas it has encountered before because of this. In the meantime, an erroneous location estimate may proliferate. The map stitching algorithm in this chapter can be used to find a global match between two submaps which have an unknown relative pose.
 
 Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
 
