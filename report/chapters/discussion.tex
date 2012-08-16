@@ -1,0 +1,65 @@
+%!TEX root = ../report.tex
+
+\chapter{Discussion and future work}
+\label{discussion}
+
+\section{Discussion}
+The results of the map stitching method are inferior to the original maps created by ManifoldSLAM. The rotation estimates are usually correct, but the translation estimates are below par. Only for maps with very large overlapping areas, such as in the third experiment, is the result acceptable.
+
+The quality of the rotation estimates is very high in the test environment because the test environments were all human-made. The grid structure in which the walls are placed yields very clear results in the Hough spectrum. In outdoor environments, this is probably not the case, and the results would suffer likewise.
+
+Overall, the existing SLAM appraoches all work very well. This raises the bar for post-processing methods such as the one outlined in this work. Na\"ive methods which do not use all available information are at a disadvantage.
+
+The X- and Y-spectrum method to find the best translation estimate has proven to be not good enough. Although this method is very simple and has a beautiful symmetrical with the Hough-spectrum method, too much information is lost in the transformation of the map to the spectra. Also, not all available information is being used by this method. A full global search is initiated, while the probable translation of the map is very small. With contemporary technology, the robot can not be teleported to the other side of the map, so it is unnecessary to examine that possibility. However, if the method is used for merging the information from multiple robots, a global search is preferable. 
+
+The method to cut the map in smaller pieces seems to work reasonably well - the `number of scans matching is zero' decision value seemed to select good locations to divide the map into sections. Many of the errors in the map were caused by the rotational error in the inertia sensor. The behavior of the inertia sensor seems to quirky, which will be discussed in section~\ref{inertia}.
+
+Finally, it would have been interesting to see the performance of the Hough based map stitching algorithm on an outdoor environment. However, the poor results of the (probably easier) indoor environments suggest that this method is not yet robust enough for such a challenge.
+
+\section{Future work}
+In this section a number of improvements to the Hough map stitching algorithm and the USARSim simulation environment are proposed. 
+
+\subsection{Better translation estimate}
+The most room for improvement in the Hough-based map stitching method is in the translation estimate. As discussed in the previous section, the X- and Y-spectra do not suffice. Most scanmatching algorithms, as discussed in section~\ref{scanmatching}, perform the rotation- and translation estimates separately. The Hough based map stitching method could give a good initial estimate for the rotation estimate, so that the scanmatcher only needs to find the optimal translation. 
+
+Additional improvements would be to incorporate the knowledge about the last position of the robot and the inertia sensor estimate as a basis for the translation estimate, as opposed to a global search. 
+
+Finally, in the spectrum method it is supposed that the X- and Y- spectra are independent and their maxima are independent as well. They are dependent on each other - the actual real location is a (x, y) coordinate on which x and y are dependent of each other.
+
+\subsection{Improved peak detection}
+To find the optimal rotation and translation, an argmax function is run on the spectra. While this usually gave a pretty good result, the peak surrounding the maximum was sometimes skewed left or right. To select the center of such a peak instead of the single maximum result, it might be beneficial to convolve the signal with an Gaussian filter, which smooths the peaks.
+
+\subsection{Inertia sensor improvements}
+It seems that the inertia sensor, as it is currently implemented in USARSim, returns inconsistent data. When the rotation estimate has an error, the absolute location estimate from the sensor should be consistent with this. For example, if the rotation estimate is $10\degree$ while the real rotation is $0\degree$ and the robot moves 5 meter forward, it should return a new position estimate of $(x, y, \theta) = (5 \sin(10), 5 \cos(10), 10)$ instead of $(5, 5, 10)$. Otherwise, the data it returns is not consistent.
+
+Alternately, the UsarCommander software could use the scanmatcher data to calibrate the inertia sensor. If the inertia sensor registers that the robot has turned, but the laser scan data is not in agreement, the inertia sensor could be `reset' or it's data could be filtered to fit the laser scan results.
+
+
+
+--------------
+
+** This is only a list of points that need to be discussed, need to be fleshed out **
+
+It is easy to break the map where the scanmatcher fails - it fails most significantly when it can not find a single matching scan. See also part about ins sensor.
+
+Scanmatcher works too well already - the hough stitching is an inferior solution.
+
+Locating multiple robots might be a better use of the scanmatcher than stiching the map of one robot.
+
+The rotation estimate works very well in an indoor environment, this could be used as input for the scanmatcher.
+
+----
+
+Ins sensor: should take it's rotation drift into consideration when assessing the next XY coordinates. Otherwise, update the location and rotation by the change in the sensor instead of the full values.
+
+\section{Future work}
+\label{futurework}
+
+** This is only a list of points that need to be discussed, need to be fleshed out **
+
+Find a better X- Y- matching algorithm for the Hough stitching method
+
+Use the quad-tree based scanmatcher, and maybe use this mechanism to stitch maps from multiple robots. Or at least to align them.
+
+Fix the INS sensor, because it is not internally coherent. (Or: don't trust the rotation by the INS sensor)
+
