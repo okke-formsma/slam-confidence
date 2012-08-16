@@ -5,15 +5,15 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
-\bibitem{slametpfingsthornthesis}
-B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
-  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
-  and mapping system for the robocup rescue virtual robots competition}, 2006.
+\bibitem{aojrf2011}
+N.~Dijkshoorn, H.~Flynn, O.~Formsma, S.~van Noort, C.~van Weelden, C.~Bastiaan,
+  N.~Out, O.~Zwennes \emph{et~al.}, \enquote{Amsterdam Oxford Joint Rescue
+  Forces Team Description Paper Virtual Robot competition Rescue Simulation
+  League RoboCup 2011}, 2011.
 
 \bibitem{ethembabaoglu2007active}
-A.~Ethembabaoglu, \emph{Active target tracking using a mobile robot in the
-  USARSim}, Ph.D. thesis, Bachelor’s thesis, Universiteit van Amsterdam,
-  2007.
+A.~Ethembabaoglu, \enquote{Active target tracking using a mobile robot in the
+  USARSim}, 2007.
 
 \bibitem{pfister2002weighted}
 S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
@@ -25,6 +25,19 @@ S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
 A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
   localization and mapping using manifold representations}, \emph{Proceedings
   of the IEEE}, volume~94(7):pp. 1360--1369, 2006.
+
+\bibitem{thrun2002probabilistic}
+S.~Thrun, \enquote{Probabilistic robotics}, \emph{Communications of the ACM},
+  volume~45(3):pp. 52--57, 2002.
+
+\bibitem{slamet2006manifoldslam}
+B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
+  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
+  and mapping system for the robocup rescue virtual robots competition}, 2006.
+
+\bibitem{visser2009robust}
+A.~Visser, B.~Slamet and M.~Pfingsthorn, \enquote{Robust weighted scan matching
+  with quadtrees}, 2009.
 
 \bibitem{censi2005scan}
 A.~Censi, L.~Iocchi and G.~Grisetti, \enquote{Scan matching in the Hough
@@ -45,8 +58,8 @@ D.~Ballard, \enquote{Generalizing the Hough transform to detect arbitrary
   shapes}, \emph{Pattern recognition}, volume~13(2):pp. 111--122, 1981.
 
 \bibitem{jankowska2009hough}
-M.~Jankowska, \emph{A hough transform based approach to map stitching}, Ph.D.
-  thesis, University of Oxford, 2009.
+M.~Jankowska, \enquote{A hough transform based approach to map stitching},
+  2009.
 
 \bibitem{carpin2008merging}
 S.~Carpin, \enquote{Merging maps via Hough transform}, in \enquote{Intelligent
@@ -86,12 +99,6 @@ T.~Schmits and A.~Visser, \enquote{An omnidirectional camera simulation for the
 
 \bibitem{robocupsite}
 \enquote{RoboCup general website \url{http://www.robocup.org/}}, 2012.
-
-\bibitem{aojrf2011}
-N.~Dijkshoorn, H.~Flynn, O.~Formsma, S.~van Noort, C.~van Weelden, C.~Bastiaan,
-  N.~Out, O.~Zwennes \emph{et~al.}, \enquote{Amsterdam Oxford Joint Rescue
-  Forces Team Description Paper Virtual Robot competition Rescue Simulation
-  League RoboCup 2011}, 2011.
 
 \bibitem{visser2012uva}
 A.~Visser, N.~Dijkshoorn, S.~van Noort, O.~Zwennes, M.~de~Waard, S.~Katt and

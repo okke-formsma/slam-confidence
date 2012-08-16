@@ -149,65 +149,11 @@ ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slam
 
 Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AOJRF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 
-\section{Uncertainty measure}
+
+\section{Uncertainty measures}
 \label{uncertainty}
-The correspondence error, in this case modeled by a Gaussian variable, is by definition a good measure to estimate the confidence of the scanmatcher with. The weighted scan matcher explicitly discounts other error sources. When the correspondence error is high, the uncertainty of the scanmatcher about the current robot pose is also high.
+There is always uncertainty associated with the results of the scan matcher. The weighted scan matcher models three sources of error for each laser scan line. The full uncertainty of the new pose is estimated by summing the information gained by each match that is scanned. More information about how this information filter works can be found in \cite[p.71]{thrun2002probabilistic} and \cite[p.72]{slamet2006manifoldslam}.
 
-Prior work by Visser et~al.\ \cite{visser2009robust} 
+The correspondence error is a good measure to estimate the confidence of the scanmatcher because the weighted scan matcher explicitly discounts irrelevant error sources. When the correspondence error is high, the uncertainty of the scanmatcher about the current robot pose is also high.
 
-
-
-
-\cite{visser2009robust}
-UNCERTAINTY MEASURE BY ARNOUD:
-To see if the reduced correlation distance also improves the robustness of
-the scan matcher the uncertainty measures returned by the algorithms were
-analyzed. This uncertainty measure is the full 3-by-3 covariance matrix of the
-Gaussian distribution over the displacement estimate and does not lend itself well
-for charting in its original form. Therefore we took the on-diagonal elements that
-describe the independent uncertainty in x and y direction and combined these
-into a Euclidean distance measure. The trace of the covariance matrix acquired
-with Q-WSM is in most cases (94%) smaller than the trace of incremental version. The average uncertainty of the Q-WSM algorithm reduced to 36% of the
-average uncertainty of the incremental version.
-
-
-
-1) Determinant of covariance matrix
-2) Trace of covariance matrix
-3) Whether there are any matches at all
-
-
-From Bayu et al: ``cite bayu and max:     Good examples of single confi- dence values that can be derived from a covariance matrix are the determinant det(Σ) or the trace trace(Σ). The relations lend themselves very well for use in path-planning and search algorithms. In addition, heuristic algorithms can take advantage of the uncertainty information stored on the links. (P61)''
-
-
-From SlametPfingstorn:
-
-To asses the quality of fit
-of a new range scan, the same notion of being well-fitted is used as during the construction
-of local sub-maps (refer to Section 5.3.3). Recall that we already obtained the covariance
-matrix Σt of the Gaussian distribution that was estimated by the scan matcher. The Fisher
-information matrix I is computed by taking the inverse of this covariance matrix I = Σ−1 ttt
-and we compute the 95\% confidence interval for every pose variable as follows: σ = 1.96􏰌􏰀I−1􏰁
-
-
-
-The confidence measure based on the determinant of the covariance matrix of the pose uncertainty. The hypothesis is that if this measure is larger, then the confidence is lower (the uncertainty is bigger).
-
-The determinant of the covariance matrix is used as metric:
-
-is the sample variance-covariance matrix for observations of a multivariate vector of p elements. The determinant of D, in this case, is sometimes called the generalized variance. (http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc532.htm)
-
-\section{Confidence measures}
-
-%http://areeweb.polito.it/ricerca/MacP4Log/images/poster_SIDRA2009.pdf
-(paper not found): L. Carlone, M. Kaouk Ng, J. Du, B. Bona, and M. Indri, “Reverse KLD-Sampling for measuring uncertainty in Rao-Blackwellized Particle Filters SLAM”, in Proc. of the 2009 IEEE/RSJ Int. Conf. on Intelligent RObots and Systems, Workshop on Performance Evaluation and Benchmarking for Next Intelligent Robots and Systems, 2009.
-
-Carlone et al. use a particle filter based representation of their belief. 
-
-% \begin{figure}[ht]
-%   \begin{center}
-%     \includegraphics[scale=2]{images/poster_SIDRA2009_result.pdf}
-%   \end{center}
-%   \caption{}
-%   \label{fig:carlone}
-% \end{figure}
+The correspondence error can not easily be compared visually because it is represented by the covariance of a Gaussian distribution, which in this case is represented by a 3-by-3 matrix. Prior work by Visser et~al.\ \cite{visser2009robust} used the trace of the covariance (the sum of the on-diagonal elements) to acquire a single, easily compared metric. Slamet and Pfingsthorn \cite[p. 61]{slamet2006manifoldslam} also mention the determinent as a good single confidence value that can be derived from this matrix. The number of matching scan lines is taken as a third measure. A single scan line in a scan is considered to match when the distance to existing datapoint on the map is no more than a certain maximum distance.

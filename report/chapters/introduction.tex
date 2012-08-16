@@ -1,10 +1,12 @@
 %!TEX root = ../report.tex
 \chapter{Introduction}
 \label{chapter:introduction}
-The Simulatenous Localization And Mapping (SLAM) method employed by the AJORF (Amsterdam-Oxford Joint Rescue Forces team [[TODO: cite team description paper]] is not robust against sensor failures, which occur for example when the laser scanner is severly tilted. 
+A compelling use of robotics is in the Urban Search And Rescue setting. The goal of Urban Search And Rescue robot teams are to help emergency services find victims of disasters, and perform duties which are deemed to dangerous for humans. In many disaster areas, human responders may be at risk due to fire, smoke, toxicity, radioactivity or the possiblility of a secondary disaster. A team of robots is much better suited to explore such dangerous disaster areas than humans. 
 
-In this report, we propose a novel method which splits a map when the localization uncertainty exceeds a certain threshold. The different pieces of the map are then stitched together using a Hough transform based map stitching method.
+Urban Search And Rescue robots face many challenges. They must navigate unknown environments with many potential hazards. The problem of mapping an unknown environment and localization within this environment is dubbed SLAM, for Simultaneous Localization And Mapping. Testing such algorithms with actual robots in real-life environments is expensive and cumbersome. Robots and sensors are expensive, as well as creating a disaster-environment. 
 
-\section{Background}
-\subsection{USAR Sim}
-What is usar sim, something about robotics
+A high fidelity simulation environment called USARSim, based on the Unreal Engine, provides an platform on which to test the performance of the robots in a disaster environment without the cost and effort associated with real robots. The RoboCup international robotics conference and competition utilizes USARSim in their Rescue Simulation League. This competition draws teams from universities all over the world to show their advances in robotic control software, focusing on issues such as human-robot interfaces, autonomous behavior and team coordination.
+
+The univeristy of Amsterdam has joined forces with Oxford for the RoboCup, creating the AOJRF (Amsterdam-Oxford Joint Rescue Forces team \cite{aojrf2011}) team. The Simulatenous Localization And Mapping (SLAM) method employed by the AOJRF is not robust against sensor failures, which occur for example when the laser scanner is severly tilted.  In this report, we propose a novel method which splits a map when the localization uncertainty exceeds a certain threshold. The different pieces of the map are then stitched together using a Hough transform based map stitching method.
+
+This report is structured as follows. In the next chapter, an overview of the Simultaneous Localization and Mapping problem and related algorithms is provided. Chapter~\ref{chapter:hough} presents the Hough-based stitching method. The experimental method is described in chapter~\ref{method}, and experimental results in chapter~\ref{experiments}. The results are discussed in chapter~\ref{discussion} and pointers for future work in chapter~\ref{futurework}.
