@@ -11,14 +11,14 @@ N.~Dijkshoorn, H.~Flynn, O.~Formsma, S.~van Noort, C.~van Weelden, C.~Bastiaan,
   Forces Team Description Paper Virtual Robot competition Rescue Simulation
   League RoboCup 2011}, 2011.
 
+\bibitem{thrun2002probabilistic}
+S.~Thrun, \enquote{Probabilistic robotics}, \emph{Communications of the ACM},
+  volume~45(3):pp. 52--57, 2002.
+
 \bibitem{slamet2006manifoldslam}
 B.~Slamet and M.~Pfingsthorn, \enquote{Manifoldslam: a multi-agent simultaneous
   localization and mapping system for the robocup rescue virtual robots
   competition}, 2006.
-
-\bibitem{ethembabaoglu2007active}
-A.~Ethembabaoglu, \enquote{Active target tracking using a mobile robot in the
-  USARSim}, 2007.
 
 \bibitem{pfister2002weighted}
 S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
@@ -30,10 +30,6 @@ S.~Pfister, K.~Kriechbaum, S.~Roumeliotis and J.~Burdick, \enquote{Weighted
 A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
   localization and mapping using manifold representations}, \emph{Proceedings
   of the IEEE}, volume~94(7):pp. 1360--1369, 2006.
-
-\bibitem{thrun2002probabilistic}
-S.~Thrun, \enquote{Probabilistic robotics}, \emph{Communications of the ACM},
-  volume~45(3):pp. 52--57, 2002.
 
 \bibitem{visser2009robust}
 A.~Visser, B.~Slamet and M.~Pfingsthorn, \enquote{Robust weighted scan matching

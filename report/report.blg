@@ -18,45 +18,45 @@ Warning--empty journal in visser2009robust
 Warning--can't use both volume and number fields in wang2005validating
 Warning--empty journal in van2012validation
 Warning--empty journal in visser2012uva
-You've used 24 entries,
+You've used 23 entries,
             2661 wiz_defined-function locations,
-            690 strings with 8478 characters,
-and the built_in function-call counts, 8188 in all, are:
-= -- 469
-> -- 195
+            685 strings with 8329 characters,
+and the built_in function-call counts, 8013 in all, are:
+= -- 462
+> -- 191
 < -- 16
-+ -- 81
-- -- 57
-* -- 413
-:= -- 782
-add.period$ -- 24
-call.type$ -- 24
++ -- 79
+- -- 56
+* -- 409
+:= -- 764
+add.period$ -- 23
+call.type$ -- 23
 change.case$ -- 1
 chr.to.int$ -- 0
-cite$ -- 29
-duplicate$ -- 950
-empty$ -- 860
-format.name$ -- 70
-if$ -- 1818
+cite$ -- 28
+duplicate$ -- 930
+empty$ -- 837
+format.name$ -- 69
+if$ -- 1779
 int.to.chr$ -- 0
-int.to.str$ -- 24
-missing$ -- 256
-newline$ -- 79
-num.names$ -- 19
-pop$ -- 510
+int.to.str$ -- 23
+missing$ -- 250
+newline$ -- 76
+num.names$ -- 18
+pop$ -- 493
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 275
+skip$ -- 270
 stack$ -- 0
 substring$ -- 338
-swap$ -- 604
+swap$ -- 593
 text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 5
-while$ -- 49
-width$ -- 26
-write$ -- 197
+while$ -- 48
+width$ -- 25
+write$ -- 190
 (There were 10 warnings)
