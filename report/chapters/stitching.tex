@@ -4,9 +4,9 @@
 \label{chapter:hough}
 ManifoldSLAM only matches a recent part of the map to the current laser scan to estimate the current position of the robot. The robot is not aware of areas it has encountered before because of this. In the meantime, an erroneous location estimate may proliferate. The map stitching algorithm in this chapter can be used to find a global match between two submaps which have an unknown relative pose.
 
-Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2002merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
+Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2008merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
 
-Remember from the SLAM section (\ref{state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. 
+Remember from the SLAM section (\ref{slam:state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. 
 
 The Hough-based map stitching works with the assumption of an indoor environment. It is a global method, and does not take into consideration any prior knowledge about the relative alignment of both pieces of the map.
 
@@ -163,7 +163,7 @@ Let's look at an example. We will examine more complicated cases in chapter~\ref
 \label{fig:ex-rooms}
 \end{figure}
 
-The first step is to find candidate translations $\theta$. We do this by calculating the hough spectra and performing cross-correlation on them. See figure~\ref{fig:ex-cross-correlation}. The highest peak in the cross-correlation lies at $\theta_{1a} = 169\degree$, the second highest at $\theta_{2a} = 79\degree$. Because of the periodicity of the Hough spectrum there are also two dual-hypothesis: $\theta_{1b} = 180\degree+169\degree = 349\degree$ and $\theta_{2b} = 180\degree+79\degree = 259\degree$, respectively. Note that the first hypothesis and the second hypothesis lie $90\degree$ apart, which corresponds to the two main wall-directions in the image.
+The first step is to find candidate translations $\theta$. We do this by calculating the hough spectra and performing cross-correlation on them. See figure~\ref{fig:ex-rooms-theta}. The highest peak in the cross-correlation lies at $\theta_{1a} = 169\degree$, the second highest at $\theta_{2a} = 79\degree$. Because of the periodicity of the Hough spectrum there are also two dual-hypothesis: $\theta_{1b} = 180\degree+169\degree = 349\degree$ and $\theta_{2b} = 180\degree+79\degree = 259\degree$, respectively. Note that the first hypothesis and the second hypothesis lie $90\degree$ apart, which corresponds to the two main wall-directions in the image.
 
 \begin{figure}[ht]
 	\centering

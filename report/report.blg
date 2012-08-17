@@ -13,53 +13,50 @@ Warning--string name "august" is undefined
 --line 184 of file biblio.bib
 Warning--string name "august" is undefined
 --line 202 of file biblio.bib
-Warning--I didn't find a database entry for "slametpfingsthornthesis"
-Warning--I didn't find a database entry for "carpin2002merging"
 Warning--empty journal in aojrf2011
-Warning--empty journal in slamet2006manifoldslam
 Warning--empty journal in visser2009robust
 Warning--can't use both volume and number fields in wang2005validating
 Warning--empty journal in van2012validation
 Warning--empty journal in visser2012uva
 You've used 24 entries,
             2661 wiz_defined-function locations,
-            692 strings with 8593 characters,
-and the built_in function-call counts, 8337 in all, are:
+            690 strings with 8478 characters,
+and the built_in function-call counts, 8188 in all, are:
 = -- 469
-> -- 210
+> -- 195
 < -- 16
-+ -- 86
-- -- 62
-* -- 427
-:= -- 802
++ -- 81
+- -- 57
+* -- 413
+:= -- 782
 add.period$ -- 24
 call.type$ -- 24
 change.case$ -- 1
 chr.to.int$ -- 0
-cite$ -- 30
-duplicate$ -- 971
-empty$ -- 868
-format.name$ -- 75
-if$ -- 1843
+cite$ -- 29
+duplicate$ -- 950
+empty$ -- 860
+format.name$ -- 70
+if$ -- 1818
 int.to.chr$ -- 0
 int.to.str$ -- 24
-missing$ -- 264
+missing$ -- 256
 newline$ -- 79
 num.names$ -- 19
-pop$ -- 518
+pop$ -- 510
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 276
+skip$ -- 275
 stack$ -- 0
 substring$ -- 338
-swap$ -- 616
+swap$ -- 604
 text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 6
+warning$ -- 5
 while$ -- 49
 width$ -- 26
 write$ -- 197
-(There were 13 warnings)
+(There were 10 warnings)

@@ -11,6 +11,11 @@ N.~Dijkshoorn, H.~Flynn, O.~Formsma, S.~van Noort, C.~van Weelden, C.~Bastiaan,
   Forces Team Description Paper Virtual Robot competition Rescue Simulation
   League RoboCup 2011}, 2011.
 
+\bibitem{slamet2006manifoldslam}
+B.~Slamet and M.~Pfingsthorn, \enquote{Manifoldslam: a multi-agent simultaneous
+  localization and mapping system for the robocup rescue virtual robots
+  competition}, 2006.
+
 \bibitem{ethembabaoglu2007active}
 A.~Ethembabaoglu, \enquote{Active target tracking using a mobile robot in the
   USARSim}, 2007.
@@ -30,14 +35,14 @@ A.~Howard, G.~Sukhatme and M.~Mataric, \enquote{Multirobot simultaneous
 S.~Thrun, \enquote{Probabilistic robotics}, \emph{Communications of the ACM},
   volume~45(3):pp. 52--57, 2002.
 
-\bibitem{slamet2006manifoldslam}
-B.~Slamet, M.~Pfingsthorn, N.~Vlassis, A.~Visser, L.~Dorst, W.~Jansweijer
-  \emph{et~al.}, \enquote{Manifoldslam: a multi-agent simultaneous localization
-  and mapping system for the robocup rescue virtual robots competition}, 2006.
-
 \bibitem{visser2009robust}
 A.~Visser, B.~Slamet and M.~Pfingsthorn, \enquote{Robust weighted scan matching
   with quadtrees}, 2009.
+
+\bibitem{carpin2008merging}
+S.~Carpin, \enquote{Merging maps via Hough transform}, in \enquote{Intelligent
+  Robots and Systems, 2008. IROS 2008. IEEE/RSJ International Conference on},
+  pp. 1878--1883, IEEE, 2008.
 
 \bibitem{censi2005scan}
 A.~Censi, L.~Iocchi and G.~Grisetti, \enquote{Scan matching in the Hough
@@ -60,11 +65,6 @@ D.~Ballard, \enquote{Generalizing the Hough transform to detect arbitrary
 \bibitem{jankowska2009hough}
 M.~Jankowska, \enquote{A hough transform based approach to map stitching},
   2009.
-
-\bibitem{carpin2008merging}
-S.~Carpin, \enquote{Merging maps via Hough transform}, in \enquote{Intelligent
-  Robots and Systems, 2008. IROS 2008. IEEE/RSJ International Conference on},
-  pp. 1878--1883, IEEE, 2008.
 
 \bibitem{balaguer2008usarsim}
 B.~Balaguer, S.~Balakirsky, S.~Carpin, M.~Lewis and C.~Scrapper,

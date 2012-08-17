@@ -85,8 +85,8 @@ Laser range sensors are often put in a rotating device, which measures the dista
 	\includegraphics[width=0.4\textwidth]{images/slam/slamet41b.pdf}
 	\label{fig:scanmatch41b}
 }
-\caption{Matching two point clouds. In \subref{fig:scanmatch41a}, the red and green point clouds are obviously not well aligned. In \subref{fig:scanmatch41b}, they are much better aligned. Images courtesy of \cite{slametpfingsthornthesis}.}
-\label{fig:screenshots}
+\caption{Matching two point clouds. In \subref{fig:scanmatch41a}, the red and green point clouds are obviously not well aligned. In \subref{fig:scanmatch41b}, they are much better aligned. Images courtesy of \cite{slamet2006manifoldslam}.}
+\label{fig:slamet41}
 \end{figure} 
 
 The `scans' that the laser range sensor returns are processed through a scanmatching algorithm. These algorithms compare two scans (or a scan and a map) to see how they relate to each other. The scanmatcher needs to find out the relative change in orientation and position between the two scans.
@@ -145,7 +145,7 @@ This simplifies equation \ref{eq:wsm} further, so it contains only the correspon
 This error term $\epsilon$ is minimized through an iterative algorithm in which the rotation and translation are estimated in turn. When the algorithm is suitably converged, it terminates. The full covariance matrix for the scan match is computed from the individual correspondence errors. We will see how this covariance matrix comes in handy for the SLAM algorithm and error estimation procedures in later chapters.
 
 \section{ManifoldSLAM}
-ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slametpfingsthornthesis} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. 
+ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slamet2006manifoldslam} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. 
 
 Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AOJRF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 

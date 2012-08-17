@@ -124,14 +124,36 @@ The result of stitching the submaps with the Hough transform based stitching met
 \end{figure}
 
 \section{Map 3}
-Due to the inferior results of the algorithm on the first two maps, the third experiment will deviate from the first two. At the first two maps, the overlap between submaps is rather limited, and not in the 
 
-%Places to break:
-%[ 19  23  24  32  33  34  35  36  37  38 105 111 113 114 115 116 117 118
-% 119 120 135 146 149 151 163 168 169 170 171 184 186 188 190 191 192 193
-% 194 195 196 197 198 199 200 210 211 212 213 214 215 216]
+Due to the inferior results of the algorithm in the first two experiments, the final experiment will deviate from the first two. At the first two maps, the overlap between submaps is rather limited. For this final experiment, two maps with large overlap were created by driving the robot around in the same environment twice. The map for this final experiment is the same as in the second experiment. In this experiment the confidence measures are not used to decide when to create a new submap. The submaps are shown in figure~\ref{fig:map4-parts}. 
 
+\begin{figure}[ht]
+  \centering
+  \subfigure[Piece 1]{
+    \includegraphics[width=0.45\textwidth]{images/experiment/map4/part1-1.png}
+    \label{fig:map4-part1}
+  }
+  \subfigure[Piece 2]{
+    \includegraphics[width=0.45\textwidth]{images/experiment/map4/part2-1.png}
+    \label{fig:map4-part2}
+  }
+  \caption{Map 3 pieces. The submaps overlap considerably. }
+  \label{fig:map4-parts}
+\end{figure}
 
-% Decide to break only on one place, where a number of consecutive items do not match, and large enough patches result.
+The Hough-spectra and cross-correlation of the two maps are shown in figure~\ref{fig:map4-hough}. As expected from visual inspection of the maps, the optimal rotation $\theta$ resulting from the cross-correlation is $0\degree$. The corresponding final map is shown in figure~\ref{fig:map4-result}.
 
-%show traces of the map
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=\textwidth]{images/experiment/map4/hough.pdf}
+  \caption{The Hough spectra and cross-correlation for experiment 3.}
+  \label{fig:map4-hough}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=\textwidth]{images/experiment/map4/results/result_color_0.png}
+  \caption{The result of Hough map stitching for experiment 3. Cyan parts are from piece 1, magenta are from piece 2. Blue parts show overlap from both pieces.}
+  \label{fig:map4-hough}
+\end{figure}
+
