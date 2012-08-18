@@ -12,24 +12,32 @@
 %force all images into their own section
 \usepackage[section]{placeins}
 
-%schrijf wat je had willen lezen toen je met het rapport begon.
-%(Arnoud)
-
 \title{Hough-transform based map stitching after localization uncertainty}
-\date{August 17, 2012}
+\date{August 18, 2012}
 \author{Okke Formsma\\University of Amsterdam}
 
 \begin{document}
 \maketitle
 
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{\numberline{}Abstract}
+\pagenumbering{roman}
+%new empty page
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
 \input{chapters/abstract.tex}
 
-
 \tableofcontents
-\pagenumbering{arabic}
 
+%new empty page
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
+
+\pagenumbering{arabic}
 \input{chapters/introduction.tex}
 \input{chapters/slam.tex}
 \input{chapters/stitching.tex}

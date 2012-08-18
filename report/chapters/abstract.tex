@@ -1,2 +1,9 @@
 %!TEX root = ../report.tex
-Abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{\numberline{}Abstract}
+
+Robots deployed for Urban Search And Rescue need be able to simultaneously perform mapping tasks and localize themselves, known as the SLAM problem. Most current methods perform 2D laser scan matching to incrementally build a map. When traditional scanmatching methods fail, post-processing can be applied to join the resulting submaps into a coherent whole. 
+
+In this report the results of Hough-transform based map stitching (HTMS) is analyzed on a number of datasets recorded in the USARSim simulation environment, which were split up at points where the scanmatcher failed. Three methods to identify scanmatching failures are compared.
+
+It was found that the HTMS method as presented does not yield better maps than existing scanmatching methods. In indoor environments the rotation estimate given by the HTMS is accurate, but the translation estimate performance is below par. Suggestions for improvements are provided to guide future research.
