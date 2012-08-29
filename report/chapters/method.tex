@@ -5,15 +5,16 @@
 In this chapter the design of the experiment is outlined. The experiment consists of three phases: dataset collection, map segmentation and map stitching. Each of the phases is described in detail below.
 
 \section{Dataset collection}
-The dataset for the experiments consists of sensor data acquired by a robot in the USARSim (Urban Search And Rescue Simulation) environment \cite{balaguer2008usarsim, usarsimsite}. USARSim is a high fidelity simulation environment in which reconnaissance and rescue missions can be imitated. These environments can both be indoors and outdoors, and are typically not larger than a housing block. A team of robots is deployed in this environment with the task of localizing (human) victims. One of the goals of the USARSim project is to improve autonomous behavior, allowing one human operator to control a team of up to 16 robots simultaneously.
-
-Much work has been done to increase the realism of the simulation. A selection of recent work: an assessment for use of USARSim in Human Robot Interaction \cite{wang2005validating}, for use with walking robots \cite{van2012validation}, adding realistic laser sensor behavior in environments with smoke \cite{formsma2011realistic} and creating a omnidirectional camera sensor \cite{schmits2009omnidirectional}.
-
-Teams from all over the world compete in the annual RoboCup Rescue Simulation competition \cite{robocupsite}. The universities of Oxford and Amsterdam participated until 2011 with a cooperative team: the Amsterdam Oxford Joint Rescue Forces \cite{aojrf2011, visser2012uva}. The robot control software used by this team is UsarCommander (available on the AOJRF site \cite{jrfsite}). UsarCommander contains a number of SLAM implementations, including ManifoldSLAM.
-
 Three datasets were collected on two recent USARSim maps: the first dataset in a building without smoke, the second two in a larger building. The robot was driven around the map. Care was taken to ensure that the robot visited the same locations a number of times to make the map-stitching method feasible.
 
-Each dataset was recorded, and is available within the code repository \cite{github}.
+Each dataset was recorded, and is available within the code repository\footnote{GitHub code repository \url{http://www.github.com/okke-formsma/slam-confidence/}}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/experiment/map1/screenshot.png}
+	\label{fig:map1}
+	\caption{Screenshot of the simulation environment (Map 1).}
+\end{figure}
 
 \section{Map segmentation}
 The datasets are processed through the UsarCommander ManifoldSlam implementation. At every timestep the scan matcher runs and saves current position and rotation according to the groundtruth, the inertia sensor and the SLAM algorithm, as well as the correspondence error matrix as discussed in section~\ref{scanmatching}.

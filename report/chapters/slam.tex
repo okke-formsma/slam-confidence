@@ -13,9 +13,9 @@ In this section we will first examine how the robot keeps track of the state of 
 \label{slam:state}
 The state of the world as it is known to the agent is denoted $x$. The value of this set of variables may change over time, as the agent collects sensor data from the environment. The state at time $t$ is denoted $x_{t}$. 
 
-Many variables may be included in the state variable $x$. For the purpose of this work, we will assume that it contains at least the agent's \em{pose} and a \em{map of the environment}. 
+Many variables may be included in the state variable $x$. For the purpose of this work, we will assume that it contains at least the agent's \emph{pose} and a \emph{map of the environment}. 
 
-In most SLAM approaches, two types of sensor data is collected: \em{environmental measurement data} and \em{control data}. Environmental measurement data collects information about the environment, while control data collects information about the robot within the environment. Environmental measurement data  is denoted $z$ (at a specific point in time $z_{t}$). Examples of environmental sensors available to an agent are laser scanners, sonars and video cameras. Control data and GPS signals. Control data sensors collect information intrinsic to the agent: it's velocity and position. Examples of control sensors are odometry sensors, inertia sensors and global positioning systems.
+In most SLAM approaches, two types of sensor data is collected: \emph{environmental measurement data} and \emph{control data}. Environmental measurement data collects information about the environment, while control data collects information about the robot within the environment. Environmental measurement data  is denoted $z$ (at a specific point in time $z_{t}$). Examples of environmental sensors available to an agent are laser scanners, sonars and video cameras. Control data at a timestep is denoted $u_{t}$. Control data sensors collect information intrinsic to the agent: it's velocity and position. Examples of control sensors are odometry sensors, inertia sensors and global positioning systems. The control data $u$ is used as a initial estimate of the robot's state $x$, which is then refined by incorporating the environmental measurement data $z$.
 
 For the purpose of this paper we are mainly interested in the online SLAM problem, in contrast to the full SLAM problem. Online (or incremental) SLAM seeks to estimate the current pose $x_{t}$ and map $m$:
 
@@ -29,7 +29,7 @@ In contrast, the full SLAM problem estimates all poses $x$ and map $m$:
 p(x_{1:t}, m | z_{1:t}, u_{1:t})
 \end{equation}
 
-In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. The full SLAM problem is computationally much more expensive. Thus for time sensitive applications, such as real time robot control, usually only online SLAM is performed.
+In practice, the difference is that the full SLAM problem reconsiders the location of all previous poses in estimating the map, while online SLAM treats these as given. The full SLAM problem is computationally much more expensive. Thus for time sensitive applications, such as real time robot control, usually only online SLAM is performed. In UsarCommander this is also the case. 
 
 The robot's knowledge of it's current state is reflected in the \emph{belief} function. The belief function gives a posterior probability over the state variable. The belief at time $x_t$ is defined as follows:
 
@@ -66,7 +66,7 @@ p(x) = \det(2\pi\Sigma)^{-\frac{1}{2}}\exp{\{-\frac{1}{2}(x - \mu)^T\Sigma^{-1}(
 
 Gaussian state representations have the advantage of being easily understood and straightforwardly manipulated. This comes with a cost: a Gaussian is unimodal -- there is only one maximum (the mean) possible. This makes Gaussian representations ill suited when there are many different hypothesis distributed across a map. 
 
-In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \theta)$ and the corresponding 3-by-3 covariance matrix $\Sigma$. $x$ and $y$ are the respective coordinates of the robot in a global frame, while $\theta$ is the rotation angle of the robot with respect to the $y$ axis.
+In UsarCommander, the state is represented by a 3-dimensional vector: $(x, y, \theta)$ and the corresponding 3-by-3 covariance matrix $\Sigma$. $x$ and $y$ are the respective coordinates of the robot in a global frame, while $\theta$ is the rotation angle of the robot with respect to the $y$ axis. Only 
 
 When the state is represented by a Gaussian, the formulas in the previous section (\ref{slam:state}) can be relatively easily calculated.
 
@@ -148,7 +148,7 @@ This error term $\epsilon$ is minimized through an iterative algorithm in which 
 \section{ManifoldSLAM}
 ManifoldSLAM was developed by Bayu Slamet and Max Pfingsthorn in 2006 \cite{slamet2006manifoldslam} to compete in the RoboCup Urban Search and Rescue Simulation and won first place. It is based on the Manifold data structure by Howard et al. \cite{howard2006multirobot}. 
 
-Many SLAM algorithms use a bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AOJRF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
+Many SLAM algorithms use a Bayesian filter to refine the state by incorporate the current knowledge into a new assessment of the current state of the robot. The SLAM algorithm in use by the AOJRF team takes the map $m_{t-1}$ and previous position $x_{t-1}$ as given. 
 
 
 \section{Uncertainty measures}

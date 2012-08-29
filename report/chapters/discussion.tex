@@ -4,7 +4,7 @@
 \label{discussion}
 
 \section{Discussion}
-The results of the map stitching method are inferior to the original maps created by ManifoldSLAM. The rotation estimates are usually correct, but the translation estimates are below par. Only for maps with very large overlapping areas, such as in the third experiment, is the result satisfactory.
+The results of the map stitching method are inferior to the original maps created by ManifoldSLAM. The rotation estimates are usually correct, but the translation estimates are below par. Only for maps with very large overlapping areas, such as in the third experiment, is the result satisfactory. Additionally, this method has problems when the segments that are stitched are very noisy, such as in the first experiment. This limits the use of the Hough-stitching method to cases where the submaps can be guaranteed to be relatively clean.
 
 The quality of the rotation estimates is very high in the test environment because the test environments were all human-made. The grid structure in which the walls are placed yields very clear results in the Hough spectrum. In outdoor environments, this is probably not the case, and the results would suffer likewise.
 
@@ -21,7 +21,7 @@ Finally, it would have been interesting to see the performance of the Hough base
 In this section a number of improvements to the Hough map stitching algorithm and the USARSim simulation environment are proposed. 
 
 \subsection{Better translation estimate}
-The most room for improvement in the Hough-based map stitching method is in the translation estimate. As discussed in the previous section, the X- and Y-spectra do not suffice. Most scanmatching algorithms, as discussed in section~\ref{scanmatching}, perform the rotation- and translation estimates separately. The Hough based map stitching method could give a good initial estimate for the rotationf, so that the scanmatcher only needs to find the optimal translation. 
+The most room for improvement in the Hough-based map stitching method is in the translation estimate. As discussed in the previous section, the X- and Y-spectra do not suffice. Most scanmatching algorithms, as discussed in section~\ref{scanmatching}, perform the rotation- and translation estimates separately. The Hough based map stitching method could give a good initial estimate for the rotation, so that the scanmatcher only needs to find the optimal translation. 
 
 Additional improvements would be to incorporate the knowledge about the last position of the robot and the inertia sensor estimate as a basis for the translation estimate, as opposed to a global search. 
 

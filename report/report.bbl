@@ -5,11 +5,52 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+\bibitem{durrant2006simultaneous}
+H.~Durrant-Whyte and T.~Bailey, \enquote{Simultaneous localization and mapping:
+  part I}, \emph{Robotics \& Automation Magazine, IEEE}, volume~13(2):pp.
+  99--110, 2006.
+
+\bibitem{bailey2006simultaneous}
+T.~Bailey and H.~Durrant-Whyte, \enquote{Simultaneous localization and mapping
+  (SLAM): Part II}, \emph{Robotics \& Automation Magazine, IEEE},
+  volume~13(3):pp. 108--117, 2006.
+
+\bibitem{balaguer2008usarsim}
+B.~Balaguer, S.~Balakirsky, S.~Carpin, M.~Lewis and C.~Scrapper,
+  \enquote{USARSim: a validated simulator for research in robotics and
+  automation}, in \enquote{Workshop on “Robot Simulators: Available Software,
+  Scientific Applications, and Future Trends” at IEEE/RSJ}, 2008.
+
+\bibitem{wang2005validating}
+J.~Wang, M.~Lewis, S.~Hughes, M.~Koes and S.~Carpin, \enquote{Validating
+  usarsim for use in hri research}, in \enquote{Proceedings of the Human
+  Factors and Ergonomics Society Annual Meeting}, volume~49, pp. 457--461, SAGE
+  Publications, 2005.
+
+\bibitem{van2012validation}
+S.~van Noort and A.~Visser, \enquote{Validation of the dynamics of an humanoid
+  robot in USARSim}, 2012.
+
+\bibitem{formsma2011realistic}
+O.~Formsma, N.~Dijkshoorn, S.~van Noort and A.~Visser, \enquote{Realistic
+  simulation of laser range finder behavior in a smoky environment},
+  \emph{RoboCup 2010: Robot Soccer World Cup XIV}, pp. 336--349, 2011.
+
+\bibitem{schmits2009omnidirectional}
+T.~Schmits and A.~Visser, \enquote{An omnidirectional camera simulation for the
+  USARSim world}, \emph{RoboCup 2008: Robot Soccer World Cup XII}, pp.
+  296--307, 2009.
+
 \bibitem{aojrf2011}
 N.~Dijkshoorn, H.~Flynn, O.~Formsma, S.~van Noort, C.~van Weelden, C.~Bastiaan,
   N.~Out, O.~Zwennes \emph{et~al.}, \enquote{Amsterdam Oxford Joint Rescue
   Forces Team Description Paper Virtual Robot competition Rescue Simulation
   League RoboCup 2011}, 2011.
+
+\bibitem{visser2012uva}
+A.~Visser, N.~Dijkshoorn, S.~van Noort, O.~Zwennes, M.~de~Waard, S.~Katt and
+  R.~Rozeboom, \enquote{UvA Rescue Team Description Paper Virtual Robot
+  competition Rescue Simulation League RoboCup 2012}, 2012.
 
 \bibitem{thrun2002probabilistic}
 S.~Thrun, \enquote{Probabilistic robotics}, \emph{Communications of the ACM},
@@ -61,55 +102,5 @@ D.~Ballard, \enquote{Generalizing the Hough transform to detect arbitrary
 \bibitem{jankowska2009hough}
 M.~Jankowska, \enquote{A hough transform based approach to map stitching},
   2009.
-
-\bibitem{balaguer2008usarsim}
-B.~Balaguer, S.~Balakirsky, S.~Carpin, M.~Lewis and C.~Scrapper,
-  \enquote{USARSim: a validated simulator for research in robotics and
-  automation}, in \enquote{Workshop on “Robot Simulators: Available Software,
-  Scientific Applications, and Future Trends” at IEEE/RSJ}, 2008.
-
-\bibitem{usarsimsite}
-\enquote{Urban Search and Rescue simulation website:
-  \url{http://sourceforge.net/apps/mediawiki/usarsim/index.php?title=Main_Page}},
-  2012.
-
-\bibitem{wang2005validating}
-J.~Wang, M.~Lewis, S.~Hughes, M.~Koes and S.~Carpin, \enquote{Validating
-  usarsim for use in hri research}, in \enquote{Proceedings of the Human
-  Factors and Ergonomics Society Annual Meeting}, volume~49, pp. 457--461, SAGE
-  Publications, 2005.
-
-\bibitem{van2012validation}
-S.~van Noort and A.~Visser, \enquote{Validation of the dynamics of an humanoid
-  robot in USARSim}, 2012.
-
-\bibitem{formsma2011realistic}
-O.~Formsma, N.~Dijkshoorn, S.~van Noort and A.~Visser, \enquote{Realistic
-  simulation of laser range finder behavior in a smoky environment},
-  \emph{RoboCup 2010: Robot Soccer World Cup XIV}, pp. 336--349, 2011.
-
-\bibitem{schmits2009omnidirectional}
-T.~Schmits and A.~Visser, \enquote{An omnidirectional camera simulation for the
-  USARSim world}, \emph{RoboCup 2008: Robot Soccer World Cup XII}, pp.
-  296--307, 2009.
-
-\bibitem{robocupsite}
-\enquote{RoboCup general website \url{http://www.robocup.org/}}, 2012.
-
-\bibitem{visser2012uva}
-A.~Visser, N.~Dijkshoorn, S.~van Noort, O.~Zwennes, M.~de~Waard, S.~Katt and
-  R.~Rozeboom, \enquote{UvA Rescue Team Description Paper Virtual Robot
-  competition Rescue Simulation League RoboCup 2012}, 2012.
-
-\bibitem{jrfsite}
-\enquote{Amsterdam Oxford Joint Rescue Forces website
-  \url{http://www.jointrescueforces.eu/}}, 2012.
-
-\bibitem{github}
-\enquote{GitHub code repository
-  \url{http://www.github.com/okke-formsma/slam-confidence/}}, 2012.
-
-\bibitem{iran2012}
-\enquote{Iran Open 2012 website: \url{http://2012.iranopen.ir/}}, 2012.
 
 \end{thebibliography}

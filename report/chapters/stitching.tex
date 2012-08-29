@@ -4,7 +4,7 @@
 \label{chapter:hough}
 ManifoldSLAM only matches a recent part of the map to the current laser scan to estimate the current position of the robot. The robot is not aware of areas it has encountered before because of this. In the meantime, an erroneous location estimate may proliferate. The map stitching algorithm in this chapter can be used to find a global match between two submaps which have an unknown relative pose.
 
-Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2008merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the hough spectrum for a novel scan matcher. 
+Stefano Carpin presented a novel map stitching approach based on the Hough Transform in \cite{carpin2008merging}. It is an extention of the Hough transform which Censi et~al.\ introduced as the \emph{Hough spectrum} \cite{censi2005scan}. Censi et~al.\ used the Hough spectrum for a novel scan matcher. 
 
 Remember from the SLAM section (\ref{slam:state}) that aligning two maps takes two parameters: the rotation angle $\theta$ and translation vector $t = [x, y]^T$. The Hough spectrum is used for finding the rotation $\theta$ between a scan and reference map. The implementations of Carpin and Censi et~al.\ diverge in their method of finding the translation vector $t$ between two scans. 
 
@@ -13,7 +13,7 @@ The Hough-based map stitching works with the assumption of an indoor environment
 This chapter is setup as follows. First, we'll look at what the Hough transform and Hough spectrum are. Then, we'll take a look at how the best matching rotation $\hat\theta$ is found, and finally we'll examine translation $t$ further. This chapter concludes with an elaborate example.
 
 \section{Hough transform}
-The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962\cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart\cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes\cite{ballard1981generalizing}.
+The Hough transform is in origin a line detection technique, patented by Paul Hough in 1962 \cite{hough1962method}. An improved version, which is presented here, was introduced by Duda and Hart \cite{duda1972use}. The Hough transform is also extended to detect circles, ellipsis and parabolas, and also arbitrary 2D shapes \cite{ballard1981generalizing}.
 
 The Hough transform detects lines in the following manner. A line in Cartesian $(x, y)$ space can be defined by it's angle ($\theta$) and distance from the origin $\rho$:
 
@@ -52,7 +52,7 @@ The major contribution of Censi et~al.\ \cite{censi2005scan} is the introduction
 
 $\eta$ is a normalization value to limit $\mathcal{HS}(k)$ to the domain $[0, 1]$.
 
-As we've seen in the previous section, each bin in the discrete Hough transform ($\mathcal{HT} (i, k)$) contains the number of pixels that lie on a line defined by $(\theta_i, \rho_k)$. The hough spectrum is a measure for how strong the lines are on a specific angle. 
+As we've seen in the previous section, each bin in the discrete Hough transform ($\mathcal{HT} (i, k)$) contains the number of pixels that lie on a line defined by $(\theta_i, \rho_k)$. The Hough spectrum is a measure for how strong the lines are on a specific angle. 
 
 Thus, the Hough spectrum yields the highest value in the direction in which the most pronounced lines run. In an indoor environment, there will usually be two peaks, separated by a $90\degree$ angle, corresponding to grid-like structure most buildings are created (see figure~\ref{fig:rooms}). Incidentally, in a bee-hive, with hexagonal chambers, we would see 3 peaks each separated by $60\degree$  angles. See figure~\ref{fig:beehive}.
 
@@ -66,7 +66,7 @@ Thus, the Hough spectrum yields the highest value in the direction in which the 
 	\includegraphics[width=0.55\textwidth]{images/stitching/rooms-hough.pdf}
 	\label{fig:rooms-hough}
 }
-\caption{Example of a hough spectrum in a human-made environment.}
+\caption{Example of a Hough spectrum in a human-made environment.}
 \label{fig:rooms}
 \end{figure}
 
@@ -94,7 +94,7 @@ In the previous section we've seen how to calculate the Hough spectra $\mathcal{
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{images/stitching/lines-cross-correlation.pdf}
-	\caption{The top two plots are the hough spectra of image~\ref{fig:lines-original}. The image for the second hough spectrum was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
+	\caption{The top two plots are the Hough spectra of image~\ref{fig:lines-original}. The image for the second Hough spectrum was rotated $90\degree$ counter-clockwise. The cross-correlation shows that the most probable rotation is indeed $90\degree$, with smaller peaks for $45\degree$ and $135\degree$.}
 	\label{fig:lines-cross-correlation}
 \end{figure}
 
@@ -163,7 +163,7 @@ Let's look at an example. We will examine more complicated cases in chapter~\ref
 \label{fig:ex-rooms}
 \end{figure}
 
-The first step is to find candidate translations $\theta$. We do this by calculating the hough spectra and performing cross-correlation on them. See figure~\ref{fig:ex-rooms-theta}. The highest peak in the cross-correlation lies at $\theta_{1a} = 169\degree$, the second highest at $\theta_{2a} = 79\degree$. Because of the periodicity of the Hough spectrum there are also two dual-hypothesis: $\theta_{1b} = 180\degree+169\degree = 349\degree$ and $\theta_{2b} = 180\degree+79\degree = 259\degree$, respectively. Note that the first hypothesis and the second hypothesis lie $90\degree$ apart, which corresponds to the two main wall-directions in the image.
+The first step is to find candidate translations $\theta$. We do this by calculating the Hough spectra and performing cross-correlation on them. See figure~\ref{fig:ex-rooms-theta}. The highest peak in the cross-correlation lies at $\theta_{1a} = 169\degree$, the second highest at $\theta_{2a} = 79\degree$. Because of the periodicity of the Hough spectrum there are also two dual-hypothesis: $\theta_{1b} = 180\degree+169\degree = 349\degree$ and $\theta_{2b} = 180\degree+79\degree = 259\degree$, respectively. Note that the first hypothesis and the second hypothesis lie $90\degree$ apart, which corresponds to the two main wall-directions in the image.
 
 \begin{figure}[ht]
 	\centering
@@ -172,7 +172,7 @@ The first step is to find candidate translations $\theta$. We do this by calcula
 	\label{fig:ex-rooms-theta}
 \end{figure}
 
-As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169\degree + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations. 
+As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligned with the predominant direction $\phi$: the highest peak in the Hough spectrum lies at $90\degree$. Thus, we have to rotate it $90\degree$ counterclockwise before calculating the x- and y-spectra. Let's test the first hypothesis $\theta_{1a}$. We will rotate the cutout $169\degree + 90 \degree$ counterclockwise, according to the first hypothesis plus the predominant-direction correction. See figure~\ref{fig:ex-rooms-rotated}. In figure~\ref{fig:ex-rooms-spectra} you see the x-, y-spectra and their cross-correlations. 
 
 \begin{figure}[ht]
 	\centering
@@ -188,7 +188,7 @@ As you can see in figure~\ref{fig:ex-rooms-theta}, the first image is not aligne
 	\label{fig:ex-rooms-spectra}
 \end{figure}
 
-The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, -89)$. In figure~\ref{fig:ex-rooms-result-1a} the result of the stitch is seen. The map is printed in blue, the cutout in pink. Astute readers will have noticed that the rotation estimate is $90\degree$ off, and the second hypothesis $\theta_{2}$ might yield a better result. They are right, as can be seen in figure~\ref{fig:ex-room-all-results} where the results for all $\theta$ hypothesis are shown.
+The maxima in the X- and Y-spectra yield a translation estimate $\hat t = (-60, -89)$. In figure~\ref{fig:ex-rooms-result-1a} the result of the stitch is seen. The map is printed in blue, the cutout in pink. Keen readers will have noticed that the rotation estimate is $90\degree$ off, and the second hypothesis $\theta_{2}$ might yield a better result. They are right, as can be seen in figure~\ref{fig:ex-room-all-results} where the results for all $\theta$ hypothesis are shown.
 
 In the experiments section, the optimal rotation $\hat \theta$ will be chosen as the candidate that is closest in degrees from the estimate the inertia sensor gives.
 
